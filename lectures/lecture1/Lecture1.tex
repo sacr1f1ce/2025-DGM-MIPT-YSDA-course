@@ -4,13 +4,14 @@
 
 \usepackage{tikz}
 \usetikzlibrary{arrows,shapes,positioning,shadows,trees}
+
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
 \begin{frame}[noframenumbering,plain]
-%\thispagestyle{empty}
 \titlepage
 \end{frame}
+
 %=======
 \begin{frame}{Generative Models Zoo}
 	\begin{tikzpicture}[
@@ -26,19 +27,19 @@
 		% Root of the tree, level 1
 		\node[root] {\Large Generative Models}
 		% The first level, as children of the initial tree
-		child {node[level 2] (c1) {Likelihood-based}
-			child {node[level 3] (c11) {Tractable density}}
-			child {node[level 3] (c12) {Approximate density}}
+		child {node[level 2] (c1) {Likelihood-Based}
+			child {node[level 3] (c11) {Tractable Density}}
+			child {node[level 3] (c12) {Approximate Density}}
 		}
-		child {node[level 2] (c2) {Implicit density}};
+		child {node[level 2] (c2) {Implicit Density}};
 		
 		% Second level, relatively positioned nodes
 		\begin{scope}[every node/.style={level 4}]
-		\node [below of = c11, yshift=-5pt, xshift=10pt] (c111) {Autoregressive models};
+		\node [below of = c11, yshift=-5pt, xshift=10pt] (c111) {Autoregressive Models};
 		\node [below of = c111, yshift=-5pt] (c112) {Normalizing Flows};
 		
 		\node [below of = c12, xshift=10pt] (c121) {VAEs};
-		\node [below of = c121] (c122) {Diffusion models};
+		\node [below of = c121] (c122) {Diffusion Models};
 		
 		\node [below of = c2, xshift=10pt] (c21) {GANs};
 		\end{scope}
@@ -66,7 +67,7 @@
         \centering
         \includegraphics[width=0.8\linewidth]{figs/vae.png}
     \end{figure}
-\myfootnotewithlink{https://arxiv.org/abs/1312.6114}{Kingma D. P., Welling M. Auto-Encoding Variational Bayes, 2013}
+\myfootnotewithlink{https://arxiv.org/abs/1312.6114}{Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013}
 \end{frame}
 %=======
 \begin{frame}{DCGAN -- The First Convolutional GAN for Image Generation}
@@ -130,23 +131,23 @@
 %=======
 \section{Course Tricks}
 %=======
-\begin{frame}{Course Tricks 1}
+\begin{frame}{Course Tricks I}
 	\begin{block}{Log-Derivative Trick}
-		Let $f: \bbR^m \rightarrow \bbR$ be a differentiable function.
+		Given a differentiable function $f: \bbR^m \to \bbR$,
 		$$
 			\nabla \log f(\bx) = \frac{1}{f(\bx)} \cdot \nabla f(\bx).
 		$$
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{block}{Jensen's Inequality}
-		Let $\bx \in \bbR^m$ be a continuous random variable with density $p(\bx)$, and $f: \bbR^m \rightarrow \bbR$ be a convex function. Then
+		If $\bx \in \bbR^m$ is a continuous random variable with density $p(\bx)$ and $f: \bbR^m \to \bbR$ is convex, then
 		$$
-			\bbE [f(\bx)] \geq f(\bbE[\bx]).
+			\bbE[f(\bx)] \geq f(\bbE[\bx]).
 		$$
 		\vspace{-0.7cm}
 	\end{block}
 	\begin{block}{Monte Carlo Estimation}
-		Let $\bx \in \bbR^m$ be a continuous random variable with density $p(\bx)$ and $\bff: \bbR^m \rightarrow \bbR^d$ be a vector-valued function. Then 
+		Let $\bx \in \bbR^m$ be a continuous random variable with density $p(\bx)$, and $\bff: \bbR^m \to \bbR^d$ be any vector-valued function. Then,
 		$$
 			\bbE_{p(\bx)} \bff(\bx) = \int p(\bx) \bff(\bx) d \bx \approx \frac{1}{n} \sum_{i=1}^n \bff(\bx_i), \quad 
 			\text{where } \bx_i \sim p(\bx).
@@ -155,16 +156,16 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Course Tricks 2}
+\begin{frame}{Course Tricks II}
 	\begin{block}{Change of Variables Theorem (CoV)}
-		Let $\bx$ be a continuous random variable with density $p(\bx)$, and $\bff: \bbR^m \rightarrow \bbR^m$ be a differentiable, \textbf{invertible} function. If $\by = \bff(\bx)$, then
+		Suppose $\bx$ is a continuous random variable with density $p(\bx)$, and $\bff: \bbR^m \to \bbR^m$ is differentiable and \textbf{invertible}. If $\by = \bff(\bx)$, then
 		$$
 			p(\by) = p(\bx) \left|\det \left(  \frac{\partial \bx}{\partial \by} \right) \right| = p(\bff^{-1}(\by)) \left|\det \left(  \frac{\partial \bff^{-1}(\by)}{\partial \by} \right) \right|.
 		$$
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{block}{Proof (1D)}
-		Assume $f$ is a monotonically increasing function.
+		Assume $f$ is monotonically increasing.
 		$$
 			F_Y(y) = P(Y \leq y) = P(x \leq f^{-1}(y)) = F_X(f^{-1}(y))
 		$$
@@ -174,69 +175,70 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Course Tricks 3}
+\begin{frame}{Course Tricks III}
 	\begin{block}{Law of the Unconscious Statistician (LOTUS)}
-		Let $\bx \in \bbR^m$ be a continuous random variable with density $p(\bx)$ and let $\bff: \bbR^m \rightarrow \bbR^m$ be a measurable function. If $\by = \bff(\bx)$, then
+		Let $\bx \in \bbR^m$ be a continuous random variable with density $p(\bx)$, and let $\bff: \bbR^m \to \bbR^m$ be measurable. If $\by = \bff(\bx)$, then
 		$$
 			\bbE_{p(\by)} \bg(\by) = \int p(\by) \bg(\by) d\by = \int p(\bx) \bg(\bff(\bx)) d\bx = \bbE_{p(\bx)} \bg(\bff(\bx)).
 		$$
 		\vspace{-0.4cm}
 	\end{block}
 	\begin{block}{Dirac Delta Function}
-		We can treat any deterministic variable $\bx_0$ as a random variable with density $p(\bx) = \delta(\bx - \bx_0)$. 
+		Any deterministic variable $\bx_0$ can be interpreted as a random variable with density $p(\bx) = \delta(\bx - \bx_0)$. 
 		\vspace{-0.3cm}
 		$$
 			\delta(\bx) = 
 			\begin{cases}
-				+\infty, \quad \bx = 0; \\
-				0, \quad \bx \neq 0;
-			\end{cases} \, 
-			\int \delta(\bx) d\bx = 1.
+				+\infty, & \bx = 0 \\
+				0, & \bx \neq 0
+			\end{cases} \qquad 
+			\int \delta(\bx) d\bx = 1
 		$$
 		$$
-			\bbE_{p(\bx)}\bff(\bx) = \int \delta (\bx - \bx_0) \bff(\bx) d\bx = \bff(\bx_0).
+			\bbE_{p(\bx)}\bff(\bx) = \int \delta (\bx - \bx_0) \bff(\bx) d\bx = \bff(\bx_0)
 		$$
 	\end{block}
 \end{frame}
 %=======
 \section{Problem Statement}
 %=======
-\begin{frame}{Problem statement}
-	We are given i.i.d. samples $\{\bx_i\}_{i=1}^n \in \bbR^m$ from \textbf{unknown} distribution $\pi(\bx)$.
+\begin{frame}{Problem Statement}
+	We're given i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pi(\bx)$.
 	
 	\begin{block}{Objective}
-		Our goal is to learn a distribution $\pi(\bx)$ that enables: 
+		Our aim is to learn a distribution $\pi(\bx)$ that allows us to: 
 		\begin{itemize}
-		    \item evaluating $\pi(\bx)$ for new data (how likely is an object $\bx$?)~-- \textbf{density estimation};
-		    \item sampling from $\pi(\bx)$ (to generate new objects $\bx \sim \pi(\bx)$)~-- \textbf{generation}.
+		    \item Evaluate $\pi(\bx)$ on novel data (answering ``How likely is an object $\bx$?'') --- \textbf{density estimation}; 
+		    \item Generate new samples from $\pi(\bx)$ (sample $\bx \sim \pi(\bx)$) --- \textbf{generation}.
 		\end{itemize}
 	\end{block}
 	\begin{block}{Challenge}
-		The data is complex and high-dimensional. For example, a dataset of images resides in the space $\bbR^{\text{width} \times \text{height} \times \text{channels}}$. The curse of dimensionality prevents us from finding the exact density $\pi(\bx)$. 
+		The data is high-dimensional and complex. For example, image datasets live in $\bbR^{\text{width} \times \text{height} \times \text{channels}}$. The curse of dimensionality makes accurately estimating $\pi(\bx)$ infeasible.
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Histogram as a Generative Model}
 	
 	\begin{minipage}[t]{0.6\columnwidth}
-	    Assume $x \sim \textrm{Categorical}(\bpi)$. The histogram is completely determined by
+	    Assume $x \sim \Cat(\bpi)$. The histogram model is fully characterized by
 		$$
 		    \hat{\pi}_k = \hat{\pi}(x = k) = \frac{\sum_{i=1}^n [x_i = k]}{n}.
 		$$
-		\textbf{The curse of dimensionality:} the number of bins grows exponentially. \\
+		\textbf{Curse of dimensionality:} The number of bins rises exponentially. \\
 		\end{minipage}%
 		\begin{minipage}[t]{0.4\columnwidth}
+		\vspace{-0.5cm}
 	    \begin{figure}[h]
 	        \centering
 	        \includegraphics[width=\linewidth]{figs/histogram.png}
 	    \end{figure}
 	\end{minipage}
-	\textbf{MNIST example}: 28x28 grayscale images, where each image is $\bx = (x_1, \dots, x_{784})$, and $x_i \in \{0, 1\}$. 
+	\textbf{MNIST example}: $28 \times 28$ grayscale images, with each image $\bx = (x_1, \dots, x_{784})$, $x_i \in \{0, 1\}$:
 	$$
 	    \pi(\bx) = \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}, \dots, x_1).
 	$$
-	Hence, a full histogram would require $2^{28 \times 28} - 1$ parameters to specify~$\pi(\bx)$. \\
-	\textbf{Question:} How many parameters do we need in these cases?
+	A complete histogram would require $2^{28 \times 28} - 1$ parameters for~$\pi(\bx)$.\\
+	\textbf{Question:} How many parameters are required in these cases?
 	\begin{align*}
 	    \pi(\bx) &= \pi(x_1) \cdot \pi(x_2)\cdot \dots \cdot \pi(x_m); \\
 	    \pi(\bx) &= \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}).
@@ -244,17 +246,17 @@
 \end{frame}
 %=======
 \begin{frame}{Problem Statement: Conditional Models}
-	\begin{block}{Conditional Model}
-		In practice, a common task is to construct a conditional model~$\pi(\bx | \by)$. 
+	\begin{block}{Conditional Models}
+		In practice, we're typically interested in learning conditional models~$\pi(\bx | \by)$. 
 		\begin{itemize}
-			\item $\by = \emptyset$, $\bx$ -- image $\Rightarrow$ unconditional image model.
-			\item $\by$ -- class label, $\bx$ -- image $\Rightarrow$ class-conditional image model.
-			\item $\by$ -- text prompt, $\bx$ -- image $\Rightarrow$ text-to-image model.
-			\item $\by$ -- image, $\bx$ -- image $\Rightarrow$ image-to-image model.
-			\item $\by$ -- image, $\bx$ -- text $\Rightarrow$ image-to-text model (image captioning).
-			\item $\by$ -- English text, $\bx$ -- Russian text $\Rightarrow$ sequence-to-sequence model (machine translation).
-			\item $\by$ -- sound, $\bx$ -- text $\Rightarrow$ speech-to-text model (automatic speech recognition).
-			\item $\by$ -- text, $\bx$ -- sound $\Rightarrow$ text-to-speech model.
+			\item $\by = \emptyset$, $\bx$ = image $\quad\Rightarrow$ unconditional image model
+			\item $\by$ = class label, $\bx$ = image $\quad\Rightarrow$ class-conditional image model
+			\item $\by$ = text prompt, $\bx$ = image $\quad\Rightarrow$ text-to-image model
+			\item $\by$ = image, $\bx$ = image $\quad\Rightarrow$ image-to-image model
+			\item $\by$ = image, $\bx$ = text $\quad\Rightarrow$ image-to-text (image captioning) model
+			\item $\by$ = English text, $\bx$ = Russian text $\quad\Rightarrow$ sequence-to-sequence model (machine translation) model
+			\item $\by$ = sound, $\bx$ = text $\quad\Rightarrow$ speech-to-text (automatic speech recognition) model
+			\item $\by$ = text, $\bx$ = sound $\quad\Rightarrow$ text-to-speech model
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -263,42 +265,42 @@
 %=======
 \begin{frame}{Divergences}
 	\begin{itemize}
-	\item Fix a probabilistic model $p(\bx | \btheta)$~-- a family of parameterized distributions. \\
-	\item Instead of searching for the true $\pi(\bx)$ among all possible probability distributions, we instead learn a function approximation $p(\bx | \btheta) \approx \pi(\bx)$.
+	\item Let us fix a probabilistic model $p(\bx | \btheta)$---a parametric family of distributions.\\
+	\item Instead of searching among all possible distributions for the true $\pi(\bx)$, we seek a functional approximation $p(\bx | \btheta) \approx \pi(\bx)$.
 	\end{itemize}
 	\begin{block}{What is a Divergence?}
-		Let $\cP$ be the set of all probability distributions. A function $D: \cP \times \cP \rightarrow \bbR$ is called a divergence if 
+		Let $\cP$ be the set of all probability distributions. A mapping $D: \cP \times \cP \to \bbR$ is called a \textbf{divergence} if 
 		\begin{itemize}
-			\item $D(\pi || p) \geq 0$ for all $\pi, p \in \cP$;
-			\item $D(\pi || p) = 0$ if and only if $\pi \equiv p$.
+			\item $D(\pi \| p) \geq 0$ for all $\pi, p \in \cP$
+			\item $D(\pi \| p) = 0$ if and only if $\pi \equiv p$
 		\end{itemize}
 	\end{block}
 	\begin{block}{Divergence Minimization Problem}
 		\vspace{-0.3cm}
 		$$
-		\min_{\btheta} D(\pi || p)
+		\min_{\btheta} D(\pi \| p)
 		$$
-		where $\pi(\bx)$ is the true data distribution and $p(\bx | \btheta)$ is our model distribution.
+		where $\pi(\bx)$ is the true data distribution and $p(\bx | \btheta)$ is the model distribution.
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Forward KL vs. Reverse KL (Kullback-Leibler Divergence)}
+\begin{frame}{Forward KL vs Reverse KL (Kullback-Leibler Divergence)}
 	\begin{block}{Forward KL}
 		\vspace{-0.2cm}
 		$$
-		KL(\pi || p) = \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \rightarrow \min_{\btheta}
+		\KL(\pi \| p) = \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \rightarrow \min_{\btheta}
 		$$
 	\end{block}
 	\begin{block}{Reverse KL}
 		\vspace{-0.2cm}
 		$$
-		KL(p || \pi) = \int p (\bx| \btheta) \log \frac{p(\bx| \btheta)}{\pi(\bx)} d \bx \rightarrow \min_{\btheta}
+		\KL(p \| \pi) = \int p (\bx| \btheta) \log \frac{p(\bx| \btheta)}{\pi(\bx)} d \bx \rightarrow \min_{\btheta}
 		$$
 	\end{block}
-	What is the practical difference between these two formulations?
+	What's the practical distinction between these two objectives?
 	
 	\begin{block}{Maximum Likelihood Estimation (MLE)}
-	Let $\{\bx_i\}_{i=1}^n$ denote the set of observed i.i.d. samples.
+	Let $\{\bx_i\}_{i=1}^n$ be i.i.d.\ observed samples.
 		\vspace{-0.3cm}
 		$$
 		\btheta^* = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
@@ -306,22 +308,22 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Forward KL vs. Reverse KL: MLE as Forward KL}
+\begin{frame}{Forward KL vs Reverse KL: MLE as Forward KL}
 	\begin{block}{Forward KL}
 		\vspace{-0.5cm}
 		\begin{align*}
-			KL(\pi || p) &= \int \pi(\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d\bx \\
+			\KL(\pi \| p) &= \int \pi(\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d\bx \\
 			&= {\color{violet}\int \pi (\bx) \log \pi(\bx) d \bx} - {\color{teal}\int \pi (\bx) \log p(\bx | \btheta) d \bx} \\
-			&= - {\color{teal}\bbE_{\pi(\bx)} \log p(\bx | \btheta)} + {\color{violet}\text{const}} \\
+			&= -{\color{teal}\bbE_{\pi(\bx)} [\log p(\bx | \btheta)]} + {\color{violet}\text{const}} \\
 			& \approx - \frac{1}{n} \sum_{i=1}^n \log p(\bx_i | \btheta) + \text{const} \rightarrow \min_{\btheta}.
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
-	Maximum likelihood estimation is equivalent to minimizing the Monte Carlo estimate of the forward KL divergence.
+	Maximum likelihood estimation is thus equivalent to minimizing a Monte Carlo estimate of the forward KL divergence.
 	\begin{block}{Reverse KL}
 		\vspace{-0.5cm}
 		\begin{align*}
-			KL(p || \pi) &= \int p(\bx | \btheta) \log \frac{p(\bx | \btheta)}{\pi(\bx)} d \bx \\
+			\KL(p \| \pi) &= \int p(\bx | \btheta) \log \frac{p(\bx | \btheta)}{\pi(\bx)} d \bx \\
 			&= \bbE_{p(\bx | \btheta)} \left[\log p(\bx | \btheta) - \log \pi(\bx)\right] \rightarrow \min_{\btheta}
 		\end{align*}
 		\vspace{-0.7cm}
@@ -345,15 +347,15 @@
 		% Root of initial tree, level 1
 		\node[root] {\Large Generative Models}
 		% The first level, as children of the initial tree
-		child {node[level 2] (c1) {Likelihood-based}
-			child {node[level 3] (c11) {Tractable density}}
-			child {node[level 3] (c12) {Approximate density}}
+		child {node[level 2] (c1) {Likelihood-Based}
+			child {node[level 3] (c11) {Tractable Density}}
+			child {node[level 3] (c12) {Approximate Density}}
 		}
-		child {node[level 2] (c2) {Implicit density}};
+		child {node[level 2] (c2) {Implicit Density}};
 		
 		% Second level, relatively positioned nodes
 		\begin{scope}[every node/.style={level 5}]
-			\node [below of = c11, yshift=-5pt, xshift=10pt] (c111) {Autoregressive models};
+			\node [below of = c11, yshift=-5pt, xshift=10pt] (c111) {Autoregressive Models};
 		\end{scope}
 		
 		% Second level, relatively positioned nodes
@@ -361,7 +363,7 @@
 			\node [below of = c111, yshift=-5pt] (c112) {Normalizing Flows};
 			
 			\node [below of = c12, xshift=10pt] (c121) {VAEs};
-			\node [below of = c121] (c122) {Diffusion models};
+			\node [below of = c121] (c122) {Diffusion Models};
 			
 			\node [below of = c2, xshift=10pt] (c21) {GANs};
 		\end{scope}
@@ -382,24 +384,24 @@
     \begin{block}{MLE Problem}
 	    \vspace{-0.4cm}
 	    $$
-	        \btheta^* = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
+	        \btheta^* = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta)
 	    $$
 	    \vspace{-0.5cm}
     \end{block}
     \begin{itemize}
-        \item We seek to solve this maximization using gradient-based optimization.
-        \item Thus, we need efficient computation of $\log p(\bx | \btheta)$ and its gradient $\frac{\partial \log p(\bx | \btheta)}{\partial \btheta}$.
+        \item This maximization is typically solved via gradient-based optimization.
+        \item Thus, efficient computation of both $\log p(\bx | \btheta)$ and its gradient $\frac{\partial \log p(\bx | \btheta)}{\partial \btheta}$ is crucial.
     \end{itemize}
     \begin{block}{Likelihood as a Product of Conditionals}
-    Let $\bx = (x_1, \dots, x_m)$, $\bx_{1:j} = (x_1, \dots, x_j)$. Then 
+    For $\bx = (x_1, \dots, x_m)$, $\bx_{1:j} = (x_1, \dots, x_j)$,
     $$
-        p(\bx | \btheta) = \prod_{j=1}^m p(x_j | \bx_{1:j - 1}, \btheta); \quad 
-        \log p(\bx | \btheta) = {\color{violet}\sum_{j=1}^m \log p(x_j | \bx_{1:j - 1}, \btheta)}.
+        p(\bx | \btheta) = \prod_{j=1}^m p(x_j | \bx_{1:j - 1}, \btheta);\quad
+        \log p(\bx | \btheta) = {\color{violet}\sum_{j=1}^m \log p(x_j | \bx_{1:j - 1}, \btheta)}
     $$
     \end{block}
     \vspace{-0.5cm}
 	 $$
-	     \btheta^* =  \argmax_{\btheta} \sum_{i=1}^n \left[{\color{violet} \sum_{j=1}^m \log p(x_{ij} | \bx_{i, 1:j - 1}, \btheta)}\right]
+	     \btheta^* =  \argmax_{\btheta} \sum_{i=1}^n \Big[{\color{violet} \sum_{j=1}^m \log p(x_{ij} | \bx_{i, 1:j - 1}, \btheta)}\Big]
 	 $$
 \end{frame}
 %=======
@@ -408,25 +410,25 @@
     \log p(\bx| \btheta) = \sum_{j=1}^m \log p(x_j | \bx_{1:j - 1}, \btheta)
     $$
     \begin{itemize}
-	    \item Sampling is sequential:
+	    \item Sampling is performed sequentially:
 	    \begin{itemize}
-    		\item sample $\hat{x}_1 \sim p(x_1 | \btheta)$;
-    		\item sample $\hat{x}_2 \sim p(x_2 | \hat{x}_1, \btheta)$;
-    		\item $\dots$
-    		\item sample $\hat{x}_m \sim p(x_m | \hat{\bx}_{1:m-1}, \btheta)$;
-    		\item The generated object is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$.
+    		\item Sample $\hat{x}_1 \sim p(x_1 | \btheta)$;
+    		\item Sample $\hat{x}_2 \sim p(x_2 | \hat{x}_1, \btheta)$;
+    		\item $\ldots$
+    		\item Sample $\hat{x}_m \sim p(x_m | \hat{\bx}_{1:m-1}, \btheta)$;
+    		\item The generated sample is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \ldots, \hat{x}_m)$.
     	\end{itemize}
-        \item Each conditional $p(x_j | \bx_{1:j - 1}, \btheta)$ can be modeled by a neural network.
-        \item Modeling all conditionals separately is infeasible. Sharing parameters $\btheta$ across all conditionals alleviates this issue.
+        \item Each conditional $p(x_j | \bx_{1:j - 1}, \btheta)$ can be modeled using a neural network.
+        \item Modeling all conditionals separately isn't feasible. To address this, we share parameters across all conditionals.
     \end{itemize}
 \end{frame}
 %=======
 \begin{frame}{Autoregressive Models: MLP}
-	For large $j$, the conditional distribution $p(x_j | \bx_{1:j - 1}, \btheta)$ can become intractable. Furthermore, the history $\bx_{1:j-1}$ has variable length.
+	For large $j$, the conditional $p(x_j | \bx_{1:j - 1}, \btheta)$ becomes intractable as the history $\bx_{1:j-1}$ grows variable-length.
 	\begin{block}{Markov Assumption}
 		\vspace{-0.5cm}
 		$$
-			p(x_j | \bx_{1:j - 1}, \btheta) = p(x_j | \bx_{j - d:j - 1}, \btheta), \quad d \text{ is a fixed model parameter}.
+			p(x_j | \bx_{1:j - 1}, \btheta) = p(x_j | \bx_{j - d:j - 1}, \btheta),\quad d\;\text{is a fixed parameter}.
 		$$
 	\end{block}
 	\vspace{-0.5cm}
@@ -434,11 +436,11 @@
 		\begin{minipage}[t]{0.39\columnwidth}
 			{\small
 			\begin{itemize}
-				\item $d = 2$;
-				\item $x_j \in \{0, 255\}$;
-				\item $\bh_j = \mathrm{MLP}_{\btheta}(x_{j - 1}, x_{j - 2})$;
-				\item $\bpi_j = \mathrm{softmax}(\bh_j)$;
-				\item $p(x_j | x_{j - 1}, x_{j - 2}, \btheta) = \mathrm{Categorical}(\bpi_j)$.
+				\item $d = 2$
+				\item $x_j \in \{0, 255\}$
+				\item $\bh_j = \mathrm{MLP}_{\btheta}(x_{j - 1}, x_{j - 2})$
+				\item $\bpi_j = \mathrm{softmax}(\bh_j)$
+				\item $p(x_j | x_{j - 1}, x_{j - 2}, \btheta) = \Cat(\bpi_j)$
 			\end{itemize}
 			}
 		\end{minipage}%
@@ -447,15 +449,15 @@
 			   \centering
 			   \includegraphics[width=1.0\linewidth]{figs/sequential_MLP}
 			 \end{figure}
-			 Is it possible to model continuous distributions instead of discrete ones?
+			 Can we also model continuous-valued data, not just the discrete case?
 		\end{minipage}
 	\end{block}
-	 \myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{Image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
+	\myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{Image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
 \end{frame}
 %=======
 \begin{frame}{Autoregressive Models: LLM}
 	$$
-		p(x_j | \bx_{1:j - 1}, \btheta) = p(x_j | \bx_{j - d:j - 1}, \btheta), \quad d \text{ is the context window}.
+		p(x_j | \bx_{1:j - 1}, \btheta) = p(x_j | \bx_{j - d:j - 1}, \btheta),\quad d\ \text{is the context window}.
 	$$
 	 \begin{figure}
 		   \centering
@@ -465,15 +467,15 @@
 \end{frame}
 %=======
 \begin{frame}{Autoregressive Models for Images}
-	How can we model the distribution $\pi(\bx)$ over natural images?
+	How do we model the distribution $\pi(\bx)$ of natural images?
 	$$
-  		p(\bx | \btheta) = \prod_{j=1}^{\text{width} \times \text{height}} p(x_j|\bx_{1:j-1}, \btheta).
+  		p(\bx | \btheta) = \prod_{j=1}^{\text{width} \times \text{height}} p(x_j | \bx_{1:j-1}, \btheta)
 	$$
 	\begin{minipage}[t]{0.5\columnwidth}
 		\vspace{0.5cm}
 		\begin{itemize}
-			\item We must specify an ordering of image pixels. Raster scan order is the most straightforward choice.
-		    \item RGB channel dependencies can also be explicitly modeled.
+			\item A pixel ordering must be selected; the raster scan is a standard choice.
+		    \item RGB channel dependencies can be modeled explicitly as well.
 		\end{itemize}
 	\end{minipage}%
 	\begin{minipage}[t]{0.5\columnwidth}
@@ -495,19 +497,19 @@
 %=======
 \begin{frame}{Summary}
     \begin{itemize}
-    	\item We aim to approximate the data distribution for both density estimation and generation of new samples.
+    	\item Our target is to approximate the data distribution both for density estimation and for generation.
     	\vfill
-    	\item Divergence minimization provides a general framework to fit a model distribution to the real data distribution.
+    	\item The divergence minimization framework offers a principled way to learn distributions that match the data.
     	\vfill
-    	\item Minimizing the forward KL is equivalent to solving the MLE problem.
+    	\item Minimizing the forward KL divergence is equivalent to maximum likelihood estimation.
     	\vfill
-    	\item Autoregressive models decompose the joint distribution into a sequence of conditionals.
-    	 \vfill
-        \item Sampling from autoregressive models is straightforward, but inherently sequential.
+    	\item Autoregressive models decompose the joint distribution as a product of conditionals.
+    	\vfill
+        \item Autoregressive sampling is simple, but inherently sequential.
         \vfill
-        \item To evaluate the density, multiply all conditionals $p(x_j | \bx_{1:j - 1}, \btheta)$.
+        \item Joint density evaluation multiplies all conditional probabilities $p(x_j | \bx_{1:j - 1}, \btheta)$.
         \vfill
-     	\item ImageGPT applies the transformer to raster-ordered image pixels.
+     	\item ImageGPT applies a transformer architecture to sequences of raster-ordered image pixels.
     \end{itemize}
 \end{frame}
 

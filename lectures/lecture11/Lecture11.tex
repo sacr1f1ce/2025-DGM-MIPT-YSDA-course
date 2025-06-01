@@ -9,49 +9,48 @@
 \begin{document}
 %--------------------------------------------------------------------------------
 \begin{frame}[noframenumbering,plain]
-%\thispagestyle{empty}
 \titlepage
 \end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
-	\begin{block}{DDPM objective}
+\begin{frame}{Recap of Previous Lecture}
+	\begin{block}{DDPM Objective}
 		\vspace{-0.5cm}
 		\[
 			\bbE_{\pi(\bx_0)} \bbE_{t \sim U\{1, T\}}\bbE_{q(\bx_t | \bx_0)} \left[ {\color{olive}\frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t}} \Bigl\|  \bs_{\btheta, t} (\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \Bigr\|_2^2  \right]
 		\]
-		In practice, {\color{olive}this coefficient} is typically omitted.
+		In practice, {\color{olive}this coefficient} is usually omitted.
 	\end{block}
-	\begin{block}{NCSN objective}
+	\begin{block}{NCSN Objective}
 		\vspace{-0.3cm}
 		\[
 			\bbE_{\pi(\bx_0)} \bbE_{t \sim U\{1, T\}} \bbE_{q(\bx_t | \bx_0)}\bigl\| \bs_{\btheta, \sigma_t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \bigr\|^2_2 
 		\]
 		\vspace{-0.3cm}
 	\end{block}
-	\textbf{Note:} The objectives of DDPM and NCSN are almost identical; however, they differ in their sampling procedures:
+	\textbf{Note:} The objectives of DDPM and NCSN are almost identical; however, their sampling procedures differ:
 	\begin{itemize}
-		\item NCSN utilizes annealed Langevin dynamics;
+		\item NCSN utilizes annealed Langevin dynamics,
 		\item DDPM employs ancestral sampling.
 	\end{itemize}
 	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
-	\end{frame}
+\end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
-	\begin{block}{Unconditional generation}
+\begin{frame}{Recap of Previous Lecture}
+	\begin{block}{Unconditional Generation}
 		\vspace{-0.3cm}
 		\[
 			\bx_{t - 1} = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot {\color{teal} \nabla_{\bx_t} \log p(\bx_t | \btheta)} +  \sigma_t \cdot \bepsilon
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	\begin{block}{Conditional generation}
+	\begin{block}{Conditional Generation}
 		\vspace{-0.5cm}
 		\[
 			\bx_{t - 1} =  \frac{1}{\sqrt{1 - \beta_t}}\cdot \bx_t +  \frac{\beta_t}{\sqrt{1 - \beta_t}}  \cdot  \nabla_{\bx_t} \log p(\bx_t | {\color{olive}\by}, \btheta) +  \sigma_t \cdot \bepsilon
 		\]
 		\vspace{-0.5cm}
 	\end{block}
-	\begin{block}{Conditional distribution}
+	\begin{block}{Conditional Distribution}
 		\vspace{-0.5cm}
 		\begin{align*}
 			{\color{olive}\nabla_{\bx_t} \log p(\bx_t | \by, \btheta)} &= \nabla_{\bx_t} \log p(\by | \bx_t) + {\color{violet}\nabla_{\bx_t} \log p(\bx_t | \btheta)}\\
@@ -59,19 +58,19 @@
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
-	Here, $p(\by | \bx_t)$ denotes the classifier operating on noisy samples (this must be trained separately).
+	Here, $p(\by | \bx_t)$ denotes a classifier operating on noisy samples (which must be trained separately).
 	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 \end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
-	\begin{block}{Classifier-corrected noise prediction}
+\begin{frame}{Recap of Previous Lecture}
+	\begin{block}{Classifier-Corrected Noise Prediction}
 		\vspace{-0.3cm}
 		\[
 			\bepsilon_{\btheta, t}(\bx_t, \by) = \bepsilon_{\btheta, t}(\bx_t) - \sqrt{1 - \bar{\alpha}_t} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
 		\]
 		\vspace{-0.7cm}
 	\end{block}
-	\begin{block}{Guidance scale}
+	\begin{block}{Guidance Scale}
 		\vspace{-0.3cm}
 		\[
 			{\color{olive}\bepsilon_{\btheta, t}(\bx_t, \by)} = \bepsilon_{\btheta, t}(\bx_t) - {\color{teal}\gamma} \cdot \sqrt{1 - \bar{\alpha}_t} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
@@ -80,21 +79,21 @@
 	\end{block}
 	\begin{itemize}
 		\item Train DDPM as usual.
-		\item Separately train an additional classifier $p(\by | \bx_t)$ on noisy samples $\bx_t$.
+		\item Train a separate classifier $p(\by | \bx_t)$ on noisy samples $\bx_t$.
 	\end{itemize}
-	\begin{block}{Guided sampling}
+	\begin{block}{Guided Sampling}
 		\vspace{-0.3cm}
 		\[
 			\bx_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot  {\color{olive}\bepsilon_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
 		\]
 		\vspace{-0.3cm}
 	\end{block}
-	\textbf{Note:} The guidance scale $\gamma$ serves to sharpen the distribution $p(\by | \bx_t)$.
+	\textbf{Note:} The guidance scale $\gamma$ sharpens the distribution $p(\by | \bx_t)$.
 	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 \end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
-	The previous method requires training an additional classifier model $p(\by | \bx_t)$ on noisy data. Let us try to avoid this requirement.
+\begin{frame}{Recap of Previous Lecture}
+	The previous method requires an additional classifier $p(\by | \bx_t)$ trained on noisy data. Let's try to avoid this requirement.
 	\[
 		{\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)} =  \nabla_{\bx_t} \log p(\bx_t| \by, \btheta) -\nabla_{\bx_t} \log  p(\bx_t | \btheta)
 	\]
@@ -104,7 +103,7 @@
 		=  (1 - \gamma) \cdot  \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot  \nabla_{\bx_t} \log p(\bx_t| \by, \btheta)
 	\end{multline*}
 	\vspace{-0.4cm}
-	\begin{block}{Classifier-free-corrected noise prediction}
+	\begin{block}{Classifier-Free-Corrected Noise Prediction}
 		\vspace{-0.3cm}
 		\[
 			\hat{\bepsilon}_{\btheta, t}(\bx_t, \by) = \gamma \cdot \bepsilon_{\btheta, t}(\bx_t, \by) + (1 - \gamma) \cdot \bepsilon_{\btheta, t}(\bx_t)
@@ -112,43 +111,44 @@
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{itemize}
-		\item Train a single model $\bepsilon_{\btheta, t}(\bx_t, \by)$ on \textbf{supervised} data, alternating between real conditioning $\by$ and empty conditioning $\by = \emptyset$.
-		\item Apply the model twice during inference.
+		\item Train one model $\bepsilon_{\btheta, t}(\bx_t, \by)$ on \textbf{supervised} data, alternating between true conditioning $\by$ and empty conditioning $\by = \emptyset$.
+		\item During inference, apply this model twice.
 	\end{itemize}
+	
 	\myfootnotewithlink{https://arxiv.org/abs/2207.12598}{Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022}
 \end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
-	\begin{block}{Continuous-in-time dynamics (Neural ODE)}
+\begin{frame}{Recap of Previous Lecture}
+	\begin{block}{Continuous-Time Dynamics (Neural ODE)}
 		\vspace{-0.5cm}
 		\begin{align*}
-			\frac{d \bx(t)}{dt} &= \bff_{\btheta}(\bx(t), t); \quad \text{with initial condition }\bx(t_0) = \bx_0. \\
-			\bx(t_1) &= \int^{t_1}_{t_0} \bff_{\btheta}(\bx(t), t) d t  + \bx_0 \approx {\color{teal}\text{ODESolve}_f(\bx_0, \btheta, t_0, t_1)}.
+			\frac{d \bx(t)}{dt} &= \bff_{\btheta}(\bx(t), t);\quad \text{where } \bx(t_0) = \bx_0. \\
+			\bx(t_1) &= \int^{t_1}_{t_0} \bff_{\btheta}(\bx(t), t) d t  + \bx_0 \approx {\color{teal}\texttt{ODESolve}_f(\bx_0, \btheta, t_0, t_1)}.
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
 	Here, $\bff_{\btheta}: \bbR^m \times [t_0, t_1] \rightarrow \bbR^m$ is a vector field.
-	\begin{block}{Euler update step (ODESolve)}
+	\begin{block}{Euler Update Step (ODESolve)}
 		\vspace{-0.3cm}
 		\[
   			\bx(t + \Delta t) = \bx(t) + \Delta t \cdot \bff_{\btheta}(\bx(t), t)
 		\]
 	\end{block}
 	\begin{itemize}
-		\item The Euler method is the simplest version of ODESolve, but it is unstable in practice.
-		\item More advanced numerical methods (e.g., Runge-Kutta methods) can be used instead of Euler.
+		\item The Euler method is the simplest version of \texttt{ODESolve}, but it's unstable in practice.
+		\item More advanced numerical methods (such as Runge-Kutta) are often used instead.
 	\end{itemize}
 	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
+\begin{frame}{Recap of Previous Lecture}
 	\vspace{-0.3cm}
 	\[
- 		\frac{d \bx(t)}{dt} = \bff_{\btheta}(\bx(t), t); \quad \text{with initial condition }\bx(t_0) = \bx_0
+ 		\frac{d \bx(t)}{dt} = \bff_{\btheta}(\bx(t), t);\quad \bx(t_0) = \bx_0
 	\]
 	\vspace{-0.3cm}
 	\begin{itemize}
-		\item Suppose $\bx(0)$ is a random variable with density~$p_0(\bx)$. Then $\bx(t)$ is a random variable with density~$p_t(\bx)$.
+		\item Suppose $\bx(0)$ is a random variable with density~$p_0(\bx)$. Then, $\bx(t)$ is a random variable with density~$p_t(\bx)$.
 		\item $p_t(\bx) = p(\bx, t)$ describes the \textbf{probability path} between $p_0(\bx)$ and $p_1(\bx)$.
 	\end{itemize}
 	\vspace{-0.3cm}
@@ -159,18 +159,18 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018}  
 \end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
+\begin{frame}{Recap of Previous Lecture}
 	\begin{block}{Theorem (Picard)}
 		If $\bff$ is uniformly Lipschitz continuous in $\bx$ and continuous in $t$, then the ODE has a \textbf{unique} solution.
 	\end{block}
-	This means we can \textbf{uniquely invert} our ODE. 
+	This means the ODE can be \textbf{uniquely inverted}:
 	\begin{align*}
 		\bx(1) &= \bx(0) + \int_{0}^{1} \bff_{\btheta}(\bx(t), t) dt \\
 		\bx(0) &= \bx(1) + \int_{1}^{0} \bff_{\btheta}(\bx(t), t) dt
 	\end{align*}
-	\textbf{Note:} Unlike discrete-time NF, $\bff$ does not need to be invertible (uniqueness assures bijectivity).
+	\textbf{Note:} Unlike discrete-time NF, $\bff$ need not be invertible (uniqueness ensures bijectivity).
 	
-	How can we compute $p_t(\bx)$ at any time $t$?
+	How can we compute $p_t(\bx)$ for any $t$?
 	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
@@ -178,68 +178,68 @@
 	\tableofcontents
 \end{frame}
 %=======
-\section{Continuity equation for NF log-likelihood}
+\section{Continuity Equation for NF Log-Likelihood}
 %=======
-\begin{frame}{Continuous-in-time NF}
-	\begin{block}{Theorem (continuity equation)}
+\begin{frame}{Continuous-Time NF}
+	\begin{block}{Theorem (Continuity Equation)}
 		If $\bff$ is uniformly Lipschitz continuous in $\bx$ and continuous in $t$, then
 		\[
-			\frac{d \log p_t(\bx(t))}{d t} = - \text{tr} \left( \frac{\partial \bff(\bx(t), t)}{\partial \bx(t)} \right)
+			\frac{d \log p_t(\bx(t))}{d t} = - \tr \left( \frac{\partial \bff(\bx(t), t)}{\partial \bx(t)} \right)
 		\]
 		\vspace{-0.3cm}
 	\end{block}
-	This result states that, given $\bx_0 = \bx(0)$, the solution to the continuity equation provides the density $p_1(\bx(1))$.
-	\begin{block}{Solution of continuity equation}
+	This result states: given $\bx_0 = \bx(0)$, the solution to the continuity equation gives the density $p_1(\bx(1))$.
+	\begin{block}{Solution of the Continuity Equation}
 		\vspace{-0.3cm}
 		\[
-			\log p_1(\bx(1)) = \log p_0(\bx(0)) - {\color{teal}\int_{0}^{1} \text{tr}  \left( \frac{\partial \bff(\bx(t), t)}{\partial \bx(t)} \right) dt}.
+			\log p_1(\bx(1)) = \log p_0(\bx(0)) - {\color{teal}\int_{0}^{1} \tr  \left( \frac{\partial \bff(\bx(t), t)}{\partial \bx(t)} \right) dt}.
 		\]
 	\end{block}
 	\begin{itemize}
-		\item This solution gives the density along the trajectory (not the total probability path).
+		\item This provides the density along the trajectory (not the total probability path).
 		\item However, {\color{teal}the latter term} is difficult to estimate efficiently.
-	 \end{itemize}
+	\end{itemize}
 	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
-\section{SDE basics}
+\section{SDE Basics}
 %=======
-\begin{frame}{Stochastic differential equation (SDE)}
-	Let us define a stochastic process $\bx(t)$ with initial condition $\bx(0) \sim p_0(\bx) = \pi(\bx)$:
+\begin{frame}{Stochastic Differential Equation (SDE)}
+	Let's define a stochastic process $\bx(t)$ with initial condition $\bx(0) \sim p_0(\bx) = \pi(\bx)$:
 	\[
-		d\bx = \mathbf{f}(\bx, t) dt + g(t) d \bw
+		d\bx = \bff(\bx, t) dt + g(t) d \bw
 	\]
 	\vspace{-0.5cm}
 	\begin{itemize}
-		 \item $\mathbf{f}(\bx, t): \bbR^m \times [0, 1] \rightarrow \bbR^m$ is the \textbf{drift} function of $\bx(t)$.
-		 \item $g(t): \bbR \rightarrow \bbR$ is the \textbf{diffusion} function of $\bx(t)$.
-		 \item $\bw(t)$ is the standard Wiener process (Brownian motion), characterized by:
+		 \item $\bff(\bx, t): \bbR^m \times [0, 1] \rightarrow \bbR^m$ is the \textbf{drift} function.
+		 \item $g(t): \bbR \rightarrow \bbR$ is the \textbf{diffusion} function.
+		 \item $\bw(t)$ is the standard Wiener process (Brownian motion), defined by:
 		 \begin{enumerate}
 		 	\item $\bw(0) = 0$ (almost surely);
 		 	\item $\bw(t)$ has independent increments;
 		 	\item $\bw(t)$ trajectories are continuous;
-			 \item $\bw(t) - \bw(s) \sim \cN(0, (t - s) \bI)$ for $t > s$;
+			\item $\bw(t) - \bw(s) \sim \cN(0, (t-s) \bI)$ for $t>s$;
 		 \end{enumerate}
-		 \item $d \bw = \bw(t + dt) - \bw(t) = \cN(0, \bI \cdot dt ) = \bepsilon \cdot \sqrt{dt}$, with $\bepsilon \sim \cN(0, \bI)$.
-		 \item If $g(t) = 0$, we recover the standard ODE.
+		 \item $d\bw = \bw(t+dt) - \bw(t) = \cN(0, \bI \cdot dt ) = \bepsilon \cdot \sqrt{dt}$, where $\bepsilon \sim \cN(0, \bI)$.
+		 \item If $g(t)=0$, we recover the standard ODE.
 	\end{itemize}
 \end{frame}
 %=======
-\begin{frame}{Stochastic differential equation (SDE)}
+\begin{frame}{Stochastic Differential Equation (SDE)}
 	\[
-		d\bx = \mathbf{f}(\bx, t) dt + g(t) d \bw
+		d\bx = \bff(\bx, t) dt + g(t) d \bw
 	\]
 	\vspace{-0.3cm}
 	\begin{itemize}
-		\item Unlike ODEs, the initial condition $\bx(0)$ does not uniquely determine the trajectory of the process.
+		\item Unlike ODEs, the initial condition $\bx(0)$ doesn't uniquely determine the trajectory.
 		\item There are two sources of randomness: the initial distribution $p_0(\bx)$ and the Wiener process $\bw(t)$.
 	\end{itemize}
-	\begin{block}{Discretization of SDE (Euler method) - SDESolve}
+	\begin{block}{Discretizing the SDE (Euler Method) – \texttt{SDESolve}}
 		\vspace{-0.3cm}
 		\[
 			\bx(t + dt) = \bx(t) + \bff(\bx(t), t) \cdot dt + g(t) \cdot \bepsilon \cdot \sqrt{dt}
 		\]
-		If $dt = 1$, then
+		If $dt=1$, then
 		\vspace{-0.3cm}
 		\[
 			\bx_{t + 1} = \bx_t + \bff(\bx_t, t) + g(t) \cdot \bepsilon
@@ -247,73 +247,73 @@
 		\vspace{-0.7cm}
 	\end{block}
 	\begin{itemize}
-		\item At each time $t$, the process has density $p_t(\bx) = p(\bx, t)$.
-		\item $p: \bbR^m \times [0, 1] \rightarrow \bbR_+$ defines a \textbf{probability path} from $p_0(\bx)$ to $p_1(\bx)$.
-		\item How do we obtain the probability path $p_t(\bx)$ for $\bx(t)$?
+		\item At any time $t$, the process has density $p_t(\bx) = p(\bx, t)$.
+		\item $p: \bbR^m \times [0,1] \rightarrow \bbR_+$ specifies a \textbf{probability path} from $p_0(\bx)$ to $p_1(\bx)$.
+		\item How can we obtain the probability path $p_t(\bx)$ for $\bx(t)$?
 	\end{itemize}
 \end{frame}
 %=======
-\begin{frame}{Stochastic differential equation (SDE)}
+\begin{frame}{Stochastic Differential Equation (SDE)}
 	\vspace{-0.4cm}
 	\[
-		d\bx = \mathbf{f}(\bx, t) dt + g(t) d \bw, \quad d \bw = \bepsilon \cdot \sqrt{dt}, \quad \bepsilon \sim \cN(0, \bI).
+		d\bx = \bff(\bx, t) dt + g(t) d \bw,\quad d \bw = \bepsilon \cdot \sqrt{dt},\quad \bepsilon \sim \cN(0, \bI).
 	\]
 	\vspace{-0.4cm}
- 	\begin{block}{Theorem (Kolmogorov-Fokker-Planck)}
- 		The evolution of the distribution $p_t(\bx)$ is governed by:
- 		\vspace{-0.2cm}
- 		\[
- 			\frac{\partial p_t(\bx)}{\partial t} = - \text{div}\left(\bff(\bx, t) p_t(\bx)\right) + \frac{1}{2}g^2(t) \Delta_{\bx}p_t(\bx)
- 		\]
- 		Here
- 		\[
- 			\text{div} (\bv) = \sum_{i=1}^m \frac{\partial v_i(\bx)}{\partial x_i} = \text{tr}\left( \frac{\partial \bv(\bx)}{\partial \bx}  \right)
- 		\]
- 		\[
- 			\Delta_{\bx}p_t(\bx) = \sum_{i=1}^m \frac{\partial^2 p_t(\bx)}{\partial x_i^2} = \text{tr}\left( \frac{\partial^2 p_t(\bx)}{\partial \bx^2}  \right)
- 		\]
- 		\[
- 			\frac{\partial p_t(\bx)}{\partial t} = \text{tr}\left(- \frac{\partial}{\partial \bx} \bigl[ \mathbf{f}(\bx, t) p_t(\bx)\bigr] + \frac{1}{2} g^2(t) \frac{\partial^2 p_t(\bx)}{\partial \bx^2} \right)
- 		\]
- 	\end{block}
+	\begin{block}{Theorem (Kolmogorov-Fokker-Planck)}
+		The evolution of $p_t(\bx)$ is governed by
+		\vspace{-0.2cm}
+		\[
+			\frac{\partial p_t(\bx)}{\partial t} = - \diver\left(\bff(\bx, t) p_t(\bx)\right) + \frac{1}{2}g^2(t) \Delta_{\bx}p_t(\bx)
+		\]
+		Here,
+		\[
+			\diver (\bv) = \sum_{i=1}^m \frac{\partial v_i(\bx)}{\partial x_i} = \tr\left( \frac{\partial \bv(\bx)}{\partial \bx}  \right)
+		\]
+		\[
+			\Delta_{\bx}p_t(\bx) = \sum_{i=1}^m \frac{\partial^2 p_t(\bx)}{\partial x_i^2} = \tr\left( \frac{\partial^2 p_t(\bx)}{\partial \bx^2}  \right)
+		\]
+		\[
+			\frac{\partial p_t(\bx)}{\partial t} = \tr\left( - \frac{\partial}{\partial \bx} \bigl[ \bff(\bx, t) p_t(\bx)\bigr] + \frac{1}{2} g^2(t) \frac{\partial^2 p_t(\bx)}{\partial \bx^2} \right)
+		\]
+	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Stochastic differential equation (SDE)}
- 	\begin{block}{Theorem (Kolmogorov-Fokker-Planck)}
- 		\vspace{-0.2cm}
- 		\[
- 			\frac{\partial p_t(\bx)}{\partial t} = \text{tr}\left(- \frac{\partial}{\partial \bx} \bigl[ \mathbf{f}(\bx, t) p_t(\bx)\bigr] + \frac{1}{2} g^2(t) \frac{\partial^2 p_t(\bx)}{\partial \bx^2} \right)
- 		\]
- 		\vspace{-0.2cm}
- 	\end{block}
- 	 \begin{itemize}
- 	 	\item The KFP theorem uniquely determines the density $p_t(\bx)$.
- 		 \item This generalizes the continuity equation previously used for continuous-time NF:
- 	 	\[
- 	 		\frac{d \log p_t(\bx(t))}{d t} = - \text{tr} \left( \frac{\partial \bff(\bx, t)}{\partial \bx} \right).
- 	 	\]
- 	 \end{itemize}
+\begin{frame}{Stochastic Differential Equation (SDE)}
+	\begin{block}{Theorem (Kolmogorov-Fokker-Planck)}
+		\vspace{-0.2cm}
+		\[
+			\frac{\partial p_t(\bx)}{\partial t} = \tr\left( - \frac{\partial}{\partial \bx} \bigl[ \bff(\bx, t) p_t(\bx)\bigr] + \frac{1}{2} g^2(t) \frac{\partial^2 p_t(\bx)}{\partial \bx^2}\right)
+		\]
+		\vspace{-0.2cm}
+	\end{block}
+	\begin{itemize}
+		\item The KFP theorem uniquely determines $p_t(\bx)$.
+		\item This generalizes the continuity equation for continuous-time NF:
+		\[
+			\frac{d \log p_t(\bx(t))}{d t} = - \tr \left( \frac{\partial \bff(\bx, t)}{\partial \bx} \right).
+		\]
+	\end{itemize}
 	\vspace{-0.3cm}
- 	\begin{block}{Langevin SDE (special case)}
- 		\vspace{-0.6cm}
- 		\begin{align*}
- 			d\bx &= {\color{violet}\mathbf{f}(\bx, t)} dt + {\color{teal}g(t)} d \bw \\
- 			d \bx &= {\color{violet}\frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx)} d t + {\color{teal} 1 } \cdot d \bw
- 		\end{align*}
- 		\vspace{-0.4cm}
- 	\end{block}
- 	Let us apply the KFP theorem to this SDE.
+	\begin{block}{Langevin SDE (Special Case)}
+		\vspace{-0.6cm}
+		\begin{align*}
+			d\bx &= {\color{violet}\bff(\bx, t)} dt + {\color{teal}g(t)} d \bw \\
+			d \bx &= {\color{violet}\frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx)} d t + {\color{teal} 1 } \cdot d \bw
+		\end{align*}
+		\vspace{-0.4cm}
+	\end{block}
+	Let's now apply the KFP theorem to this SDE.
 \end{frame}
 %=======
-\begin{frame}{Langevin SDE (special case)}
+\begin{frame}{Langevin SDE (Special Case)}
 	\[
 		d \bx = \frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx) d t + 1 \cdot d \bw
 	\]
 	\begin{multline*}
-		\frac{\partial p_t(\bx)}{\partial t} =  \text{tr} \left(- \frac{\partial}{\partial \bx}\left[ {\color{olive}p_t(\bx) \frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx)} \right]  + \frac{1}{2} \frac{\partial^2 p_t(\bx)}{\partial \bx^2} \right) = \\
-		= \text{tr} \left(- \frac{\partial}{\partial \bx}\left[ {\color{olive}\frac{1}{2} \frac{\partial}{\partial \bx} p_t(\bx) } \right]  + \frac{1}{2} \frac{\partial^2 p_t(\bx)}{\partial \bx^2} \right) = 0
+		\frac{\partial p_t(\bx)}{\partial t} =  \tr \left(- \frac{\partial}{\partial \bx}\left[ {\color{olive}p_t(\bx) \frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx)} \right]  + \frac{1}{2} \frac{\partial^2 p_t(\bx)}{\partial \bx^2} \right) = \\
+		= \tr \left(- \frac{\partial}{\partial \bx}\left[ {\color{olive}\frac{1}{2} \frac{\partial}{\partial \bx} p_t(\bx) } \right]  + \frac{1}{2} \frac{\partial^2 p_t(\bx)}{\partial \bx^2} \right) = 0
 	\end{multline*}
-	The density $p_t(\bx) = \text{const}(t)$! \\ If $\bx(0) \sim p_0(\bx)$, then $\bx(t) \sim p_0(\bx)$.
+	The density $p_t(\bx)$ is constant in $t$; i.e., if $\bx(0) \sim p_0(\bx)$, then $\bx(t) \sim p_0(\bx)$.
 	\begin{block}{Discretized Langevin SDE}
 		\vspace{-0.3cm}
 		\[
@@ -321,7 +321,7 @@
 		\]
 		\vspace{-0.4cm}
 	\end{block}
-	\begin{block}{Langevin dynamic}
+	\begin{block}{Langevin Dynamic}
 		\vspace{-0.3cm}
 		\[
 			\bx_{t + 1} = \bx_t + \frac{\eta}{2} \cdot \nabla_{\bx} \log p(\bx | \btheta) + \sqrt{\eta} \cdot \bepsilon, \quad \eta \approx dt.
@@ -330,41 +330,41 @@
 	\end{block}
 \end{frame}
 %=======
-\section{Probability flow ODE}
+\section{Probability Flow ODE}
 %=======
-\begin{frame}{Probability flow ODE}
-	\begin{block}{ODE and continuity equation}
+\begin{frame}{Probability Flow ODE}
+	\begin{block}{ODE and Continuity Equation}
 		\vspace{-0.3cm}
 		\[
-			d\bx = \mathbf{f}(\bx, t) dt
+			d\bx = \bff(\bx, t) dt
 		\]
 		\[
-			\frac{d \log p_t(\bx(t))}{d t} = - \text{tr} \left( \frac{\partial \bff_{\btheta}(\bx, t)}{\partial \bx} \right) 
+			\frac{d \log p_t(\bx(t))}{d t} = - \tr \left( \frac{\partial \bff_{\btheta}(\bx, t)}{\partial \bx} \right) 
 			\quad  \Leftrightarrow  \quad 
- 			\frac{\partial p_t(\bx)}{\partial t} = - \text{div}\left(\bff(\bx, t) p_t(\bx)\right)
+ 			\frac{\partial p_t(\bx)}{\partial t} = - \diver(\bff(\bx, t) p_t(\bx))
  		\]
- 		The only source of stochasticity is the distribution $p_0(\bx)$.
+		The only source of randomness is the initial distribution $p_0(\bx)$.
 	\end{block}
-	\begin{block}{SDE and KFP equation}
+	\begin{block}{SDE and KFP Equation}
 		\vspace{-0.3cm}
 		\[
-			d\bx = \mathbf{f}(\bx, t) dt + g(t) d \bw
+			d\bx = \bff(\bx, t) dt + g(t) d \bw
 		\]
  		\[
- 			\frac{\partial p_t(\bx)}{\partial t} = - \text{div}\left(\bff(\bx, t) p_t(\bx)\right) + \frac{1}{2}g^2(t) \Delta_{\bx}p_t(\bx)
+ 			\frac{\partial p_t(\bx)}{\partial t} = - \diver(\bff(\bx, t) p_t(\bx)) + \frac{1}{2}g^2(t) \Delta_{\bx}p_t(\bx)
  		\]
- 		We now have two sources of randomness: the initial distribution $p_0(\bx)$ and the Wiener process $\bw(t)$.
+		Now there are two sources of randomness: the initial distribution $p_0(\bx)$ and the Wiener process $\bw(t)$.
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
 \end{frame}
 %=======
-\begin{frame}{Probability flow ODE}
+\begin{frame}{Probability Flow ODE}
 	\begin{block}{Theorem}
-		Assume the SDE $d\bx = \mathbf{f}(\bx, t) dt + g(t) d \bw$ induces the probability path~$p_t(\bx)$.
-		Then there exists an ODE with the identical probability path $p_t(\bx)$, given by:
+		Suppose the SDE $d\bx = \bff(\bx, t) dt + g(t) d \bw$ induces the probability path $p_t(\bx)$.
+		Then, there exists an ODE with the same probability path $p_t(\bx)$, given by
 		\vspace{-0.3cm}
 		\[
-			d\bx = \left(\mathbf{f}(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt
+			d\bx = \left(\bff(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt
 		\]
 		\vspace{-0.7cm}
 	\end{block}
@@ -374,13 +374,13 @@
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
 \end{frame}
 %=======
-\begin{frame}{Probability flow ODE}
+\begin{frame}{Probability Flow ODE}
 	\begin{block}{Theorem}
-		Assume the SDE $d\bx = \mathbf{f}(\bx, t) dt + g(t) d \bw$ induces the probability path~$p_t(\bx)$.
-		Then there exists an ODE with the identical probability path $p_t(\bx)$, given by:
+		Suppose the SDE $d\bx = \bff(\bx, t) dt + g(t) d \bw$ induces the probability path $p_t(\bx)$.
+		Then, there exists an ODE with the same probability path $p_t(\bx)$, given by
 		\vspace{-0.3cm}
 		\[
-			d\bx = \left(\mathbf{f}(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt
+			d\bx = \left(\bff(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt
 		\]
 		\vspace{-0.7cm}
 	\end{block}
@@ -388,22 +388,22 @@
  		\vspace{-0.7cm}
  		{\small
  		\begin{multline*}
- 			\frac{\partial p_t(\bx)}{\partial t} = \text{tr}\left(- \frac{\partial}{\partial \bx} \bigl[ \mathbf{f}(\bx, t) p_t(\bx)\bigr] + \frac{1}{2} g^2(t) \frac{\partial^2 p_t(\bx)}{\partial \bx^2} \right) = \\
- 			=  \text{tr}\left(- \frac{\partial}{\partial \bx} \left[ \mathbf{f}(\bx, t) p_t(\bx) - \frac{1}{2} g^2(t) {\color{violet}\frac{\partial p_t(\bx)}{\partial \bx}} \right]  \right) = \\
-			 =  \text{tr}\left(- \frac{\partial}{\partial \bx} \left[ \mathbf{f}(\bx, t) p_t(\bx) - \frac{1}{2} g^2(t) {\color{violet}p_t(\bx) \frac{\partial}{\partial \bx} \log p_t(\bx)} \right]  \right)= \\
-		  =  \text{tr}\left(- \frac{\partial}{\partial \bx} \left[ \left( {\color{teal}\mathbf{f}(\bx, t) - \frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx)}\right) p_t(\bx) \right]  \right)
+ 			\frac{\partial p_t(\bx)}{\partial t} = \tr\left( - \frac{\partial}{\partial \bx} \bigl[ \bff(\bx, t) p_t(\bx)\bigr] + \frac{1}{2} g^2(t) \frac{\partial^2 p_t(\bx)}{\partial \bx^2} \right) = \\
+ 			=  \tr\left( - \frac{\partial}{\partial \bx} \left[ \bff(\bx, t) p_t(\bx) - \frac{1}{2} g^2(t) {\color{violet}\frac{\partial p_t(\bx)}{\partial \bx}} \right]  \right) = \\
+			 =  \tr\left( - \frac{\partial}{\partial \bx} \left[ \bff(\bx, t) p_t(\bx) - \frac{1}{2} g^2(t) {\color{violet}p_t(\bx) \frac{\partial}{\partial \bx} \log p_t(\bx)} \right]  \right)= \\
+		  =  \tr\left( - \frac{\partial}{\partial \bx} \left[ \left( {\color{teal}\bff(\bx, t) - \frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx)}\right) p_t(\bx) \right]  \right)
  		\end{multline*}
  		}
  	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
 \end{frame}
 %=======
-\begin{frame}{Probability flow ODE}
-	\begin{block}{Proof (continued)}
+\begin{frame}{Probability Flow ODE}
+	\begin{block}{Proof (Continued)}
  		\vspace{-0.7cm}
  		\begin{multline*}
- 			\frac{\partial p_t(\bx)}{\partial t} =  \text{tr}\left(- \frac{\partial}{\partial \bx} \left[ \left( {\color{teal}\mathbf{f}(\bx, t) - \frac{1}{2} g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)}\right) p_t(\bx) \right]  \right) =\\
- 			  =  \text{tr}\left(- \frac{\partial}{\partial \bx} \left[ {\color{teal}\tilde{\mathbf{f}}(\bx, t)} p_t(\bx) \right]  \right) = -  \text{div}\left(\tilde{\mathbf{f}}(\bx, t) p_t(\bx)\right) 
+ 			\frac{\partial p_t(\bx)}{\partial t} =  \tr\left( - \frac{\partial}{\partial \bx} \left[ \left( {\color{teal}\bff(\bx, t) - \frac{1}{2} g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)}\right) p_t(\bx) \right]  \right) =\\
+ 			  =  \tr\left( - \frac{\partial}{\partial \bx} \left[ {\color{teal}\tilde{\bff}(\bx, t)} p_t(\bx) \right]  \right) = -  \diver\left(\tilde{\bff}(\bx, t) p_t(\bx)\right) 
  		\end{multline*}
 		\[
 			\tilde{\bff}(\bx, t) = \bff(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx); \quad \tilde{g}(t) = 0
@@ -412,22 +412,22 @@
 	 		d \bx = \tilde{\bff}(\bx, t) dt + 0 \cdot d \bw = \left(\bff(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt
 	 	\]
 		\[
-			\frac{\partial p_t(\bx)}{\partial t} = - \text{div}\left(\tilde{\mathbf{f}}(\bx, t) p_t(\bx)\right) + \frac{1}{2}\tilde{g}^2(t) \Delta_{\bx}p_t(\bx)
+			\frac{\partial p_t(\bx)}{\partial t} = - \diver(\tilde{\bff}(\bx, t) p_t(\bx)) + \frac{1}{2}\tilde{g}^2(t) \Delta_{\bx}p_t(\bx)
 		\]
  	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
 \end{frame}
 %=======
-\begin{frame}{Probability flow ODE}
+\begin{frame}{Probability Flow ODE}
 	\vspace{-0.5cm}
 	\begin{align*}
-		d\bx &= \mathbf{f}(\bx, t) dt + g(t) d \bw - \text{SDE} \\
-		d\bx &= \left(\mathbf{f}(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt  - \text{probability flow ODE}
+		d\bx &= \bff(\bx, t) dt + g(t) d \bw \;\; - \text{SDE} \\
+		d\bx &= \left(\bff(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt  \;\; - \text{Probability Flow ODE}
 	\end{align*}
 	\vspace{-0.3cm}
 	\begin{itemize}
 		\item The term $\bs(\bx, t) = \frac{\partial}{\partial \bx} \log p_t(\bx)$ is the score function in continuous time.
-		\item The ODE has more stable trajectories.
+		\item The ODE produces more stable trajectories.
 	\end{itemize}
 	\begin{figure}
 		\includegraphics[width=0.75\linewidth]{figs/probability_flow}
@@ -440,50 +440,50 @@
 \begin{frame}{Reverse SDE}
 	\vspace{-0.3cm}
 	\[
-		d\bx = \mathbf{f}(\bx, t) dt, \quad \bx(t + dt) = \bx(t) + \mathbf{f}(\bx, t) dt
+		d\bx = \bff(\bx, t) dt,\qquad \bx(t + dt) = \bx(t) + \bff(\bx, t) dt
 	\]
-	Here $dt$ may be $>0$ or $<0$. 
+	Here $dt$ can be $>0$ or $<0$.
 	\begin{block}{Reverse ODE}
 		Let $\tau = 1 - t$ ($d\tau = -dt$).
 		\vspace{-0.3cm}
 		\[
-			d\bx = - \bff(\bx, 1 - \tau) d \tau
+			d\bx = - \bff(\bx, 1 - \tau) d\tau
 		\]
 	\end{block}
 	\vspace{-0.5cm}
 	\begin{itemize}
-		\item How do we reverse the SDE $d\bx = \mathbf{f}(\bx, t) dt + g(t) d \bw$? 
+		\item How do we reverse the SDE $d\bx = \bff(\bx, t) dt + g(t) d \bw$? 
 		\item The Wiener process introduces randomness that must be reversed.
 	\end{itemize}
 	\vspace{-0.3cm}
 	\begin{block}{Theorem}
-		There exists a reverse SDE for $d\bx = \mathbf{f}(\bx, t) dt + g(t) d \bw$, given by:
+		There exists a reverse SDE for $d\bx = \bff(\bx, t) dt + g(t) d \bw$, given by:
 		\vspace{-0.3cm}
 		\[
-			d\bx = \left(\mathbf{f}(\bx, t) {\color{violet}- g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)}\right) dt + g(t) d \bw
+			d\bx = \left(\bff(\bx, t) {\color{violet}- g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)}\right) dt + g(t) d \bw
 		\]
-		\vspace{-0.5cm} \\
-		where $dt < 0$.
+		\vspace{-0.5cm}\\
+		where $dt<0$.
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
 \end{frame}
 %=======
 \begin{frame}{Reverse SDE}
 	\begin{block}{Theorem}
-		There exists a reverse SDE for $d\bx = \mathbf{f}(\bx, t) dt + g(t) d \bw$, given by:
+		There exists a reverse SDE for $d\bx = \bff(\bx, t) dt + g(t) d \bw$, given by:
 		\vspace{-0.3cm}
 		\[
-			d\bx = \left(\mathbf{f}(\bx, t) {\color{violet}- g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)}\right) dt + g(t) d \bw
+			d\bx = \left(\bff(\bx, t) {\color{violet}- g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)}\right) dt + g(t) d \bw
 		\]
-		\vspace{-0.5cm} \\
-		where $dt < 0$.
+		\vspace{-0.5cm}\\
+		where $dt<0$.
 	\end{block}
-	\textbf{Note:} Here we also observe the score function $\bs(\bx, t) = \frac{\partial}{\partial \bx} \log p_t(\bx)$.
-	\begin{block}{Sketch of the proof}
+	\textbf{Note:} Again, the score function appears: $\bs(\bx, t) = \frac{\partial}{\partial \bx} \log p_t(\bx)$.
+	\begin{block}{Proof Sketch}
 		\begin{itemize}
 			\item Convert the initial SDE to a probability flow ODE.
 			\item Reverse the probability flow ODE.
-			\item Convert the reversed probability flow ODE to a reverse SDE.
+			\item Convert the reversed probability flow ODE back to an SDE.
 		\end{itemize}
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/2011.13456}{Song Y., et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}
@@ -496,24 +496,24 @@
 			\vspace{-0.1cm}
 			{\footnotesize
 			\begin{align*}
-				d\bx &= \mathbf{f}(\bx, t) dt + g(t) d \bw \\
-				d\bx &= \left(\mathbf{f}(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt
+				d\bx &= \bff(\bx, t) dt + g(t) d \bw \\
+				d\bx &= \left(\bff(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt
 			\end{align*}
 			}
 			\item Reverse the probability flow ODE:
 			\vspace{-0.1cm}
 			{\footnotesize
 			\begin{align*}
-				d\bx &= \left(\mathbf{f}(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt \\
-				d\bx &= \left(- \mathbf{f}(\bx, 1 - \tau) + \frac{1}{2} g^2(1 - \tau) \frac{\partial}{\partial \bx} \log p_{1 - \tau}(\bx) \right) d \tau
+				d\bx &= \left(\bff(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt \\
+				d\bx &= \left(-\bff(\bx, 1 - \tau) + \frac{1}{2} g^2(1 - \tau) \frac{\partial}{\partial \bx} \log p_{1 - \tau}(\bx) \right) d\tau
 			\end{align*}
 			}
-			\item Convert the reversed probability flow ODE to a reverse SDE:
+			\item Convert the reversed probability flow ODE back to an SDE:
 			\vspace{-0.1cm}
 			{\footnotesize
 			\begin{align*}
-				d\bx &= \left(- \mathbf{f}(\bx, 1 - \tau) + \frac{1}{2} g^2(1 - \tau) \frac{\partial}{\partial \bx} \log p_{1 - \tau}(\bx) \right) d \tau \\
-				d\bx &= \left(- \mathbf{f}(\bx, 1 - \tau) + g^2(1 - \tau) \frac{\partial}{\partial \bx} \log p_{1 - \tau}(\bx) \right) d\tau + g(1 - \tau) d \bw
+				d\bx &= \left(-\bff(\bx, 1 - \tau) + \frac{1}{2} g^2(1 - \tau) \frac{\partial}{\partial \bx} \log p_{1 - \tau}(\bx) \right) d \tau \\
+				d\bx &= \left(-\bff(\bx, 1 - \tau) + g^2(1 - \tau) \frac{\partial}{\partial \bx} \log p_{1 - \tau}(\bx) \right) d \tau + g(1-\tau)d\bw
 			\end{align*}
 			}
 		\end{itemize}
@@ -523,21 +523,21 @@
 %=======
 \begin{frame}{Reverse SDE}
 	\begin{block}{Theorem}
-		There exists a reverse SDE for $d\bx = \mathbf{f}(\bx, t) dt + g(t) d \bw$, given by:
+		There exists a reverse SDE for $d\bx = \bff(\bx, t) dt + g(t) d \bw$, given by:
 		\vspace{-0.3cm}
 		\[
-			d\bx = \left(\mathbf{f}(\bx, t) {\color{violet}- g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)}\right) dt + g(t) d \bw
+			d\bx = \left(\bff(\bx, t) {\color{violet}- g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)}\right) dt + g(t) d \bw
 		\]
-		\vspace{-0.5cm} \\
-		where $dt < 0$.
+		\vspace{-0.5cm}\\
+		where $dt<0$.
 	\end{block}
-	\begin{block}{Proof (continued)}
+	\begin{block}{Proof (Continued)}
 		\vspace{-0.7cm}
 		\[
-			d\bx = \left(- \mathbf{f}(\bx, 1 - \tau) + g^2(1 - \tau) \frac{\partial}{\partial \bx} \log p_{1 - \tau}(\bx) \right) d \tau + g(1 - \tau) d \bw
+			d\bx = \left(-\bff(\bx, 1 - \tau) + g^2(1 - \tau) \frac{\partial}{\partial \bx} \log p_{1 - \tau}(\bx) \right)d\tau + g(1 - \tau) d \bw
 		\]
 		\[
-			d\bx = \left(\mathbf{f}(\bx, t) - g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)\right) dt + g(t) d \bw
+			d\bx = \left(\bff(\bx, t) - g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)\right)dt + g(t) d\bw
 		\]
 		Here $d\tau > 0$ and $dt < 0$.
 	\end{block}
@@ -547,13 +547,13 @@
 \begin{frame}{Reverse SDE}
 	\vspace{-0.5cm}
 	\begin{align*}
-		d\bx &= \mathbf{f}(\bx, t) dt + g(t) d \bw - \text{SDE} \\
-		d\bx &= \left(\mathbf{f}(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt - \text{probability flow ODE} \\
-		d\bx &= \left(\mathbf{f}(\bx, t) - g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)\right) dt + g(t) d \bw - \text{reverse SDE}
+		d\bx &= \bff(\bx, t) dt + g(t) d \bw \;\; - \text{SDE} \\
+		d\bx &= \left(\bff(\bx, t) -\frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt \;\; - \text{Probability Flow ODE} \\
+		d\bx &= \left(\bff(\bx, t) - g^2(t) \frac{\partial}{\partial \bx}\log p_t(\bx)\right) dt + g(t) d \bw \;\; - \text{Reverse SDE}
 	\end{align*}
 	\vspace{-0.5cm}
 	\begin{itemize}
-		\item This framework allows us to transform one distribution into another via an SDE with a specified probability path $p_t(\bx)$.
+		\item This framework allows us to transform one distribution into another via an SDE with a prescribed probability path $p_t(\bx)$.
 		\item We can invert this process using the score function.
 	\end{itemize}
 	\vspace{-0.3cm}
@@ -565,15 +565,15 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item The continuity equation allows the computation of $\log p(\bx, t)$ at any time $t$.
+		\item The continuity equation allows us to compute $\log p(\bx, t)$ at any time $t$.
 		\vfill
 		\item An SDE defines a stochastic process with drift and diffusion terms; ODEs are a special case of SDEs.
 		\vfill
-		\item The KFP equation describes the dynamics of the probability function for the SDE. 
+		\item The KFP equation describes the probability dynamics of an SDE.
 		\vfill
 		\item The Langevin SDE preserves a constant probability path.
 		\vfill
-		\item For every SDE, there exists a special probability flow ODE that follows the same probability path.
+		\item Every SDE admits a corresponding probability flow ODE following the same probability path.
 		\vfill
 		\item SDEs can be reversed using the score function.
 	\end{itemize}

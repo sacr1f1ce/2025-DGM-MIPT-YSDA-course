@@ -5,64 +5,63 @@
 \begin{document}
 %--------------------------------------------------------------------------------
 \begin{frame}[noframenumbering,plain]
-%\thispagestyle{empty}
 \titlepage
 \end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
+\begin{frame}{Recap of Previous Lecture}
 	\begin{block}{Assumptions}
 		\begin{itemize}
-			\item Let $c \sim \text{Categorical}(\bpi)$, where 
+			\item Let $c \sim \Cat(\bpi)$, where 
 			\vspace{-0.6cm}
 			\[
 			\bpi = (\pi_1, \dots, \pi_K), \quad \pi_k = P(c = k), \quad \sum_{k=1}^K \pi_k = 1.
 			\]
 			\vspace{-0.7cm}
-			\item Let the VAE model have a discrete latent representation $c$ with prior $p(c) = \text{Uniform}\{1, \dots, K\}$.
+			\item Suppose the VAE employs a discrete latent code $c$, with prior $p(c) = \text{Uniform}\{1, \dots, K\}$.
 		\end{itemize}
 	\end{block}
 	\begin{block}{ELBO}
 		\vspace{-0.6cm}
 		\[
-			\cL_{\bphi, \btheta}(\bx)  = \mathbb{E}_{q(c | \bx, \bphi)} \log p(\bx | c, \btheta) - {\color{olive} KL(q(c| \bx, \bphi) || p(c))} \rightarrow \max_{\bphi, \btheta}.
+			\cL_{\bphi, \btheta}(\bx)  = \bbE_{q(c | \bx, \bphi)} \log p(\bx | c, \btheta) - {\color{olive} \KL(q(c| \bx, \bphi) \,\|\, p(c))} \rightarrow \max_{\bphi, \btheta}.
 		\]
 	\end{block}
 	\vspace{-1.0cm}
 	\[
-		KL(q(c| \bx, \bphi) || p(c)) = - H(q(c | \bx, \bphi)) + \log K. 
+		\KL(q(c| \bx, \bphi) \,\|\, p(c)) = - \Ent(q(c | \bx, \bphi)) + \log K. 
 	\]		
 	\vspace{-0.5cm}
 	\begin{block}{Vector Quantization}
-		Define the dictionary space $\{\be_k\}_{k=1}^K$, where $\be_k \in \bbR^L$ and $K$ is the dictionary size.
+		Define the codebook $\{\be_k\}_{k=1}^K$, where $\be_k \in \bbR^L$ and $K$ is the size of the dictionary.
 		\vspace{-0.3cm}
 		\[
-		\bz_q = \bq (\bz) = \be_{k^*}, \quad \text{where } k^* = \argmin_k \| \bz - \be_k \|.
+		\bz_q = \bq (\bz) = \be_{k^*}, \quad \text{where}\;\; k^* = \argmin_k \| \bz - \be_k \|.
 		\] 
 		\vspace{-0.7cm}
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
+\begin{frame}{Recap of Previous Lecture}
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.85\linewidth]{figs/vqvae}
 	\end{figure}
 	\vspace{-0.3cm}
 	\begin{block}{Deterministic Variational Posterior}
-		\vspace{-0.8cm}
+		\vspace{-0.3cm}
 		\[
 			q(c_{ij} = k^* | \bx, \bphi) = \begin{cases}
-				1 , \quad \text{for } k^* = \argmin_k \| [\bz_e]_{ij} - \be_k \|; \\
-				0, \quad \text{otherwise}.
+				1,  & \text{if}\;\; k^* = \argmin_k \| [\bz_e]_{ij} - \be_k \|; \\
+				0,  & \text{otherwise}.
 			\end{cases}
 		\]
-		\vspace{-0.8cm}
+		\vspace{-0.5cm}
 	\end{block}
 	\begin{block}{ELBO}
 		\vspace{-0.6cm}
 		\[
-			\cL_{\bphi, \btheta}(\bx)  = \mathbb{E}_{q(c | \bx, \bphi)} \log p(\bx | \be_{c} , \btheta) - \log K =  \log p(\bx | \bz_q, \btheta) - \log K.
+			\cL_{\bphi, \btheta}(\bx)  = \bbE_{q(c | \bx, \bphi)} \log p(\bx | \be_{c} , \btheta) - \log K =  \log p(\bx | \bz_q, \btheta) - \log K.
 		\]
 		\vspace{-0.6cm}
 	\end{block}
@@ -75,57 +74,57 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
+\begin{frame}{Recap of Previous Lecture}
 	\begin{block}{Theorem}
 		\vspace{-0.6cm}
 		\[
-			\frac{1}{n} \sum_{i=1}^n KL(q(\bz | \bx_i, \bphi) || p(\bz)) = KL({\color{teal}q_{\text{agg}}(\bz | \bphi) }|| p(\bz)) + \bbI_{q} [\bx, \bz].
+			\frac{1}{n} \sum_{i=1}^n \KL(q(\bz | \bx_i, \bphi) \,\|\, p(\bz)) = \KL({\color{teal}q_{\text{agg}}(\bz | \bphi) } \,\|\, p(\bz)) + \bbI_{q} [\bx, \bz].
 		\]
 		\vspace{-0.6cm}
 	\end{block}
 	\begin{block}{ELBO Surgery}
 		\vspace{-0.5cm}
 		{\small
-		\[
-		    \frac{1}{n} \sum_{i=1}^n \cL_{\bphi, \btheta}(\bx_i) = \underbrace{\frac{1}{n} \sum_{i=1}^n \mathbb{E}_{q(\bz | \bx_i, \bphi)} \log p(\bx_i | \bz, \btheta)}_{\text{Reconstruction loss}}
-		    - \underbrace{\vphantom{ \sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{MI}} - \underbrace{\vphantom{ \sum_{i=1}^n} KL({\color{teal}q_{\text{agg}}(\bz | \bphi)} || {\color{violet}p(\bz)})}_{\text{Marginal KL}}
+		\[		  
+		    \frac{1}{n} \sum_{i=1}^n \cL_{\bphi, \btheta}(\bx_i) = \underbrace{\frac{1}{n} \sum_{i=1}^n \bbE_{q(\bz | \bx_i, \bphi)} \log p(\bx_i | \bz, \btheta)}_{\text{Reconstruction Loss}}
+		    - \underbrace{\vphantom{\sum_{i=1}^n} \bbI_q [\bx, \bz]}_{\text{MI}} - \underbrace{\vphantom{\sum_{i=1}^n} \KL({\color{teal}q_{\text{agg}}(\bz | \bphi)} \,\|\, {\color{violet}p(\bz)})}_{\text{Marginal KL}}
 		\]}
 	\end{block}
 	\vspace{-0.7cm}
 	\begin{block}{Optimal Prior}
 		\vspace{-0.7cm}
 		\[
-			KL(q_{\text{agg}}(\bz | \bphi) || p(\bz)) = 0 \quad \Leftrightarrow \quad p (\bz) = q_{\text{agg}}(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i, \bphi).
+			\KL(q_{\text{agg}}(\bz | \bphi) \,\|\, p(\bz)) = 0 \ \Leftrightarrow \ p (\bz) = q_{\text{agg}}(\bz) = \frac{1}{n} \sum_{i=1}^n q(\bz | \bx_i, \bphi).
 		\]
 		\vspace{-0.5cm}\\
-		The optimal prior distribution $p(\bz)$ is the aggregated variational posterior $q_{\text{agg}}(\bz | \bphi)$.
+		Thus, the optimal prior distribution $p(\bz)$ is the aggregated variational posterior $q_{\text{agg}}(\bz | \bphi)$.
 	\end{block}
 	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
-\begin{frame}{Recap of previous lecture}
+\begin{frame}{Recap of Previous Lecture}
 	\begin{itemize}
-		\item Standard Gaussian $p(\bz) = \mathcal{N}(0, \bI)$ $\Rightarrow$ over-regularization;
-		\item $p(\bz) = q_{\text{agg}}(\bz | \bphi) = \frac{1}{n}\sum_{i=1}^n q(\bz | \bx_i, \bphi)$ $\Rightarrow$ overfitting and extremely expensive.
+		\item Standard Gaussian $p(\bz) = \cN(0, \bI)$ $\Rightarrow$ over-regularization.
+		\item $p(\bz) = q_{\text{agg}}(\bz | \bphi) = \frac{1}{n}\sum_{i=1}^n q(\bz | \bx_i, \bphi)$ $\Rightarrow$ overfitting and extremely high computational cost.
 	\end{itemize}
 	\begin{block}{Revisiting ELBO}
 		\vspace{-0.4cm}
 		\[
-		\frac{1}{n}\sum_{i=1}^n \cL_{\bphi, \btheta}(\bx_i) = \text{RL} - \text{MI} -  KL(q_{\text{agg}}(\bz | \bphi) || {\color{violet}p(\bz | \blambda)})
+		\frac{1}{n}\sum_{i=1}^n \cL_{\bphi, \btheta}(\bx_i) = \text{RL} - \text{MI} -  \KL(q_{\text{agg}}(\bz | \bphi) \,\|\, {\color{violet}p(\bz | \blambda)})
 		\]
-		It is the forward KL divergence with respect to $p(\bz | \blambda)$.
+		This is the forward KL divergence with respect to $p(\bz | \blambda)$.
 	\end{block}
 	\begin{block}{ELBO with Learnable VAE Prior}
 		\vspace{-0.6cm}
 		{\small
 			\begin{multline*}
-				\cL_{\bphi, \btheta}(\bx) = \mathbb{E}_{q(\bz | \bx, \bphi)} \left[ \log p(\bx | \bz, \btheta) + {\color{violet}\log p(\bz | \blambda)} - \log q(\bz | \bx, \bphi) \right] \\
-				= \mathbb{E}_{q(\bz | \bx, \bphi)} \Bigl[ \log p(\bx | \bz, \btheta) + \underbrace{ \Bigl({\color{violet} \log p(f_{\blambda}(\bz)) + \log \left| \det (\bJ_\bff) \right|} \Bigr) }_{\text{flow-based prior}} - \log q(\bz | \bx, \bphi) \Bigr] 
+				\cL_{\bphi, \btheta}(\bx) = \bbE_{q(\bz | \bx, \bphi)} \left[ \log p(\bx | \bz, \btheta) + {\color{violet}\log p(\bz | \blambda)} - \log q(\bz | \bx, \bphi) \right] \\
+				= \bbE_{q(\bz | \bx, \bphi)} \Bigl[ \log p(\bx | \bz, \btheta) + \underbrace{ \Bigl({\color{violet} \log p(f_{\blambda}(\bz)) + \log \left| \det (\bJ_\bff) \right|} \Bigr) }_{\text{flow-based prior}} - \log q(\bz | \bx, \bphi) \Bigr] 
 			\end{multline*}
 		}
 		\vspace{-0.5cm}
 		\[
-		\bz = \bff^{-1}_{\blambda}(\bz^*) = \bg_{\blambda}(\bz^*), \quad \bz^* \sim p(\bz^*) = \cN(0, \bI)
+			\bz = \bff^{-1}_{\blambda}(\bz^*) = \bg_{\blambda}(\bz^*), \quad \bz^* \sim p(\bz^*) = \cN(0, \bI)
 		\]
 	\end{block}
 	\vspace{-0.5cm}
@@ -145,7 +144,7 @@
 			\[
 				p_1(\bx) = \frac{1}{n} \sum_{i=1}^n \cN(\bx | \bx_i, \epsilon \bI)
 			\]
-			If $\epsilon$ is small, this model generates high-quality samples, but the likelihood of a test sample will be very poor.
+			If $\epsilon$ is very small, this model produces excellent, sharp samples but achieves poor likelihoods on test data.
 		\end{block}
 	\end{minipage}%
 	\begin{minipage}[t]{0.52\columnwidth}
@@ -154,48 +153,46 @@
 			\[
 				p_2(\bx) = 0.01p(\bx) + 0.99p_{\text{noise}}(\bx)
 			\]
-			\vspace{-0.5cm}
+			\vspace{-1.0cm}
 			\begin{multline*}
-				\log \left[ 0.01p(\bx) + 0.99p_{\text{noise}}(\bx) \right] \geq  \\ \geq \log \left[ 0.01p(\bx) \right]  = \log p(\bx) - \log 100
+				\log \left[ 0.01p(\bx) + 0.99p_{\text{noise}}(\bx) \right] \geq \\ \geq \log \left[ 0.01p(\bx) \right]  = \log p(\bx) - \log 100
 			\end{multline*}
-			Contains mostly noisy, irrelevant samples, but for high dimensions $\log p(\bx)$ becomes proportional to $m$.
+			This model contains mostly noisy, irrelevant samples; for high dimensions, $\log p(\bx)$ scales linearly with $m$.
 		\end{block}
 	\end{minipage}
 	\begin{itemize}
-		\item Likelihood is not a perfect metric for evaluating generative models.
-		\item The likelihood function may be intractable.
+		\item Likelihood isn't always a suitable metric for evaluating generative models.
+		\item Sometimes, the likelihood function can't even be computed exactly.
 	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1511.01844}{Theis L., Oord A., Bethge M. A note on the evaluation of generative models, 2015}
+	\myfootnotewithlink{https://arxiv.org/abs/1511.01844}{Theis L., Oord A., Bethge M. A Note on the Evaluation of Generative Models, 2015}
 \end{frame}
 %=======
 \begin{frame}{Likelihood-Free Learning}
 	\begin{block}{Motivation}
-	 We aim to approximate the true data distribution $\pi(\bx)$.
-	Instead of searching for the true $\pi(\bx)$ over all probability distributions, we learn a function $p(\bx | \btheta) \approx \pi(\bx)$.
+	 We're interested in approximating the true data distribution $\pi(\bx)$.
+	Instead of searching over all distributions, let's learn a model $p(\bx | \btheta) \approx \pi(\bx)$.
 	\end{block}
-	Assume we have two sets of samples: 
+	Suppose we have two sets of samples: 
 	\begin{itemize}
-		\item $\{\bx_i\}_{i=1}^{n_1} \sim \pi(\bx)$ — real samples;
-		\item $\{\bx_i\}_{i=1}^{n_2} \sim p(\bx | \btheta)$ — generated (or fake) samples.
+		\item $\{\bx_i\}_{i=1}^{n_1} \sim \pi(\bx)$ — real data;
+		\item $\{\bx_i\}_{i=1}^{n_2} \sim p(\bx | \btheta)$ — generated (fake) data.
 	\end{itemize}
 	Define a discriminative model (classifier):
 	\[
-		p(y = 1 | \bx) = P\bigl(\bx \sim \pi(\bx)\bigr); \quad p(y = 0 | \bx) = P\bigl(\bx \sim p(\bx | \btheta)\bigr)
+		p(y = 1 | \bx) = P(\bx \sim \pi(\bx)); \quad p(y = 0 | \bx) = P(\bx \sim p(\bx | \btheta))
 	\]
 	\vspace{-0.5cm}
 	\begin{block}{Assumption}
-		The generative distribution $p(\bx | \btheta)$ matches the true distribution $\pi(\bx)$ if a discriminative model $p(y | \bx)$ cannot distinguish between them. \\
-		This is equivalent to $p(y = 1 | \bx) = 0.5$ for every sample $\bx$.
+		The generative model $p(\bx | \btheta)$ matches $\pi(\bx)$ if a discriminative model $p(y | \bx)$ can't distinguish between them --- that is, if $p(y = 1 | \bx) = 0.5$ for every $\bx$.
 	\end{block}
-
 \end{frame}
 %=======
 \begin{frame}{Generative Adversarial Networks (GAN)}
 	\begin{itemize}
-		\item The more powerful the discriminative model, the more likely we are to obtain the optimal generative distribution $p(\bx | \btheta)$.
-		\item The standard approach to learning a classifier is to minimize the cross-entropy loss.
+		\item The more expressive the discriminator, the closer we get to the optimal $p(\bx | \btheta)$.
+		\item Standard classifiers are trained by minimizing cross-entropy loss.
 	\end{itemize}
-	\begin{block}{Cross-Entropy for Discriminative Model}
+	\begin{block}{Cross-Entropy for Discriminator}
 		\vspace{-0.3cm}
 		\[
 			\min_{p(y | \bx)} \left[ - \bbE_{\pi(\bx)} \log p(y = 1 | \bx) - \bbE_{p(\bx | \btheta)} \log p(y = 0 | \bx) \right] 
@@ -206,9 +203,8 @@
 	\end{block}
 	\vspace{-0.3cm}
 	\begin{block}{Generative Model}
-		Assume the generative model $p(\bx, \bz | \btheta) = p (\bx | \bz, \btheta) p(\bz)$, with a base distribution $p(\bz)$ and deterministic mapping $p (\bx | \bz, \btheta) = \delta (\bx - \bG_{\btheta}(\bz))$.
+		Suppose $p(\bx, \bz | \btheta) = p (\bx | \bz, \btheta) p(\bz)$, where $p(\bz)$ is a base distribution, and $p(\bx | \bz, \btheta) = \delta (\bx - \bG_{\btheta}(\bz))$ is deterministic.
 	\end{block}
-	
 	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
@@ -220,8 +216,8 @@
 		\]
 	\end{block}
 	\begin{itemize}
-		\item \textbf{Discriminator:} a classifier $p(y = 1 | \bx, \bphi) = D_{\bphi}(\bx) \in [0, 1]$, distinguishing real samples from $\pi(\bx)$ and generated samples from $p(\bx | \btheta)$. The discriminator aims to \textbf{minimize} cross-entropy.
-		\item \textbf{Generator:} the generative model $\bx = \bG_{\btheta}(\bz)$ where $\bz \sim p(\bz)$, seeking to make generated samples indistinguishable from real ones. The generator seeks to \textbf{maximize} cross-entropy.
+		\item \textbf{Discriminator:} A classifier $p(y = 1 | \bx, \bphi) = D_{\bphi}(\bx) \in [0, 1]$, distinguishing real and generated samples. The discriminator aims to \textbf{maximize} cross-entropy.
+		\item \textbf{Generator:} The generative model $\bx = \bG_{\btheta}(\bz),\; \bz \sim p(\bz)$, seeks to fool the discriminator. The generator aims to \textbf{minimize} cross-entropy.
 	\end{itemize}
 	\begin{block}{GAN Objective}
 		\vspace{-0.5cm}
@@ -281,13 +277,13 @@
 %=======
 \begin{frame}{GAN Optimality}
 	\begin{block}{Theorem}
-		The following minimax game
+		The minimax game
 		\vspace{-0.3cm}
 		\[
 			\min_{G} \max_D \Bigl[ \underbrace{\bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(\bG(\bz)))}_{V(G, D)} \Bigr]
 		\]
 		\vspace{-0.5cm} \\
-		attains its global optimum when $\pi(\bx) = p(\bx | \btheta)$, in which case $D^*(\bx) = 0.5$.
+		achieves its global optimum when $\pi(\bx) = p(\bx | \btheta)$, and $D^*(\bx) = 0.5$.
 	\end{block}
 	\begin{block}{Proof (Fixed $G$)}
 		\vspace{-0.5cm}
@@ -297,7 +293,7 @@
 		\end{align*}
 		\vspace{-0.2cm}
 		\[
-			\frac{d y(D)}{d D} = \frac{\pi(\bx)}{D(\bx)} - \frac{p(\bx | \btheta)}{1 - D(\bx)} = 0 \quad \Rightarrow \quad D^*(\bx) = \frac{\pi(\bx)}{\pi(\bx) + p(\bx | \btheta)}
+			\frac{d y(D)}{d D} = \frac{\pi(\bx)}{D(\bx)} - \frac{p(\bx | \btheta)}{1 - D(\bx)} = 0 \qquad \Rightarrow \quad D^*(\bx) = \frac{\pi(\bx)}{\pi(\bx) + p(\bx | \btheta)}
 		\]
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
@@ -308,8 +304,8 @@
 		\vspace{-0.5cm}
 		\begin{multline*}
 			V(G, D^*) = \bbE_{\pi(\bx)} \log \left( \frac{\pi(\bx)}{\pi(\bx) + p(\bx | \btheta)} \right) + \bbE_{p(\bx | \btheta)} \log \left( \frac{p(\bx | \btheta)}{\pi(\bx) + p(\bx | \btheta)}\right)  \\
-		 = KL \left(\pi(\bx) || \frac{\pi(\bx) + p(\bx | \btheta)}{2}\right) + KL \left(p(\bx | \btheta) || \frac{\pi(\bx) + p(\bx | \btheta)}{2}\right) - 2\log 2 \\
-		 = 2JSD(\pi(\bx) || p(\bx | \btheta)) - 2\log 2.
+		 = \KL \left(\pi(\bx) \,\|\, \frac{\pi(\bx) + p(\bx | \btheta)}{2}\right) + \KL \left(p(\bx | \btheta) \,\|\, \frac{\pi(\bx) + p(\bx | \btheta)}{2}\right) - 2\log 2 \\
+		 = 2\,\JSD(\pi(\bx) \,\|\, p(\bx | \btheta)) - 2\log 2.
 		\end{multline*}
 	\end{block}
 	\vspace{-0.3cm}
@@ -317,10 +313,10 @@
 		\vspace{-0.2cm}
 		\footnotesize
 		\[
-			JSD(\pi(\bx) || p(\bx | \btheta)) = \frac{1}{2} \left[KL \left(\pi(\bx) || \frac{\pi(\bx) + p(\bx | \btheta)}{2}\right) + KL \left(p(\bx | \btheta) || \frac{\pi(\bx) + p(\bx | \btheta)}{2}\right) \right]
+			\JSD(\pi(\bx) \| p(\bx | \btheta)) = \frac{1}{2} \left[\KL \left(\pi(\bx) \| \frac{\pi(\bx) + p(\bx | \btheta)}{2}\right) + \KL \left(p(\bx | \btheta) \| \frac{\pi(\bx) + p(\bx | \btheta)}{2}\right) \right]
 		\]
 	\end{block}
-	This can be used as a distance metric!
+	This can be regarded as a proper distance metric!
 	\[
 		V(G^*, D^*) = -2\log 2, \quad \pi(\bx) = p(\bx | \btheta), \quad  D^*(\bx) = 0.5.
 	\]
@@ -336,23 +332,23 @@
 		\min_{G} \max_D \Bigl[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(\bG(\bz))) \Bigr]
 		\]
 		\vspace{-0.5cm} \\
-		attains its global optimum when $\pi(\bx) = p(\bx | \btheta)$, in which case $D^*(\bx) = 0.5$.
+		achieves its global optimum precisely when $\pi(\bx) = p(\bx | \btheta)$, and $D^*(\bx) = 0.5$.
 	\end{block}
 	\vspace{-0.2cm}
 	\begin{block}{Expectations}
-		If the generator can be \textbf{any} function and the discriminator is \textbf{optimal} at every step, then the generator is \textbf{guaranteed to converge} to the data distribution.
+		If the generator can express \textbf{any} function and the discriminator is \textbf{optimal} at every step, the generator \textbf{will converge} to the target distribution.
 	\end{block}
 	\begin{block}{Reality}
 		\begin{itemize}
-			\item Generator updates are made in parameter space, the discriminator is not always optimal.
-			\item The generator and discriminator losses typically oscillate during GAN training.
+			\item Generator updates are performed in parameter space, and the discriminator is often imperfectly optimized.
+			\item Generator and discriminator losses typically oscillate during GAN training.
 		\end{itemize}
 	\end{block}
 	 \myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \begin{frame}{GAN Training}
-	Assume the generator and discriminator are parametric models: $D_{\bphi}(\bx)$ and $\bG_{\btheta}(\bz)$.
+	Assume both generator and discriminator are parametric models: $D_{\bphi}(\bx)$ and $\bG_{\btheta}(\bz)$.
 	\begin{block}{Objective}
 		\vspace{-0.7cm}
 		\[
@@ -367,15 +363,15 @@
 
 	\begin{itemize}
 		\item $\bz \sim p(\bz)$ is a latent variable.
-		\item $p(\bx | \bz, \btheta) = \delta(\bx - \bG_{\btheta}(\bz))$ is a deterministic decoder ({\color{gray} like NF}).
-		\item There is no encoder at all.
+		\item $p(\bx | \bz, \btheta) = \delta(\bx - \bG_{\btheta}(\bz))$ serves as a deterministic decoder ({\color{gray}like normalizing flows}).
+		\item There is no encoder present.
 	\end{itemize}
 
 	 \myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \begin{frame}{Mode Collapse}
-	Mode collapse refers to the phenomenon where the generator in a GAN collapses to just one or a few modes of the distribution.
+	Mode collapse refers to the phenomenon where the generator in a GAN produces only one or a few different modes of the distribution.
 	\vspace{-0.15cm}
 	\begin{figure}
 		\centering
@@ -386,27 +382,26 @@
 		\centering
 		\includegraphics[width=1.0\linewidth]{figs/mode_collapse_4}
 	\end{figure}
-	Alternative architectures, additional regularization terms, the injection of small noise perturbations, and numerous other tricks have been used to address mode collapse.
+	Numerous methods have been proposed to tackle mode collapse: changing architectures, adding regularization terms, injecting noise.
 	
 	\myfootnote{\href{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014} \\
 		\href{https://arxiv.org/abs/1611.02163}{Metz L. et al. Unrolled Generative Adversarial Networks, 2016}}
 \end{frame}
 %=======
-\begin{frame}{Jensen-Shannon vs Kullback-Leibler divergences}
+\begin{frame}{Jensen-Shannon vs Kullback-Leibler Divergences}
 	\begin{itemize}
-		\item $\pi(\bx)$ is a fixed mixture of 2 Gaussians.
+		\item $\pi(\bx)$ is a fixed mixture of two Gaussians.
 		\item $p(\bx | \mu, \sigma) = \cN(\mu, \sigma^2)$.
 	\end{itemize}
 	\begin{block}{Mode Covering vs. Mode Seeking}
 		\vspace{-0.7cm}
 		\[
-		KL(\pi || p) = \int \pi(\bx) \log \frac{\pi(\bx)}{p(\bx)}d\bx, \quad KL(p || \pi) = \int p(\bx) \log \frac{p(\bx)}{\pi(\bx)}d\bx
+		\KL(\pi \,\|\, p) = \int \pi(\bx) \log \frac{\pi(\bx)}{p(\bx)}d\bx, \quad \KL(p\,\|\,\pi) = \int p(\bx) \log \frac{p(\bx)}{\pi(\bx)}d\bx
 		\]
 		\[
-		JSD(\pi || p) = \frac{1}{2} \left[KL \left(\pi(\bx) || \frac{\pi(\bx) + p(\bx)}{2}\right) + KL \left(p(\bx) || \frac{\pi(\bx) + p(\bx)}{2}\right) \right]
+		\JSD(\pi \,\|\, p) = \frac{1}{2} \left[\KL \left(\pi(\bx) \,\|\, \frac{\pi(\bx) + p(\bx)}{2}\right) + \KL \left(p(\bx) \,\|\, \frac{\pi(\bx) + p(\bx)}{2}\right) \right]
 		\]
 		\vspace{-0.7cm}
-		
 		\begin{minipage}[t]{0.33\columnwidth}
 			\begin{figure}
 				\includegraphics[width=\linewidth]{figs/forward_KL}
@@ -428,20 +423,20 @@
 %=======
 \section{Wasserstein Distance}
 %=======
-\begin{frame}{al Theoretical Results}
+\begin{frame}{Theoretical Results}
 	\vspace{-0.3cm}
 	\begin{itemize}
-		\item The dimensionality of $\bz$ is less than that of $\bx$. Thus, the support of $p(\bx | \btheta)$ with $\bx = \bG_{\btheta}(\bz)$ lies on a low-dimensional manifold.
-		\item The distribution of real images $\pi(\bx)$ is also concentrated on a low-dimensional manifold.
+		\item The dimensionality of $\bz$ is less than that of $\bx$, so $p(\bx | \btheta)$ with $\bx = \bG_{\btheta}(\bz)$ lives on a low-dimensional manifold.
+		\item The true data distribution $\pi(\bx)$ is also supported on a low-dimensional manifold.
 		\begin{figure}
 			\centering
 			\includegraphics[width=0.55\linewidth]{figs/low_dim_manifold}
 		\end{figure}
-		\item If $\pi(\bx)$ and $p(\bx | \btheta)$ have disjoint supports, then a smooth optimal discriminator exists.
+		\item If $\pi(\bx)$ and $p(\bx | \btheta)$ are disjoint, a smooth optimal discriminator can exist!
 		\item For such low-dimensional, disjoint manifolds:
 		\vspace{-0.2cm}
 		\[
-		KL(\pi || p) = KL(p || \pi) = \infty, \quad JSD(\pi || p) = \log 2
+		\KL(\pi\,\|\,p) = \KL(p\,\|\,\pi) = \infty, \quad \JSD(\pi\,\|\,p) = \log 2
 		\]
 	\end{itemize}
 	\myfootnote{\href{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} \\ 
@@ -449,9 +444,9 @@
 \end{frame}
 %=======
 \begin{frame}{Wasserstein Distance (Discrete)}
-	Also known as \textbf{Earth Mover's Distance}.
+	Also known as the \textbf{Earth Mover's Distance}.
 	\begin{block}{Optimal Transport Formulation}
-		The minimum cost of moving and transforming a pile of "dirt" from the shape of one probability distribution into the shape of another.
+		The minimum cost of moving and transforming a pile of "dirt" shaped like one probability distribution to match another.
 	\end{block}
 	\begin{figure}
 		\centering
@@ -463,27 +458,27 @@
 \begin{frame}{Wasserstein Distance (Continuous)}
 	\vspace{-0.7cm}
 	\[
-	W(\pi, p) = \inf_{\gamma \in \Gamma(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{{\color{olive}\gamma}\in {\color{teal}\Gamma(\pi, p)}} \int {\color{violet} \| \bx - \by \|} {\color{olive}\gamma (\bx, \by)} d \bx d \by
+	W(\pi, p) = \inf_{\gamma \in \Gamma(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{{\color{olive}\gamma} \in {\color{teal}\Gamma(\pi, p)}} \int {\color{violet} \| \bx - \by \|}\, {\color{olive}\gamma (\bx, \by)} d \bx d \by
 	\]
 	\vspace{-0.4cm}
 	\begin{itemize}
-		\item ${\color{olive}\gamma (\bx, \by)}$: the transportation plan (i.e., the amount of "dirt" transported from $\bx$ to $\by$).
+		\item ${\color{olive}\gamma (\bx, \by)}$ is the transport plan: the amount of “dirt” assigned from $\bx$ to $\by$.
 		\vspace{-0.2cm}
 		\[
 		\int \gamma(\bx, \by) d \bx = p(\by); \quad \int \gamma(\bx, \by) d \by = \pi(\bx).
 		\]
 		\vspace{-0.6cm}
 		\item ${\color{teal}\Gamma(\pi, p)}$ denotes the set of all joint distributions $\gamma (\bx, \by)$ with marginals $\pi$ and $p$.
-		\item ${\color{olive}\gamma(\bx, \by)}$ is the amount, ${\color{violet} \| \bx - \by \|}$ is the distance.
+		\item ${\color{olive}\gamma(\bx, \by)}$ is the mass, ${\color{violet}\|\bx-\by\|}$ is the distance.
 	\end{itemize}
 	\begin{block}{Wasserstein Metric}
 		\vspace{-0.2cm}
 		\[
-		W_s(\pi, p) = \inf_{\gamma \in \Gamma(\pi, p)} \left(\bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \|^s\right)^{1/s}
+		W_s(\pi, p) = \inf_{\gamma \in \Gamma(\pi, p)} \Bigl(\bbE_{(\bx, \by) \sim \gamma} \|\bx-\by\|^s\Bigr)^{1/s}
 		\]
 		\vspace{-0.4cm}
 	\end{block}
-	In this context, we use $W(\pi, p) = W_1(\pi, p)$, corresponding to the optimal transport formulation.
+	In our setting, $W(\pi, p) = W_1(\pi, p)$, which is the transport cost using the $\ell_1$ norm.
 	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
@@ -493,7 +488,7 @@
 		\vspace{0.1cm}
 		Consider two-dimensional distributions:
 		\[
-		\pi(x, y) = (0, U[0,1])
+		\pi(x, y) = (0, U[0, 1])
 		\]	
 		\[
 		p(x, y | \theta) = (\theta, U[0, 1])
@@ -507,17 +502,16 @@
 	\end{minipage}
 	\begin{itemize}
 		\footnotesize
-		\item $\theta = 0$.
-		Distributions are identical:
+		\item $\theta = 0$: Both distributions are identical.
 		\[
-		KL(\pi || p) = KL(p || \pi) = JSD(p || \pi) = W(\pi, p) = 0
+		\KL(\pi\,\|\,p) = \KL(p\,\|\,\pi) = \JSD(p\,\|\,\pi) = W(\pi, p) = 0
 		\]
-		\item $\theta \neq 0$
+		\item $\theta \neq 0$:
 		\[
-		KL(\pi || p) = \int_{U[0, 1]} 1 \log \frac{1}{0} d y = \infty = KL(p || \pi)
+		\KL(\pi\,\|\,p) = \int_{U[0, 1]} 1 \log \frac{1}{0}\,dy = \infty = \KL(p\,\|\,\pi)
 		\]
 		\[
-		JSD(\pi || p) = \frac{1}{2}\left( \int_{U[0, 1]}1 \log \frac{1}{1/2} dy + \int_{U[0, 1]}1 \log \frac{1}{1/2} dy \right) = \log 2
+		\JSD(\pi\,\|\,p) = \frac{1}{2}\left( \int_{U[0, 1]}1 \log \frac{1}{1/2} dy + \int_{U[0, 1]}1 \log \frac{1}{1/2} dy \right) = \log 2
 		\]
 		\[
 		W(\pi, p) = |\theta|
@@ -535,12 +529,11 @@
 	\begin{block}{Theorem 2}
 		Let $\pi$ be a distribution on a compact space $\cX$ and let $\{p_t\}_{t=1}^\infty$ be a sequence of distributions on $\cX$. 
 		\begin{align}
-			KL(\pi || p_t) &\rightarrow 0 \ \ (\text{or }KL (p_t || \pi) \rightarrow 0) \\
-			JSD(\pi || p_t) &\rightarrow 0 \\
-			W(\pi || p_t) &\rightarrow 0
+			\KL(\pi\,\|\,p_t) &\rightarrow 0 \ \ (\text{or }\KL (p_t\,\|\,\pi) \rightarrow 0) \\
+			\JSD(\pi\,\|\,p_t) &\rightarrow 0 \\
+			W(\pi, p_t) &\rightarrow 0
 		\end{align}
-		
-		In other words, as $t \rightarrow \infty$, (1) implies (2), and (2) implies (3).
+		In summary, as $t \rightarrow \infty$, (1) $\Rightarrow$ (2), and (2) $\Rightarrow$ (3).
 	\end{block}
 	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
@@ -551,24 +544,23 @@
 	\begin{block}{Wasserstein Distance}
 		\vspace{-0.5cm}
 		\[
-		W(\pi || p) = \inf_{\gamma \in \Gamma(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \Gamma(\pi, p)} \int \| \bx - \by \| \gamma (\bx, \by) d \bx d \by
+		W(\pi\,\|\,p) = \inf_{\gamma \in \Gamma(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{\gamma \in \Gamma(\pi, p)} \int \|\bx - \by\| \gamma (\bx, \by)\, d\bx\, d\by
 		\]
 		\vspace{-0.3cm}
 	\end{block}
-	The infimum over all possible joint distributions in $\Gamma(\pi, p)$ is intractable.
+	The infimum over all possible $\gamma \in \Gamma(\pi, p)$ is computationally intractable.
 	\begin{block}{Theorem (Kantorovich-Rubinstein Duality)}
 		\vspace{-0.3cm}
 		\[
-		W(\pi || p) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\right],
+		W(\pi\,\|\,p) = \frac{1}{K} \max_{\| f \|_L \leq K} \Bigl[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\Bigr]
 		\]
-		where $f : \bbR^m \rightarrow \bbR$, $\| f \|_L \leq K$ are $K$-Lipschitz continuous functions ($f: \cX \rightarrow \bbR$)
-		\vspace{-0.2cm}
+		where $f : \bbR^m \rightarrow \bbR$ is $K$-Lipschitz ($\|f\|_L \leq K$):
 		\[
-		|f(\bx_1) - f(\bx_2)| \leq K \| \bx_1 - \bx_2 \|, \quad \forall \bx_1, \bx_2 \in \cX.
+		|f(\bx_1) - f(\bx_2)| \leq K \|\bx_1 - \bx_2\|,\quad \forall\ \bx_1, \bx_2 \in \cX.
 		\]
 		\vspace{-0.6cm}
 	\end{block}
-	Now we can use just samples to compute a Monte Carlo estimate for $W(\pi || p)$.
+	We can thus estimate $W(\pi\,\|\,p)$ using only samples and a neural function $f$.
 	
 	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
@@ -576,19 +568,18 @@
 \begin{frame}{Wasserstein GAN}
 	\begin{block}{Theorem (Kantorovich-Rubinstein Duality)}
 		\[
-		W(\pi || p) = \frac{1}{K} \max_{\| f \|_L \leq K} \left[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\right],
+		W(\pi\,\|\,p) = \frac{1}{K} \max_{\| f \|_L \leq K} \Bigl[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\Bigr]
 		\]
 	\end{block}
 	\begin{itemize}
 		\item We must ensure that $f$ is $K$-Lipschitz continuous.
-		\item Let $f_{\bphi}(\bx)$ be a feedforward neural network parametrized by $\bphi$.
-		\item If the parameters $\bphi$ lie in a compact set $\boldsymbol{\Phi}$, then $f_{\bphi}(\bx)$ is $K$-Lipschitz continuous.
-		\item Clamp the parameters to a fixed box $\boldsymbol{\Phi} \in [-c, c]^d$ (e.g., $c = 0.01$) after each gradient update.
+		\item Let $f_{\bphi}(\bx)$ be a feedforward neural network parameterized by $\bphi$.
+		\item If the weights $\bphi$ are restricted to a compact set $\boldsymbol{\Phi}$, then $f_{\bphi}$ is $K$-Lipschitz.
+		\item Clamp weights within the box $\boldsymbol{\Phi} = [-c, c]^d$ (e.g.\ $c = 0.01$) after each update.
 	\end{itemize}
 	\begin{multline*}
-		K \cdot W(\pi || p) = \max_{\| f \|_L \leq K} \left[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\right] \geq \\  \geq \max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\pi(\bx)} f_{\bphi}(\bx)  - \bbE_{p(\bx)} f_{\bphi}(\bx)\right]
+		K \cdot W(\pi\,\|\,p) = \max_{\| f \|_L \leq K} \Bigl[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\Bigr]\ \geq\ \\  \geq \max_{\bphi \in \boldsymbol{\Phi}} \Bigl[ \bbE_{\pi(\bx)} f_{\bphi}(\bx)  - \bbE_{p(\bx)} f_{\bphi}(\bx)\Bigr]
 	\end{multline*}
-	
 	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
@@ -603,28 +594,27 @@
 	\begin{block}{WGAN Objective}
 		\vspace{-0.3cm}
 		\[
-		\min_{\btheta} {\color{violet}W(\pi || p)} \approx \min_{\btheta} {\color{violet}\max_{\bphi \in \boldsymbol{\Phi}} \left[ \bbE_{\pi(\bx)} f_{\bphi}(\bx)  - \bbE_{p(\bz)} f_{\bphi}(\bG_{\btheta}(\bz))\right]}.
+		\min_{\btheta} {\color{violet}W(\pi\,\|\,p)} \approx \min_{\btheta} {\color{violet}\max_{\bphi \in \boldsymbol{\Phi}} \Bigl[ \bbE_{\pi(\bx)} f_{\bphi}(\bx)  - \bbE_{p(\bz)} f_{\bphi}(\bG_{\btheta}(\bz))\Bigr]}
 		\]
 		\vspace{-0.3cm}
 	\end{block}
 	\begin{itemize}
-		\item The discriminator $D$ is analogous to the function $f$ but is not a classifier anymore. In WGAN, $f$ is typically termed the \textbf{critic}.
-		\item \textit{"Weight clipping is a clearly terrible way to enforce a Lipschitz constraint."} 
+		\item The discriminator $D$ is replaced by function $f$: in WGAN, it is known as the \textbf{critic}, which is \emph{not} a classifier.
+		\item \textit{"Weight clipping is a clearly terrible way to enforce a Lipschitz constraint."}
 		\begin{itemize}
-			\item If the clipping parameter $c$ is too large, it is difficult to train the critic to optimality.
-			\item If $c$ is too small, it can lead to vanishing gradients.
+			\item If $c$ is large, optimizing the critic is hard.
+			\item If $c$ is small, gradients may vanish.
 		\end{itemize}
-	\end{itemize}
-	
+	\end{itemize}	
 	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein GAN}
 	\begin{minipage}[t]{0.6\columnwidth}
 		\begin{itemize}
-			\item WGAN yields non-zero gradients even for distributions with disjoint supports.
-			\item $JSD(\pi || p)$ is poorly correlated with sample quality and stays nearly constant at its maximum value $\log 2 \approx 0.69$.
-			\item $W(\pi || p)$ is highly correlated with sample quality. 
+			\item WGAN provides nonzero gradients even if distributions' supports are disjoint.
+			\item $\JSD(\pi\,\|\,p)$ is poorly correlated with sample quality and remains near its maximum value $\log 2 \approx 0.69$.
+			\item $W(\pi\,\|\,p)$ is tightly correlated with quality.
 		\end{itemize}
 	\end{minipage}%
 	\begin{minipage}[t]{0.4\columnwidth}
@@ -636,13 +626,13 @@
 	\begin{minipage}[t]{0.5\columnwidth}
 		\begin{figure}
 			\centering
-			\includegraphics[width=1.0\linewidth]{figs/dcgan_quality}
+			\includegraphics[width=0.95\linewidth]{figs/dcgan_quality}
 		\end{figure}
 	\end{minipage}%
 	\begin{minipage}[t]{0.5\columnwidth}
 		\begin{figure}
 			\centering
-			\includegraphics[width=1.0\linewidth]{figs/wgan_quality}
+			\includegraphics[width=0.95\linewidth]{figs/wgan_quality}
 		\end{figure}
 	\end{minipage}
 	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
@@ -650,19 +640,19 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item Likelihood is not a reliable criterion for assessing the quality of generative models.		
+		\item Likelihood is not a reliable metric for generative model evaluation.		
 		\vfill
-		\item Adversarial learning proposes solving a minimax problem to match distributions.
+		\item Adversarial learning casts distribution matching as a minimax game.
 		\vfill
-		\item GANs aim to optimize the Jensen-Shannon divergence (in theory).
+		\item GANs, in theory, optimize the Jensen-Shannon divergence.
 		\vfill
-		\item KL and JS divergences are unsuitable objectives when the supports of the distributions are disjoint.
+		\item KL and JS divergences fail as objectives when the model and data distributions are disjoint.
 		\vfill
-		\item The Earth Mover's distance provides a more appropriate objective for distribution matching.
+		\item The Earth Mover's (Wasserstein) distance provides a more meaningful loss for distribution matching.
 		\vfill
-		\item The Kantorovich-Rubinstein duality provides a way to compute the EM distance using only samples.
+		\item Kantorovich-Rubinstein duality allows us to compute the EM distance using only samples.
 		\vfill
-		\item Wasserstein GAN enforces the Lipschitz constraint on the critic via weight clipping.
+		\item Wasserstein GAN enforces the Lipschitz condition on the critic through weight clipping---although better alternatives exist.
 	\end{itemize}
 \end{frame}
 
