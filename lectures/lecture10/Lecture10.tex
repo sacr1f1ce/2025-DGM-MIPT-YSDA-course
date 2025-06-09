@@ -13,6 +13,8 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
+
 	\textbf{Forward Process}: Converts an arbitrary distribution $\pi(\bx)$ into the standard normal $\cN(0, \bI)$ by incrementally adding noise.
 	\begin{align*}
 		q(\bx_t | \bx_{t-1}) &= \cN(\sqrt{1 - \beta_t}\, \bx_{t-1}, \beta_t\, \bI); \\
@@ -26,10 +28,10 @@
 	\[
 		q(\bx_{t-1}|\bx_{t}, {\color{olive}\bx_0}) = \cN(\tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t\, \bI)
 	\]
-	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://ayandas.me/blog-tut/2021/12/04/diffusion-prob-models.html}{Das A. An introduction to Diffusion Probabilistic Models, blog post, 2021}
 	\begin{itemize}
 		\item $\bz = (\bx_1, \dots, \bx_T)$ represents the latent variables.
 		\item Variational posterior distribution:
@@ -57,10 +59,10 @@
 			- \sum_{t=2}^T  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)}_{\cL_t}
 		\end{multline*}
 	\end{block}
-	\myfootnotewithlink{https://ayandas.me/blog-tut/2021/12/04/diffusion-prob-models.html}{Das A. An introduction to Diffusion Probabilistic Models, blog post, 2021}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 	\begin{block}{ELBO of the Gaussian Diffusion Model}
 		\vspace{-0.7cm}
 		\begin{multline*}
@@ -77,11 +79,10 @@
 	\[
 		\cL_t = \bbE_{q(\bx_t | \bx_0)} \left[\frac{1}{2\tilde{\beta}_t} \bigl\| \tilde{\bmu}_t(\bx_t, \bx_0) - \bmu_{\btheta, t}(\bx_t) \bigr\|^2  \right]
 	\]
-	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\vspace{-0.3cm}
+	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 	\[
 		\cL_t = \bbE_{\color{violet}q(\bx_t | \bx_0)} \left[ {\color{olive}\frac{1}{2\tilde{\beta}_t}} \bigl\| \tilde{\bmu}_t(\bx_t, \bx_0) - \bmu_{\btheta, t}(\bx_t) \bigr\|^2  \right]
 	\]
@@ -105,10 +106,10 @@
 			 \cL_{\text{simple}} = \bbE_{t \sim U\{2, T\}} \bbE_{\bepsilon \sim \cN(0, \bI)} \Bigl\| \bepsilon - \bepsilon_{\btheta, t}\bigl( \sqrt{\bar{\alpha}_t} \bx_0 + \sqrt{1 - \bar{\alpha}_t} \bepsilon\bigr) \Bigr\|^2 
 		\]
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 	\begin{block}{Training DDPM}
 		\begin{enumerate}
 			\item Draw a sample $\bx_0 \sim \pi(\bx)$.
@@ -128,7 +129,6 @@
 			\item Generate a denoised image: $\bx_{t - 1} = \bmu_{\btheta, t}(\bx_t) +  \sigma_t \cdot \bepsilon$, where $\bepsilon \sim \cN(0, \bI)$.
 		\end{enumerate}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 \end{frame}
 %=======
 \begin{frame}{Outline}
@@ -138,6 +138,7 @@
 \section{DDPM as a Score-Based Generative Model}
 %=======
 \begin{frame}{Denoising Diffusion as a Score-Based Generative Model}
+	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 	\begin{block}{DDPM Objective}
 		\vspace{-0.7cm}
 		\begin{align*}
@@ -159,10 +160,10 @@
 		\[
 			\cL_t = \bbE_{q(\bx_t | \bx_0)} \left[ \frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t}  \Bigl\|  \bs_{\btheta, t} (\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \Bigr\|_2^2  \right]
 		\]
-	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 \end{frame}
 %=======
 \begin{frame}{DDPM vs NCSN: Objectives}
+	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 	\begin{block}{DDPM Objective}
 		\vspace{-0.5cm}
 		\[
@@ -184,10 +185,10 @@
 		\vspace{-0.5cm}
 	\end{block}
 	\textbf{Maximizing the ELBO leads to the same objective as denoising score matching!}
-	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 \end{frame}
 %=======
 \begin{frame}{DDPM vs NCSN: Sampling}
+	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 	\begin{block}{DDPM Sampling (Ancestral Sampling)}
 			\vspace{-0.7cm}
 			\begin{align*}
@@ -210,10 +211,11 @@
 			\item Set $\bx_{t-1}^0 = \bx_t^L$ and move to the next $\sigma_t$.
 		\end{itemize}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 \end{frame}
 %=======
 \begin{frame}{DDPM vs NCSN: Summary}
+	\myfootnote{\href{https://arxiv.org/abs/2107.00630}{Kingma D. et al. Variational Diffusion Models, 2021} \\
+	\href{https://arxiv.org/abs/2011.13456}{Song Y. et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}}
 	\begin{block}{Summary}
 		\begin{itemize}
 		\item Different Markov chains:
@@ -231,8 +233,6 @@
 			\end{itemize}
 		\end{itemize}
 	\end{block}
-	\myfootnote{\href{https://arxiv.org/abs/2107.00630}{Kingma D. et al. Variational Diffusion Models, 2021} \\
-	\href{https://arxiv.org/abs/2011.13456}{Song Y. et al. Score-Based Generative Modeling through Stochastic Differential Equations, 2020}}
 \end{frame}
 %=======
 \section{Guidance}
@@ -271,20 +271,20 @@
 \end{frame}
 %=======
 \begin{frame}{Label Guidance}
+	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., et al. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019}
 	\textbf{Label:} Ostrich (10th ImageNet class) 
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/label_conditioning}
 	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., et al. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019}
 \end{frame}
 %=======
 \begin{frame}{Text Guidance}
+	\myfootnotewithlink{https://arxiv.org/pdf/2112.10741}{Nichol A., et al. GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models, 2022}
 	\textbf{Prompt:} a stained glass window of a panda eating bamboo \\
 	Left: $\gamma = 1$, Right: $\gamma = 3$.
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/cfg}
 	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/pdf/2112.10741}{Nichol A., et al. GLIDE: Towards Photorealistic Image Generation and Editing with Text-Guided Diffusion Models, 2022}
 \end{frame}
 %=======
 \begin{frame}{Guidance in Generative Models}
@@ -320,6 +320,7 @@
 \subsection{Classifier Guidance}
 %=======
 \begin{frame}{Classifier Guidance}
+	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 	\begin{block}{DDPM Sampling}
 		\begin{enumerate}
 			\item Sample $\bx_T \sim \cN(0, \bI)$.
@@ -343,10 +344,10 @@
 		\item Let us assume $\by$ is a class label.
 		\item Suppose $p(\by | \bx_t)$ (a classifier for noisy inputs) is available.
 	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 \end{frame}
 %=======
 \begin{frame}{Classifier Guidance: Conditional Update}
+	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 	\begin{block}{Conditional Generation}
 		\vspace{-0.5cm}
 		\[
@@ -370,10 +371,10 @@
 			{\color{olive}\bepsilon_{\btheta, t}(\bx_t, \by)} = {\color{violet}\bepsilon_{\btheta, t}(\bx_t)} - \sqrt{1 - \bar{\alpha}_t} \cdot {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)}
 		\]
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 \end{frame}
 %=======
 \begin{frame}{Classifier Guidance: Practical Implementation}
+	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 	\begin{block}{Classifier-Corrected Noise Prediction}
 		\vspace{-0.3cm}
 		\[
@@ -401,10 +402,10 @@
 			\bx_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot  {\color{olive}\bepsilon_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
 		\]
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 \end{frame}
 %=======
 \begin{frame}{Classifier Guidance: Distribution Sharpening}
+	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 	\begin{block}{Classifier-Corrected Noise Prediction, with Scaling}
 		\vspace{-0.3cm}
 		\[
@@ -425,12 +426,12 @@
 		\vspace{-0.5cm}
 	\end{block}
 	\textbf{Note:} Increasing $\gamma$ sharpens $p(\by | \bx_t)$ (with $Z$ independent of $\bx_t$).
-	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 \end{frame}
 %=======
 \subsection{Classifier-Free Guidance}
 %=======
 \begin{frame}{Classifier-Free Guidance}
+	\myfootnotewithlink{https://arxiv.org/abs/2207.12598}{Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022}
 	\begin{itemize}
 		\item The previous approach relies on training an additional classifier $p(\by | \bx_t)$ for noisy images.	
 		\item We now introduce a method to sidestep this requirement.
@@ -450,10 +451,10 @@
 		=  (1 - \gamma) \cdot  \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot  \nabla_{\bx_t} \log p(\bx_t| \by, \btheta)
 	\end{multline*}
 	\textbf{Note:} When $\gamma = 1$, the original identity is restored.
-	\myfootnotewithlink{https://arxiv.org/abs/2207.12598}{Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022}
 \end{frame}
 %=======
 \begin{frame}{Classifier-Free Guidance: Formulation}
+	\myfootnotewithlink{https://arxiv.org/abs/2207.12598}{Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022}
 	\[
 		\nabla_{\bx_t}^{\gamma} \log p(\bx_t | \by, \btheta) =  (1 - \gamma) \cdot  \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot  \nabla_{\bx_t} \log p(\bx_t| \by, \btheta)
 	\]
@@ -477,12 +478,12 @@
 			\bx_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot  {\color{olive}\hat{\bepsilon}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
 		\]
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/2207.12598}{Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022}
 \end{frame}
 %=======
 \section{Continuous-Time Normalizing Flows}
 %=======
 \begin{frame}{Discrete-Time Normalizing Flows}
+	\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models.html}{https://lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models.html}
 	\vspace{-0.3cm}
 	\begin{block}{Change of Variable Theorem (CoV)}
 		Let $\bx$ be a random variable with density $p(\bx)$, and let $\bff: \bbR^m \rightarrow \bbR^m$ be a differentiable and \textbf{invertible} transformation. If $\bz = \bff(\bx)$, $\bx = \bff^{-1}(\bz) = \bg(\bz)$, then
@@ -502,7 +503,6 @@
 		\log p(\bx | \btheta) = \log p(\bff_K \circ \dots \circ \bff_1(\bx)) + \sum_{k=1}^K\log \left|\det \left(\frac{\partial \bff_k}{\partial \bff_{k-1}}\right)\right|.
 	\]
 	\vspace{-0.4cm}
-	\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models.html}{https://lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models.html}
 \end{frame}
 %=======
 \begin{frame}{Discrete-Time Normalizing Flows: Towards Continuous Time}
@@ -555,6 +555,7 @@
 \end{frame}
 %=======
 \begin{frame}{Continuous-Time Normalizing Flows: Neural ODE}
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 	\begin{block}{Neural ODE}
 		\vspace{-0.2cm}
 		\[
@@ -574,10 +575,10 @@
 		\item If $\bx(0)$ is a random variable with density~$p_0(\bx)$,
 		\item Then, for any $t$, $\bx(t)$ is a random variable with density $p_t(\bx)$.
 	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Continuous-Time Normalizing Flows: Intuition}
+	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018}  
 	\[
  		\frac{d \bx(t)}{dt} = \bff_{\btheta}(\bx(t), t); \quad \text{with initial condition }\bx(t_0) = \bx_0
 	\]
@@ -590,10 +591,10 @@
 		\centering
 		\includegraphics[width=0.75\linewidth]{figs/cnf_flow.png}
 	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1810.01367}{Grathwohl W. et al. FFJORD: Free-form Continuous Dynamics for Scalable Reversible Generative Models, 2018}  
 \end{frame}
 %=======
 \begin{frame}{Continuous-Time Normalizing Flows: Reversibility}
+	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 	\begin{block}{Theorem (Picard)}
 		If $\bff$ is uniformly Lipschitz continuous in $\bx$ and continuous in $t$, then the ODE admits a \textbf{unique} solution.
 	\end{block}
@@ -605,7 +606,6 @@
 	\textbf{Note:} Unlike discrete-time flows, $\bff$ need not be invertible (uniqueness ensures bijection).
 	
 	How can we compute $p_t(\bx)$ at arbitrary $t$?
-	\myfootnotewithlink{https://arxiv.org/abs/1806.07366}{Chen R. T. Q. et al. Neural Ordinary Differential Equations, 2018}   
 \end{frame}
 %=======
 \begin{frame}{Summary}

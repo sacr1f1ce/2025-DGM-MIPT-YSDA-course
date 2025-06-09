@@ -18,6 +18,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+    \myfootnotewithlink{https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching}{image credit: A Visual Dive into Conditional Flow Matching}
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.7\linewidth]{figs/cfm_uncond_to_cond}
@@ -43,10 +44,10 @@
 			\bx_t = \bmu_t(\bz) + \bsigma_t(\bz) \odot \bx_0, \quad {\color{violet} \bx_0 \sim p_0(\bx) = \cN(0, \bI)}
 		\]
 	\end{block}
-	\myfootnotewithlink{https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching}{image credit: A Visual Dive into Conditional Flow Matching}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+    \myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
 	\begin{block}{Gaussian Conditional Probability Path}
 		\vspace{-0.3cm}
 		\[
@@ -78,10 +79,10 @@
 		\end{cases}
 	\]
 	\vspace{-0.3cm}
-	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+    \myfootnotewithlink{https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching}{image credit: A Visual Dive into Conditional Flow Matching}
 	\[
 		p_0(\bx | \bx_1) = \cN(0, \bI); \quad p_1(\bx | \bx_1) = \delta(\bx - \bx_1).
 	\]
@@ -110,7 +111,6 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/conical_paths}
 	\end{figure}
-	\myfootnotewithlink{https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching}{image credit: A Visual Dive into Conditional Flow Matching}
 \end{frame}
 %=======
 \section{Latent Space Models}
@@ -118,6 +118,8 @@
 \subsection{Score-Based Models}
 %=======
 \begin{frame}{Latent Space Models}
+    \myfootnote{\href{https://arxiv.org/abs/2307.08698}{Dao Q. et al. Flow Matching in Latent Space, 2023} \\ \href{https://neurips2023-ldm-tutorial.github.io/}{NeurIPS 2023 Tutorial: Latent Diffusion Models: Is the Generative AI Revolution Happening in Latent Space?}}
+		\vspace{-0.3cm}
 	\begin{block}{Score-Based Models (Diffusion)}
 		\vspace{-0.3cm}
 		\begin{figure}
@@ -131,29 +133,26 @@
 			\includegraphics[width=\linewidth]{figs/latent_flow_matching}
 		\end{figure}
 	\end{block}
-
-	\myfootnote{\href{https://arxiv.org/abs/2307.08698}{Dao Q. et al. Flow Matching in Latent Space, 2023} \\ \href{https://neurips2023-ldm-tutorial.github.io/}{NeurIPS 2023 Tutorial: Latent Diffusion Models: Is the Generative AI Revolution Happening in Latent Space?}}
 \end{frame}
 %=======
 \subsection{Autoregressive Models}
 %=======
 \begin{frame}{Vector Quantized VAE (VQ-VAE)}
-	\begin{block}{Vector Quantization}
-		Define a dictionary space $\{\be_k\}_{k=1}^K$, where $\be_k \in \bbR^C$ and $K$ is the dictionary’s size.
+    \myfootnote{\href{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} \\ \href{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017}}
+	Define a dictionary space $\{\be_k\}_{k=1}^K$, where $\be_k \in \bbR^C$ and $K$ is the dictionary’s size.
+	\vspace{-0.5cm}
+	\begin{minipage}[t]{0.45\columnwidth}
+		\[
+			\bz_q = \bq (\bz) = \be_{k^*}
+		\]
+		Here $k^* = \argmin_k \| \bz - \be_k \|$.
+	\end{minipage}%
+	\begin{minipage}[t]{0.55\columnwidth}
 		\vspace{-0.5cm}
-		\begin{minipage}[t]{0.45\columnwidth}
-			\[
-				\bz_q = \bq (\bz) = \be_{k^*}
-			\]
-			Here $k^* = \argmin_k \| \bz - \be_k \|$.
-		\end{minipage}%
-		\begin{minipage}[t]{0.55\columnwidth}
-			\vspace{-0.5cm}
-			\begin{figure}
-				\includegraphics[width=\linewidth]{figs/fqgan_cnn}
-			\end{figure}
-		\end{minipage}		
-	\end{block}
+		\begin{figure}
+			\includegraphics[width=\linewidth]{figs/fqgan_cnn}
+		\end{figure}
+	\end{minipage}		
 	\[
 		\cL_{\bphi, \btheta}(\bx)  =  \log p(\bx | \bz_q, \btheta) - \log K
 	\]
@@ -162,10 +161,10 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/vqvae}
 	\end{figure}
-	\myfootnote{\href{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} \\ \href{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017}}
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized GAN}
+    \myfootnotewithlink{https://arxiv.org/abs/2012.09841}{Esser P. et al. Taming Transformers for High-Resolution Image Synthesis, 2020}
 	\begin{itemize}
 		\item We use a VQ-VAE model and its objective.
 		\item We add an adversarial loss between generated and real images to further improve the visual quality of reconstructions.
@@ -173,43 +172,42 @@
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/vqgan}
 	\end{figure}
-	
-	\myfootnotewithlink{https://arxiv.org/abs/2012.09841}{Esser P. et al. Taming Transformers for High-Resolution Image Synthesis, 2020}
 \end{frame}
 %=======
 \begin{frame}{LlamaGen: Pure Autoregression}
+    \myfootnotewithlink{https://arxiv.org/pdf/2406.06525}{Sun P. et al. Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation, 2024}
 	\begin{itemize}
 		\item Use a VQ-GAN encoder for mapping images into the discrete latent space (codebook vectors).
 		\item Train a pure autoregressive model (Llama-based) in the latent space.
 		\item Use the VQ-GAN decoder to map discrete tokens back to image space.
 	\end{itemize}
+	\vspace{-0.3cm}
 	\begin{figure}
-		\includegraphics[width=0.9\linewidth]{figs/llamagen_samples}
+		\includegraphics[width=0.85\linewidth]{figs/llamagen_samples}
 	\end{figure}
-	
-	\myfootnotewithlink{https://arxiv.org/pdf/2406.06525}{Sun P. et al. Autoregressive Model Beats Diffusion: Llama for Scalable Image Generation, 2024}
 \end{frame}
 %=======
 \begin{frame}{Visual Autoregressive Modeling (VAR)}
+    \myfootnotewithlink{https://arxiv.org/pdf/2404.02905}{Tean K. et al. Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction, 2024}
 	\begin{figure}
-		\includegraphics[width=\linewidth]{figs/var_idea}
+		\includegraphics[width=0.9\linewidth]{figs/var_idea}
 	\end{figure}
 	\begin{figure}
-		\includegraphics[width=\linewidth]{figs/var_training}
+		\includegraphics[width=0.9\linewidth]{figs/var_training}
 	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/pdf/2404.02905}{Tean K. et al. Visual Autoregressive Modeling: Scalable Image Generation via Next-Scale Prediction, 2024}
 \end{frame}
 %=======
 \section{The Worst Course Overview}
 %=======
 \begin{frame}{The Worst Course Overview :)}
+    \myfootnotewithlink{https://lilianweng.github.io/posts/2021-07-11-diffusion-models/}{Weng L. What are Diffusion Models?, blog post, 2021}
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/generative-overview}
 	\end{figure}
-	\myfootnotewithlink{https://lilianweng.github.io/posts/2021-07-11-diffusion-models/}{Weng L. What are Diffusion Models?, blog post, 2021}
 \end{frame}
 %=======
 \begin{frame}{The Worst Course Overview :)}
+    \myfootnote{\href{https://arxiv.org/abs/2112.07804}{Xiao Z., Kreis K., Vahdat A. Tackling the generative learning trilemma with denoising diffusion GANs, 2021} \\ \href{https://udlbook.github.io/udlbook/}{Simon J.D. Prince. Understanding Deep Learning, 2023}}
 	\vspace{-0.3cm}
 	\begin{figure}
 		\includegraphics[width=0.45\linewidth]{figs/trilemma}
@@ -218,7 +216,6 @@
 	\begin{figure}
 		\includegraphics[width=0.9\linewidth]{figs/gen_comp_table}
 	\end{figure}
-	\myfootnote{\href{https://arxiv.org/abs/2112.07804}{Xiao Z., Kreis K., Vahdat A. Tackling the generative learning trilemma with denoising diffusion GANs, 2021} \\ \href{https://udlbook.github.io/udlbook/}{Simon J.D. Prince. Understanding Deep Learning, 2023}}
 \end{frame}
 %=======
 \begin{frame}{Summary}

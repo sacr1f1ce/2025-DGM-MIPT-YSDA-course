@@ -85,6 +85,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnote{\href{https://jmtomczak.github.io/blog/2/2\_ARM.html}{Image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}\\ \href{https://cdn.openai.com/papers/Generative_Pretraining_from_Pixels_V2.pdf}{Chen M. et al. Generative Pretraining from Pixels, 2020}}
 	\vspace{-0.2cm}
 	\begin{block}{Autoregressive MLP}
 		\vspace{-0.3cm}
@@ -110,7 +111,6 @@
 			\end{figure}
 		\end{minipage}
 	\end{block}
-	\myfootnote{\href{https://jmtomczak.github.io/blog/2/2\_ARM.html}{Image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}\\ \href{https://cdn.openai.com/papers/Generative_Pretraining_from_Pixels_V2.pdf}{Chen M. et al. Generative Pretraining from Pixels, 2020}}
 \end{frame}
 %=======
 \begin{frame}{Outline}
@@ -193,6 +193,7 @@
 \end{frame}
 %=======
 \begin{frame}{Jacobian Determinant}
+	\myfootnotewithlink{https://jmtomczak.github.io/blog/3/3\_flows.html}{https://jmtomczak.github.io/blog/3/3\_flows.html}
 	\begin{block}{Inverse Function Theorem}
 		If the function $\bff$ is invertible and its Jacobian is continuous and non-singular, then
 		\vspace{-0.3cm}
@@ -215,10 +216,10 @@
 			\includegraphics[width=0.8\linewidth]{figs/jacobian_det}
 		\end{figure}
 	\end{minipage}
-	\myfootnotewithlink{https://jmtomczak.github.io/blog/3/3\_flows.html}{https://jmtomczak.github.io/blog/3/3\_flows.html}
 \end{frame}
 %=======
 \begin{frame}{Fitting Normalizing Flows}
+	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density Estimation Using Real NVP, 2016} 
 	\begin{block}{MLE Problem}
 		\vspace{-0.3cm}
 		\[
@@ -232,10 +233,10 @@
 	\begin{figure}
 		\includegraphics[width=0.85\linewidth]{figs/flows_how2}
 	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density Estimation Using Real NVP, 2016} 
 \end{frame}
 %=======
 \begin{frame}{Composition of Normalizing Flows}
+	\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models.html}{https://lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models.html}
 	\vspace{-0.3cm}
 	\begin{figure}
 		\includegraphics[width=0.95\linewidth]{figs/normalizing-flow}
@@ -252,7 +253,6 @@
 			= p(\bff(\bx)) \prod_{k=1}^K |\det ( \bJ_{\bff_k}) |
 		\end{multline*}
 	}
-	\myfootnotewithlink{https://lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models.html}{https://lilianweng.github.io/lil-log/2018/10/13/flow-based-deep-generative-models.html}
 \end{frame}
 %=======
 \begin{frame}{Normalizing Flows (NF)}
@@ -284,6 +284,7 @@
 \end{frame}
 %=======
 \begin{frame}{Normalizing Flows}
+	\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019} 
 	\begin{block}{Example: 4-Step NF}
 		\vspace{-0.2cm}
 		\begin{figure}
@@ -305,7 +306,6 @@
 			\item Efficient inversion of the transformation $\bff_{\btheta}(\bx)$
 		\end{itemize}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019} 
 \end{frame}
 %=======
 \section{NF Examples}
@@ -334,6 +334,7 @@
 \end{frame}
 %=======
 \begin{frame}{Linear Normalizing Flows}
+	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018} 
 	\[
 		\bz = \bff_{\btheta}(\bx) = \bW \bx, \quad \bW \in \bbR^{m \times m}, \quad \btheta = \bW, \quad \bJ_\bff = \bW^T
 	\]
@@ -351,10 +352,12 @@
 		It is critical that $\bW$ is invertible.
 	\end{block}
 	
-	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018} 
 \end{frame}
 %=======
 \begin{frame}{Linear Normalizing Flows}
+	\myfootnote{\href{https://arxiv.org/abs/1807.03039}{Kingma D. P., et al. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}  \\
+	\href{https://arxiv.org/abs/1901.11137}{Hoogeboom E., et al. Emerging Convolutions for Generative Normalizing Flows, 2019}
+	}
 	\vspace{-0.3cm}
 	\[
 		\bz = \bff_{\btheta}(\bx) = \bW \bx, \quad \bW \in \bbR^{m \times m}, \quad \btheta = \bW, \quad \bJ_\bff = \bW^T
@@ -381,14 +384,12 @@
 
 	Decomposition is performed only at initialization; the decomposed matrices ($\bP, \bL, \bU$ or $\bQ, \bR$) are optimized during training.
 
-	\myfootnote{\href{https://arxiv.org/abs/1807.03039}{Kingma D. P., et al. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}  \\
-	\href{https://arxiv.org/abs/1901.11137}{Hoogeboom E., et al. Emerging Convolutions for Generative Normalizing Flows, 2019}
-	}
 \end{frame}
 %=======
 \subsection{Gaussian Autoregressive NF}
 %=======
 \begin{frame}{Gaussian Autoregressive Model}
+	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
 	Consider the autoregressive model:
 	\vspace{-0.3cm}
 	{\small
@@ -417,10 +418,10 @@
 		\item This model is called an autoregressive (AR) NF with base distribution $p(\bz) = \cN(0, \bI)$.
 		\item The Jacobian matrix of this transformation is triangular.
 	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1606.04934}{Kingma D. P. et al. Improving Variational Inference with Inverse Autoregressive Flow, 2016} 
 \end{frame}
 %=======
 \begin{frame}{Gaussian Autoregressive NF}
+	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017}
 	\vspace{-0.5cm}
 	\begin{align*}
 		\bx &= \bg_{\btheta}(\bz) \quad \Rightarrow \quad {\color{violet} x_j} = \sigma_{j, \btheta} ({\color{violet} \bx_{1:j-1}}) \cdot {\color{teal} z_j} + \mu_{j, \btheta}({\color{violet} \bx_{1:j-1}}) \\
@@ -441,22 +442,21 @@
 			\item The inverse $\bg_{\btheta}(\bz) = \bff_{\btheta}^{-1}(\bz)$ is only needed for sampling.
 		\end{itemize}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017}
 \end{frame}
 %=======
 \begin{frame}{Gaussian Autoregressive NF}
+	\myfootnotewithlink{https://blog.evjang.com/2018/01/nf2.html}{Image credit: https://blog.evjang.com/2018/01/nf2.html}
 	\vspace{-0.5cm}
 	\begin{align*}
 		\bx &= \bg_{\btheta}(\bz) \quad \Rightarrow \quad {\color{violet} x_j} = \sigma_{j, \btheta} ({\color{violet} \bx_{1:j-1}}) \cdot {\color{teal} z_j} + \mu_{j, \btheta}({\color{violet} \bx_{1:j-1}}) \\
 		\bz &= \bff_{\btheta}(\bx) \quad \Rightarrow \quad {\color{teal} z_j} = \frac{{\color{violet}x_j} - \mu_{j, \btheta}({\color{violet}\bx_{1:j-1}})}{\sigma_{j, \btheta} ({\color{violet}\bx_{1:j-1}})}
 	\end{align*}
-	
+	\vspace{-0.5cm}
 	\begin{itemize}
 		\item Sampling must be done sequentially, but density estimation can be parallelized.
 		\item The forward KL divergence is a natural objective for training.
 	\end{itemize}
 	\vspace{-0.3cm}
-	
 	\begin{minipage}[t]{0.65\columnwidth}
 		\begin{block}{Forward Transformation: $\bff_{\btheta}(\bx)$}
 			\[
@@ -486,12 +486,12 @@
 			\includegraphics[width=.9\linewidth]{figs/af_iaf_explained_1.png}
 		\end{figure}
 	\end{minipage}
-	\myfootnotewithlink{https://blog.evjang.com/2018/01/nf2.html}{Image credit: https://blog.evjang.com/2018/01/nf2.html}
 \end{frame}
 %=======
 \subsection{Coupling Layer (RealNVP)}
 %=======
 \begin{frame}{RealNVP}
+	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density Estimation Using Real NVP, 2016} 
 	\vspace{-0.5cm}
 	Split $\bx$ and $\bz$ into two parts: 
 	\[
@@ -523,10 +523,10 @@
 		\end{minipage}
 	\end{block}
 	\vspace{-0.5cm}
-	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density Estimation Using Real NVP, 2016} 
 \end{frame}
 %=======
 \begin{frame}{RealNVP}
+	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density Estimation Using Real NVP, 2016} 
 	\begin{block}{Coupling Layer}
 		\vspace{-0.7cm}
 		\[
@@ -536,6 +536,7 @@
 		\]
 		In both training and sampling, only a single forward pass is needed!
 	\end{block}
+	\vspace{-0.3cm}
 	\begin{block}{Jacobian}
 		\vspace{-0.5cm}
 		\[
@@ -557,15 +558,14 @@
 	\end{block}
 	How can the RealNVP layer be derived as a special instance of the Gaussian autoregressive NF?
 	
-	\myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density Estimation Using Real NVP, 2016} 
 \end{frame}
 %=======
 \begin{frame}{Glow: Coupling Layers + Linear Flows ($1 \times 1$ Convolutions)}
+	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.9\linewidth]{figs/glow_faces.png}
 	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
 \end{frame}
 %=======
 \begin{frame}{Summary}

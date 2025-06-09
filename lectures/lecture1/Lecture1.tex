@@ -63,70 +63,71 @@
 \section{Generative Models Overview}
 %=======
 \begin{frame}{VAE -- The First Scalable Approach for Image Generation}
+\myfootnotewithlink{https://arxiv.org/abs/1312.6114}{Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013}
     \begin{figure}
         \centering
         \includegraphics[width=0.8\linewidth]{figs/vae.png}
     \end{figure}
-\myfootnotewithlink{https://arxiv.org/abs/1312.6114}{Kingma D.P., Welling M. Auto-Encoding Variational Bayes, 2013}
 \end{frame}
 %=======
 \begin{frame}{DCGAN -- The First Convolutional GAN for Image Generation}
+\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
     \begin{figure}
         \centering
         \includegraphics[width=1.0\linewidth]{figs/dcgan.png}
     \end{figure}
-\myfootnotewithlink{https://arxiv.org/abs/1511.06434}{Radford A., Metz L., Chintala S. Unsupervised Representation Learning with Deep Convolutional Generative Adversarial Networks, 2015}
 \end{frame}
 %=======
 \begin{frame}{StyleGAN -- High-Quality Face Generation}
+	\vspace{-0.2cm}
+	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.85\linewidth]{figs/gan_evolution}
 	\end{figure}
-	\vspace{-0.2cm}
+	\vspace{-0.5cm}
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.75\linewidth]{figs/stylegan}
 	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1812.04948}{Karras T., Laine S., Aila T. A Style-Based Generator Architecture for Generative Adversarial Networks, 2018}
 \end{frame}
 %=======
 \begin{frame}{Language Modeling at Scale}
+	\myfootnotewithlink{https://blog.biocomm.ai/2023/05/14/open-source-proliferation-llm-evolutionary-tree/}{Image credit: https://blog.biocomm.ai/2023/05/14/open-source-proliferation-llm-evolutionary-tree/}
 	\begin{figure}
 		\includegraphics[width=0.85\linewidth]{figs/LLM-Evolutionary-Tree}
 	\end{figure}
-\myfootnotewithlink{https://blog.biocomm.ai/2023/05/14/open-source-proliferation-llm-evolutionary-tree/}{Image credit: https://blog.biocomm.ai/2023/05/14/open-source-proliferation-llm-evolutionary-tree/}
 \end{frame}
 %=======
 \begin{frame}{Denoising Diffusion Probabilistic Model}
+	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/diffusion_models}
 	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
 \end{frame}
 %=======
 \begin{frame}{Midjourney -- Impressive Text-to-Image Results}
+	\myfootnotewithlink{https://www.midjourney.com/explore}{Image credit: https://www.midjourney.com/explore}
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/midjourney}
 	\end{figure}
-	\myfootnotewithlink{https://www.midjourney.com/explore}{Image credit: https://www.midjourney.com/explore}
 \end{frame}
 %=======
 \begin{frame}{Stable Diffusion 3 -- Flow Matching}
+	\myfootnotewithlink{https://stability.ai/news/stable-diffusion-3}{Image credit: https://stability.ai/news/stable-diffusion-3}
 		\begin{figure}
 			\includegraphics[width=\linewidth]{figs/sd3_1}
 		\end{figure}
 		\begin{figure}
 			\includegraphics[width=\linewidth]{figs/sd3_2}
 		\end{figure}
-		\myfootnotewithlink{https://stability.ai/news/stable-diffusion-3}{Image credit: https://stability.ai/news/stable-diffusion-3}
 \end{frame}
 %=======
 \begin{frame}{Sora -- Video Generation}
+	\myfootnotewithlink{https://openai.com/index/sora}{Image credit: https://openai.com/index/sora}
 		\begin{figure}
 			\includegraphics[width=\linewidth]{figs/sora}
 		\end{figure}
-		\myfootnotewithlink{https://openai.com/index/sora}{Image credit: https://openai.com/index/sora}
 \end{frame}
 %=======
 \section{Course Tricks}
@@ -424,6 +425,7 @@
 \end{frame}
 %=======
 \begin{frame}{Autoregressive Models: MLP}
+	\myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{Image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
 	For large $j$, the conditional $p(x_j | \bx_{1:j - 1}, \btheta)$ becomes intractable as the history $\bx_{1:j-1}$ grows variable-length.
 	\begin{block}{Markov Assumption}
 		\vspace{-0.5cm}
@@ -452,10 +454,10 @@
 			 Can we also model continuous-valued data, not just the discrete case?
 		\end{minipage}
 	\end{block}
-	\myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{Image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
 \end{frame}
 %=======
 \begin{frame}{Autoregressive Models: LLM}
+	\myfootnotewithlink{https://jmtomczak.github.io/blog/20/20\_llms.html}{Image credit: https://jmtomczak.github.io/blog/20/20\_llms.html}
 	$$
 		p(x_j | \bx_{1:j - 1}, \btheta) = p(x_j | \bx_{j - d:j - 1}, \btheta),\quad d\ \text{is the context window}.
 	$$
@@ -463,10 +465,10 @@
 		   \centering
 		   \includegraphics[width=1.0\linewidth]{figs/llm_modeling}
 	 \end{figure}
-	 \myfootnotewithlink{https://jmtomczak.github.io/blog/20/20\_llms.html}{Image credit: https://jmtomczak.github.io/blog/20/20\_llms.html}
 \end{frame}
 %=======
 \begin{frame}{Autoregressive Models for Images}
+	\myfootnotewithlink{https://arxiv.org/abs/1601.06759}{Oord A., Kalchbrenner N., Kavukcuoglu K. Pixel Recurrent Neural Networks, 2016}
 	How do we model the distribution $\pi(\bx)$ of natural images?
 	$$
   		p(\bx | \btheta) = \prod_{j=1}^{\text{width} \times \text{height}} p(x_j | \bx_{1:j-1}, \btheta)
@@ -484,15 +486,14 @@
    			\includegraphics[width=0.9\linewidth]{figs/pixelcnn1.png}
 		\end{figure}
 	\end{minipage}
-	\myfootnotewithlink{https://arxiv.org/abs/1601.06759}{Oord A., Kalchbrenner N., Kavukcuoglu K. Pixel Recurrent Neural Networks, 2016}
 \end{frame}
 %=======
 \begin{frame}{Autoregressive Models: ImageGPT}
+	\myfootnotewithlink{https://cdn.openai.com/papers/Generative_Pretraining_from_Pixels_V2.pdf}{Chen M. et al. Generative Pretraining from Pixels, 2020}
 	\begin{figure}
 		\centering
   			\includegraphics[width=0.65\linewidth]{figs/imagegpt.png}
 	\end{figure}
-	\myfootnotewithlink{https://cdn.openai.com/papers/Generative_Pretraining_from_Pixels_V2.pdf}{Chen M. et al. Generative Pretraining from Pixels, 2020}
 \end{frame}
 %=======
 \begin{frame}{Summary}

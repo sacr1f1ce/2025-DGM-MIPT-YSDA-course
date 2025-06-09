@@ -100,6 +100,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnote{\href{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html} \\ \href{https://arxiv.org/abs/1906.02691}{Kingma D. P., Welling M. An Introduction to Variational Autoencoders, 2019}}
 	\vspace{-0.3cm}
 	\[
 	 	\cL_{q, \btheta}(\bx) = \bbE_{q} \log p(\bx | \bz, \btheta) - \KL (q(\bz | \bx, \bphi) \| p(\bz))
@@ -117,10 +118,10 @@
 			\includegraphics[width=\linewidth]{figs/vae_scheme}
 		\end{figure}
 	\end{minipage}
-	\myfootnote{\href{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html} \\ \href{https://arxiv.org/abs/1906.02691}{Kingma D. P., Welling M. An Introduction to Variational Autoencoders, 2019}}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/2007.02731}{Nielsen D., et al. SurVAE Flows: Surjections to Bridge the Gap between VAEs and Flows, 2020}
 	\begin{table}[]
 		\begin{tabular}{l|c|c}
 			& \textbf{VAE} & \textbf{NF} \\ \hline
@@ -140,10 +141,10 @@
 		q(\bz | \bx, \btheta) = p(\bz | \bx, \btheta) = \delta (\bz - \bff_{\btheta}(\bx)).
 		\]
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/2007.02731}{Nielsen D., et al. SurVAE Flows: Surjections to Bridge the Gap between VAEs and Flows, 2020}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 	\begin{block}{Assumptions}
 		\begin{itemize}
 			\item Let $c \sim \Cat(\bpi)$, where 
@@ -171,16 +172,16 @@
 		\item We'll require an analogue of the reparameterization trick for discrete $q(c | \bx, \bphi)$.
 		\item Our decoder $p(\bx | c, \btheta)$ must accept the discrete variable $c$ as input.
 	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Outline}
 	\tableofcontents
 \end{frame}
 %=======
-\section{Vector Quantization: (Discrete VAE Latent Representations)}
+\section{Vector Quantization: Discrete VAE Latent Representations}
 %=======
 \begin{frame}{Vector Quantization}
+	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
 	Define the codebook (dictionary) space $\{\be_k\}_{k=1}^K$ with $\be_k \in \bbR^L$ and $K$ the number of codebook entries.
 	\begin{block}{Quantized Representation}
 		A quantized vector $\bz_q \in \bbR^{L}$, for any $\bz \in \bbR^L$, is defined via nearest-neighbor lookup in the codebook:
@@ -204,10 +205,10 @@
 			\end{figure}
 		\end{minipage}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE (VQ-VAE)}
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 	\begin{itemize}
 		\item The encoder outputs a continuous vector $\bz_e = \text{NN}_{e, \bphi}(\bx) \in \bbR^{L}$.
 		\item Quantization deterministically maps $\bz_e$ to its quantized codebook vector $\bz_q$.
@@ -227,10 +228,10 @@
 	\end{block}	
 	\vspace{-0.4cm}
 	\textbf{Note:} The KL regularizer becomes constant and has no direct effect on the ELBO objective in this case.
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE (VQ-VAE): Forward}
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 	\begin{block}{Deterministic Variational Posterior}
 		\vspace{-0.3cm}
 		\[
@@ -255,10 +256,10 @@
 	\end{figure}
 	\vspace{-0.3cm} 
 	\textbf{Challenge:} The $\argmin$ operation is non-differentiable.
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE (VQ-VAE): Backward}
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 	\begin{block}{ELBO}
 		\vspace{-0.5cm}
 		\[
@@ -278,10 +279,10 @@
 		= \frac{\partial \log p(\bx | \bz_q, \btheta)}{\partial \bz_q} \cdot {\color{red}\frac{\partial \bz_q}{\partial \bz_e}} \cdot \frac{\partial \bz_e}{\partial \bphi} \approx \frac{\partial \log p(\bx | \bz_q, \btheta)}{\partial \bz_q} \cdot \frac{\partial \bz_e}{\partial \bphi}
 		\end{multline*}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Vector Quantized VAE-2 (VQ-VAE-2)}
+	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
 	Extension to the spatial domain: $\bc \in \{1, \dots, K\}^{W \times H}$
 	\vspace{-0.3cm}
 	\[
@@ -295,12 +296,12 @@
 			\includegraphics[width=1.0\linewidth]{figs/vqvae2_diversity}
 		\end{figure}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1906.00446}{Razavi A., Oord A., Vinyals O. Generating Diverse High-Fidelity Images with VQ-VAE-2, 2019} 
 \end{frame}
 %=======
 \section{ELBO Surgery}
 %=======
 \begin{frame}{ELBO Surgery}
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO Surgery: Yet Another Way to Carve Up the Variational Evidence Lower Bound, 2016}
 	\vspace{-0.3cm}
 	\[
 	    \frac{1}{n} \sum_{i=1}^n \cL_{\bphi, \btheta}(\bx_i) = \frac{1}{n} \sum_{i=1}^n \Bigl[ \bbE_{q(\bz | \bx_i, \bphi)} \log p(\bx_i | \bz, \btheta) - \KL(q(\bz | \bx_i, \bphi) \| p(\bz)) \Bigr].
@@ -319,10 +320,10 @@
 			\item {\color{teal} The second term} reduces the information about $\bx$ encoded in~$\bz$.
 		\end{itemize}
 	\end{block}
-	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO Surgery: Yet Another Way to Carve Up the Variational Evidence Lower Bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{ELBO Surgery}
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO Surgery: Yet Another Way to Carve Up the Variational Evidence Lower Bound, 2016}
 		\vspace{-0.4cm}
 		\[
 		    \frac{1}{n} \sum_{i=1}^n \KL(q(\bz | \bx_i, \bphi) \| p(\bz)) = \KL(q_{\text{agg}}(\bz | \bphi) \| p(\bz)) + \bbI_q [\bx, \bz].
@@ -344,11 +345,11 @@
 			\bbI_{q} [\bx, \bz] = \frac{1}{n}\sum_{i=1}^n \KL(q(\bz | \bx_i, \bphi) \| q_{\text{agg}}(\bz | \bphi)).
 		\]
 	\end{block}
-
-	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO Surgery: Yet Another Way to Carve Up the Variational Evidence Lower Bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{ELBO Surgery}
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO Surgery: Yet Another Way to Carve Up the Variational Evidence Lower Bound, 2016}
+	\vspace{-0.3cm}
 	\begin{block}{Revisiting the ELBO}
 		\vspace{-0.7cm}
 		{\small
@@ -369,15 +370,14 @@
 		Hence, the optimal prior $p(\bz)$ is the aggregated variational posterior $q_{\text{agg}}(\bz | \bphi)$.
 	\end{block}
 	
-	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO Surgery: Yet Another Way to Carve Up the Variational Evidence Lower Bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{Marginal KL}
-	\vspace{-0.3cm}
+	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 	\[
 		\KL(q_{\text{agg}}(\bz | \bphi) \| p(\bz))
 	\]
-	\vspace{-0.3cm}
+	\vspace{-0.5cm}
 	\begin{itemize}
 		\item $q(\bz | \bx, \bphi) = \cN(\bmu_{\bphi}(\bx), \bsigma^2_{\bphi}(\bx))$ is unimodal. 
 		\item It is generally believed that the \textbf{mismatch between} $p(\bz)$  \textbf{and} $q_{\text{agg}}(\bz | \bphi)$  is the primary explanation for blurry VAE-generated images.
@@ -385,12 +385,12 @@
 	\begin{figure}
 		\includegraphics[width=0.8\linewidth]{figs/agg_posterior}
 	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/abs/1505.05770}{Rezende D. J., Mohamed S. Variational Inference with Normalizing Flows, 2015} 
 \end{frame}
 %=======
 \section{Learnable VAE Prior}
 %=======
 \begin{frame}{Optimal VAE Prior}
+	\myfootnotewithlink{https://jmtomczak.github.io/blog/7/7\_priors.html}{image credit: https://jmtomczak.github.io/blog/7/7\_priors.html}
 	\begin{itemize}
 		\item Standard Gaussian $p(\bz) = \cN(0, \bI)$ often leads to over-regularization.
 		\item $p(\bz) = q_{\text{agg}}(\bz | \bphi) = \frac{1}{n}\sum_{i=1}^n q(\bz | \bx_i, \bphi)$ risks overfitting and incurs high computational cost.
@@ -417,10 +417,10 @@
 	\frac{1}{n}\sum_{i=1}^n \cL_{\bphi, \btheta}(\bx_i) = \text{RL} - \text{MI} -  \KL(q_{\text{agg}}(\bz | \bphi) \| {\color{teal}p(\bz | \blambda)})
 	\]
 	This is the forward KL divergence with respect to $p(\bz | \blambda)$.
-	\myfootnotewithlink{https://jmtomczak.github.io/blog/7/7\_priors.html}{image credit: https://jmtomczak.github.io/blog/7/7\_priors.html}
 \end{frame}
 %=======
 \begin{frame}{NF-Based VAE Prior}
+	\myfootnotewithlink{https://arxiv.org/abs/1611.02731}{Chen X. et al. Variational Lossy Autoencoder, 2016}
 	\begin{block}{NF Model in Latent Space}
 		\vspace{-0.5cm}
 		\[
@@ -446,7 +446,6 @@
 			\end{multline*}
 		}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1611.02731}{Chen X. et al. Variational Lossy Autoencoder, 2016}
 \end{frame}
 %=======
 \begin{frame}{Summary}

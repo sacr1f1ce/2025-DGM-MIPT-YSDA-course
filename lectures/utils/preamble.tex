@@ -14,14 +14,14 @@
 \usepackage[noend]{algorithmic}
 \usepackage{tikz}
 \usepackage{blindtext}
+\usepackage{multido}
 \usetheme{default}%{Singapore}%{Warsaw}%{Warsaw}%{Darmstadt}
 \usecolortheme{default}
 
 \setbeamerfont{title}{size=\Huge}
-\setbeamertemplate{footline}[page number]{}
+\setbeamertemplate{footline}[frame number]{}
 
 \setbeamertemplate{section in toc}[sections numbered]
-
 
 \makeatletter
 \newcommand\HUGE{\@setfontsize\Huge{35}{40}}
@@ -30,24 +30,22 @@
 \setbeamerfont{title}{size=\HUGE}
 \beamertemplatenavigationsymbolsempty
 
-\input{../utils/newcommands}
-\input{../utils/title}
-
-\usepackage{tikz}
 \usetikzlibrary{arrows,shapes,positioning,shadows,trees}
 
 \newcommand\myfootnote[1]{%
+  \vspace{-0.5cm}%
   \tikz[remember picture,overlay]
   \draw (current page.south west) +(1in + \oddsidemargin,0.5em)
   node[anchor=south west,inner sep=0pt]{\parbox{\textwidth}{%
       \rlap{\rule{10em}{0.4pt}}\raggedright\scriptsize \textit{#1}}};}
 
 \newcommand\myfootnotewithlink[2]{%
+  \vspace{-0.5cm}%
   \tikz[remember picture,overlay]
   \draw (current page.south west) +(1in + \oddsidemargin,0.5em)
   node[anchor=south west,inner sep=0pt]{\parbox{\textwidth}{%
       \rlap{\rule{10em}{0.4pt}}\raggedright\scriptsize\href{#1}{\textit{#2}}}};}
-      
+
 \AtBeginSection[]
       {
       	\begin{frame}{Outline}
@@ -59,3 +57,26 @@
       		\tableofcontents[currentsection,currentsubsection]
       	\end{frame}
 }
+
+\newcounter{noscounter}
+\newcounter{pcounter}
+\newcommand{\nextonslide}[1]{%
+  \stepcounter{noscounter}%
+  \stepcounter{pcounter}%
+  \onslide<\value{noscounter}->{#1}%
+}
+\newcommand{\resetonslide}{%
+    \setcounter{noscounter}{1}%
+    \setcounter{pcounter}{0}%
+}
+
+\newcommand{\eqpause}{%
+  \multido{\i=1+1}{\value{pcounter}}{\pause}%
+  \stepcounter{noscounter}%
+  \setcounter{pcounter}{0}%
+  \pause%
+}
+\addtobeamertemplate{frametitle}{\resetonslide}{}
+
+\input{../utils/newcommands}
+\input{../utils/title}

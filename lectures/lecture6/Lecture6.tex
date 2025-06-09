@@ -9,6 +9,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 	\begin{block}{Assumptions}
 		\begin{itemize}
 			\item Let $c \sim \Cat(\bpi)$, where 
@@ -39,10 +40,10 @@
 		\] 
 		\vspace{-0.7cm}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.85\linewidth]{figs/vqvae}
@@ -71,10 +72,10 @@
 			\frac{\partial \log p(\bx | \bz_q , \btheta)}{\partial \bphi} = \frac{\partial \log p(\bx | \bz_q, \btheta)}{\partial \bz_q} \cdot {\color{red}\frac{\partial \bz_q}{\partial \bphi}} \approx \frac{\partial \log p(\bx | \bz_q, \btheta)}{\partial \bz_q} \cdot \frac{\partial \bz_e}{\partial \bphi}
 		\]
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 	\begin{block}{Theorem}
 		\vspace{-0.6cm}
 		\[
@@ -99,10 +100,10 @@
 		\vspace{-0.5cm}\\
 		Thus, the optimal prior distribution $p(\bz)$ is the aggregated variational posterior $q_{\text{agg}}(\bz | \bphi)$.
 	\end{block}
-	\myfootnotewithlink{http://approximateinference.org/accepted/HoffmanJohnson2016.pdf}{Hoffman M. D., Johnson M. J. ELBO surgery: yet another way to carve up the variational evidence lower bound, 2016}
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/1611.02731}{Chen X. et al. Variational Lossy Autoencoder, 2016}
 	\begin{itemize}
 		\item Standard Gaussian $p(\bz) = \cN(0, \bI)$ $\Rightarrow$ over-regularization.
 		\item $p(\bz) = q_{\text{agg}}(\bz | \bphi) = \frac{1}{n}\sum_{i=1}^n q(\bz | \bx_i, \bphi)$ $\Rightarrow$ overfitting and extremely high computational cost.
@@ -128,7 +129,6 @@
 		\]
 	\end{block}
 	\vspace{-0.5cm}
-	\myfootnotewithlink{https://arxiv.org/abs/1611.02731}{Chen X. et al. Variational Lossy Autoencoder, 2016}
 \end{frame}
 %=======
 \begin{frame}{Outline}
@@ -138,6 +138,7 @@
 \section{Likelihood-Free Learning}
 %=======
 \begin{frame}{Likelihood-Based Models}
+	\myfootnotewithlink{https://arxiv.org/abs/1511.01844}{Theis L., Oord A., Bethge M. A Note on the Evaluation of Generative Models, 2015}
 	\begin{minipage}[t]{0.48\columnwidth}
 		\begin{block}{Poor Likelihood \\ High-Quality Samples}
 			\vspace{-0.3cm}
@@ -164,7 +165,6 @@
 		\item Likelihood isn't always a suitable metric for evaluating generative models.
 		\item Sometimes, the likelihood function can't even be computed exactly.
 	\end{itemize}
-	\myfootnotewithlink{https://arxiv.org/abs/1511.01844}{Theis L., Oord A., Bethge M. A Note on the Evaluation of Generative Models, 2015}
 \end{frame}
 %=======
 \begin{frame}{Likelihood-Free Learning}
@@ -188,6 +188,7 @@
 \end{frame}
 %=======
 \begin{frame}{Generative Adversarial Networks (GAN)}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 	\begin{itemize}
 		\item The more expressive the discriminator, the closer we get to the optimal $p(\bx | \btheta)$.
 		\item Standard classifiers are trained by minimizing cross-entropy loss.
@@ -205,10 +206,10 @@
 	\begin{block}{Generative Model}
 		Suppose $p(\bx, \bz | \btheta) = p (\bx | \bz, \btheta) p(\bz)$, where $p(\bz)$ is a base distribution, and $p(\bx | \bz, \btheta) = \delta (\bx - \bG_{\btheta}(\bz))$ is deterministic.
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \begin{frame}{Generative Adversarial Networks (GAN)}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 	\begin{block}{Cross-Entropy for Discriminative Model}
 		\vspace{-0.3cm}
 		\[
@@ -228,7 +229,6 @@
 			\min_{G} \max_D \left[ \bbE_{\pi(\bx)} \log D(\bx) + \bbE_{p(\bz)} \log (1 - D(\bG(\bz))) \right]
 		\]
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \section{Generative Adversarial Networks (GAN)}
@@ -276,6 +276,7 @@
 \end{frame}
 %=======
 \begin{frame}{GAN Optimality}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 	\begin{block}{Theorem}
 		The minimax game
 		\vspace{-0.3cm}
@@ -296,10 +297,10 @@
 			\frac{d y(D)}{d D} = \frac{\pi(\bx)}{D(\bx)} - \frac{p(\bx | \btheta)}{1 - D(\bx)} = 0 \qquad \Rightarrow \quad D^*(\bx) = \frac{\pi(\bx)}{\pi(\bx) + p(\bx | \btheta)}
 		\]
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \begin{frame}{GAN Optimality}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 	\begin{block}{Proof Continued (Fixed $D = D^*$)}
 		\vspace{-0.5cm}
 		\begin{multline*}
@@ -320,11 +321,10 @@
 	\[
 		V(G^*, D^*) = -2\log 2, \quad \pi(\bx) = p(\bx | \btheta), \quad  D^*(\bx) = 0.5.
 	\]
-	
-	 \myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \begin{frame}{GAN Optimality}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 	\begin{block}{Theorem}
 		The following minimax game 
 		\vspace{-0.3cm}
@@ -344,10 +344,10 @@
 			\item Generator and discriminator losses typically oscillate during GAN training.
 		\end{itemize}
 	\end{block}
-	 \myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \begin{frame}{GAN Training}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 	Assume both generator and discriminator are parametric models: $D_{\bphi}(\bx)$ and $\bG_{\btheta}(\bz)$.
 	\begin{block}{Objective}
 		\vspace{-0.7cm}
@@ -367,10 +367,11 @@
 		\item There is no encoder present.
 	\end{itemize}
 
-	 \myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 \end{frame}
 %=======
 \begin{frame}{Mode Collapse}
+	\myfootnote{\href{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014} \\
+		\href{https://arxiv.org/abs/1611.02163}{Metz L. et al. Unrolled Generative Adversarial Networks, 2016}}
 	Mode collapse refers to the phenomenon where the generator in a GAN produces only one or a few different modes of the distribution.
 	\vspace{-0.15cm}
 	\begin{figure}
@@ -383,9 +384,6 @@
 		\includegraphics[width=1.0\linewidth]{figs/mode_collapse_4}
 	\end{figure}
 	Numerous methods have been proposed to tackle mode collapse: changing architectures, adding regularization terms, injecting noise.
-	
-	\myfootnote{\href{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014} \\
-		\href{https://arxiv.org/abs/1611.02163}{Metz L. et al. Unrolled Generative Adversarial Networks, 2016}}
 \end{frame}
 %=======
 \begin{frame}{Jensen-Shannon vs Kullback-Leibler Divergences}
@@ -396,10 +394,10 @@
 	\begin{block}{Mode Covering vs. Mode Seeking}
 		\vspace{-0.7cm}
 		\[
-		\KL(\pi \,\|\, p) = \int \pi(\bx) \log \frac{\pi(\bx)}{p(\bx)}d\bx, \quad \KL(p\,\|\,\pi) = \int p(\bx) \log \frac{p(\bx)}{\pi(\bx)}d\bx
+			\KL(\pi \,\|\, p) = \int \pi(\bx) \log \frac{\pi(\bx)}{p(\bx)}d\bx, \quad \KL(p\,\|\,\pi) = \int p(\bx) \log \frac{p(\bx)}{\pi(\bx)}d\bx
 		\]
 		\[
-		\JSD(\pi \,\|\, p) = \frac{1}{2} \left[\KL \left(\pi(\bx) \,\|\, \frac{\pi(\bx) + p(\bx)}{2}\right) + \KL \left(p(\bx) \,\|\, \frac{\pi(\bx) + p(\bx)}{2}\right) \right]
+			\JSD(\pi \,\|\, p) = \frac{1}{2} \Bigl[\KL \Bigl(\pi(\bx) \,\|\, \frac{\pi(\bx) + p(\bx)}{2}\Bigr) + \KL \Bigl(p(\bx) \,\|\, \frac{\pi(\bx) + p(\bx)}{2}\Bigr) \Bigr]
 		\]
 		\vspace{-0.7cm}
 		\begin{minipage}[t]{0.33\columnwidth}
@@ -424,6 +422,8 @@
 \section{Wasserstein Distance}
 %=======
 \begin{frame}{Theoretical Results}
+	\myfootnote{\href{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} \\ 
+		\href{https://arxiv.org/abs/1701.04862}{Arjovsky M., Bottou L. Towards Principled Methods for Training Generative Adversarial Networks, 2017}}
 	\vspace{-0.3cm}
 	\begin{itemize}
 		\item The dimensionality of $\bz$ is less than that of $\bx$, so $p(\bx | \btheta)$ with $\bx = \bG_{\btheta}(\bz)$ lives on a low-dimensional manifold.
@@ -439,11 +439,10 @@
 		\KL(\pi\,\|\,p) = \KL(p\,\|\,\pi) = \infty, \quad \JSD(\pi\,\|\,p) = \log 2
 		\]
 	\end{itemize}
-	\myfootnote{\href{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} \\ 
-		\href{https://arxiv.org/abs/1701.04862}{Arjovsky M., Bottou L. Towards Principled Methods for Training Generative Adversarial Networks, 2017}}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein Distance (Discrete)}
+	\myfootnotewithlink{https://udlbook.github.io/udlbook/}{Simon J.D. Prince. Understanding Deep Learning, 2023}
 	Also known as the \textbf{Earth Mover's Distance}.
 	\begin{block}{Optimal Transport Formulation}
 		The minimum cost of moving and transforming a pile of "dirt" shaped like one probability distribution to match another.
@@ -452,10 +451,10 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/discrete_wasserstein}
 	\end{figure}
-	\myfootnotewithlink{https://udlbook.github.io/udlbook/}{Simon J.D. Prince. Understanding Deep Learning, 2023}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein Distance (Continuous)}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 	\vspace{-0.7cm}
 	\[
 	W(\pi, p) = \inf_{\gamma \in \Gamma(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \| =  \inf_{{\color{olive}\gamma} \in {\color{teal}\Gamma(\pi, p)}} \int {\color{violet} \| \bx - \by \|}\, {\color{olive}\gamma (\bx, \by)} d \bx d \by
@@ -479,11 +478,11 @@
 		\vspace{-0.4cm}
 	\end{block}
 	In our setting, $W(\pi, p) = W_1(\pi, p)$, which is the transport cost using the $\ell_1$ norm.
-	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein Distance vs KL vs JSD}
-	
+	\myfootnote{\href{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} \\ 
+		\href{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}}
 	\begin{minipage}[t]{0.48\columnwidth}
 		\vspace{0.1cm}
 		Consider two-dimensional distributions:
@@ -517,12 +516,10 @@
 		W(\pi, p) = |\theta|
 		\]
 	\end{itemize}
-	
-	\myfootnote{\href{https://arxiv.org/abs/1904.08994}{Weng L. From GAN to WGAN, 2019} \\ 
-		\href{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein Distance vs KL vs JSD}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 	\begin{block}{Theorem 1}
 		Let $\bG_{\btheta}(\bz)$ be (almost) any feedforward neural network, and $p(\bz)$ a prior over $\bz$ such that $\bbE_{p(\bz)} \|\bz\| < \infty$. Then $W(\pi, p)$ is continuous everywhere and differentiable almost everywhere.
 	\end{block}
@@ -535,12 +532,12 @@
 		\end{align}
 		In summary, as $t \rightarrow \infty$, (1) $\Rightarrow$ (2), and (2) $\Rightarrow$ (3).
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
 \section{Wasserstein GAN}
 %=======
 \begin{frame}{Wasserstein GAN}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 	\begin{block}{Wasserstein Distance}
 		\vspace{-0.5cm}
 		\[
@@ -561,11 +558,10 @@
 		\vspace{-0.6cm}
 	\end{block}
 	We can thus estimate $W(\pi\,\|\,p)$ using only samples and a neural function $f$.
-	
-	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein GAN}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 	\begin{block}{Theorem (Kantorovich-Rubinstein Duality)}
 		\[
 		W(\pi\,\|\,p) = \frac{1}{K} \max_{\| f \|_L \leq K} \Bigl[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\Bigr]
@@ -580,10 +576,10 @@
 	\begin{multline*}
 		K \cdot W(\pi\,\|\,p) = \max_{\| f \|_L \leq K} \Bigl[ \bbE_{\pi(\bx)} f(\bx)  - \bbE_{p(\bx)} f(\bx)\Bigr]\ \geq\ \\  \geq \max_{\bphi \in \boldsymbol{\Phi}} \Bigl[ \bbE_{\pi(\bx)} f_{\bphi}(\bx)  - \bbE_{p(\bx)} f_{\bphi}(\bx)\Bigr]
 	\end{multline*}
-	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein GAN}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 	\begin{block}{Standard GAN Objective}
 		\vspace{-0.2cm}
 		\[
@@ -606,10 +602,12 @@
 			\item If $c$ is small, gradients may vanish.
 		\end{itemize}
 	\end{itemize}	
-	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
 \begin{frame}{Wasserstein GAN}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+	\vspace{-0.3cm}
+	
 	\begin{minipage}[t]{0.6\columnwidth}
 		\begin{itemize}
 			\item WGAN provides nonzero gradients even if distributions' supports are disjoint.
@@ -635,7 +633,6 @@
 			\includegraphics[width=0.95\linewidth]{figs/wgan_quality}
 		\end{figure}
 	\end{minipage}
-	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 \end{frame}
 %=======
 \begin{frame}{Summary}

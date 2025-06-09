@@ -10,6 +10,7 @@
 
 %=======
 \begin{frame}{Recap of Previous Lecture}
+	\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019} 
 	\begin{block}{Forward KL for NF}
 	  	\vspace{-0.1cm}
 		\[
@@ -36,7 +37,6 @@
 			\item $\bx \sim \pi(\bx)$, $\bz = \bff_{\btheta}(\bx)$, so $\bz \sim p(\bz | \btheta)$.
 		\end{itemize}
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019} 
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
@@ -203,6 +203,7 @@
 \end{frame}
 %=======
 \begin{frame}{Variational EM Illustration}
+	\myfootnote{Bishop C., Deep Learning: Foundations and Concepts, 2024}
 	\begin{itemize}
 		\item E-step:
 		\[
@@ -217,7 +218,6 @@
 		\includegraphics[width=\linewidth]{figs/em_bishop4}
 	\end{figure}
 		
-	\myfootnote{Bishop C., Deep Learning: Foundations and Concepts, 2024}
 \end{frame}
 %=======
 \begin{frame}{Variational EM Algorithm}
@@ -251,6 +251,7 @@
 \subsection{ELBO Gradients, Reparametrization Trick}
 %=======
 \begin{frame}{ELBO Gradients: M-Step $(\nabla_{\btheta} \cL_{\bphi, \btheta}(\bx))$}
+	\myfootnotewithlink{https://jmtomczak.github.io/blog/4/4\_VAE.html}{image credit: https://jmtomczak.github.io/blog/4/4\_VAE.html}
 	\vspace{-0.3cm}
 	\[
 	 	\cL_{q, \btheta}(\bx) = \bbE_{q} \log p(\bx | \bz, \btheta) - \KL (q(\bz | \bx, \bphi) \| p(\bz))
@@ -274,7 +275,6 @@
 		\vspace{-0.5cm} 
 	\end{block}
 	The variational posterior $q(\bz|\bx, \bphi)$ typically concentrates more probability mass in a much smaller region than the prior $p(\bz)$. 
-	\myfootnotewithlink{https://jmtomczak.github.io/blog/4/4\_VAE.html}{image credit: https://jmtomczak.github.io/blog/4/4\_VAE.html}
 \end{frame}
 %=======
 \begin{frame}{ELBO Gradients: E-Step $(\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx))$}
@@ -417,6 +417,7 @@
 \end{frame}
 %=======
 \begin{frame}{Variational Autoencoder}
+	\myfootnote{\href{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html} \\ \href{https://arxiv.org/abs/1906.02691}{Kingma D. P., Welling M., An Introduction to Variational Autoencoders, 2019}}
 	\vspace{-0.3cm}
 	\[
 	 	\cL_{q, \btheta}(\bx) = \bbE_{q} \log p(\bx | \bz, \btheta) - \KL (q(\bz | \bx, \bphi) \| p(\bz))
@@ -434,10 +435,10 @@
 			\includegraphics[width=\linewidth]{figs/vae_scheme}
 		\end{figure}
 	\end{minipage}
-	\myfootnote{\href{http://ijdykeman.github.io/ml/2016/12/21/cvae.html}{image credit: http://ijdykeman.github.io/ml/2016/12/21/cvae.html} \\ \href{https://arxiv.org/abs/1906.02691}{Kingma D. P., Welling M., An Introduction to Variational Autoencoders, 2019}}
 \end{frame}
 %=======
 \begin{frame}{Variational Autoencoder}
+	\myfootnotewithlink{https://arxiv.org/pdf/2403.18103}{Chan S., Tutorial on Diffusion Models for Imaging and Vision, 2024}
 	\begin{itemize}
 		\item The encoder $q(\bz | \bx, \bphi) = \text{NN}_e(\bx, \bphi)$ outputs $\bmu_{\bphi}(\bx)$ and $\bsigma_{\bphi}(\bx)$.
 		\item The decoder $p(\bx | \bz, \btheta) = \text{NN}_d(\bz, \btheta)$ outputs parameters of the observed data distribution.
@@ -450,11 +451,10 @@
 		\centering
 		\includegraphics[width=0.9\linewidth]{figs/vae-decoder}
 	\end{figure}
-	
-	\myfootnotewithlink{https://arxiv.org/pdf/2403.18103}{Chan S., Tutorial on Diffusion Models for Imaging and Vision, 2024}
 \end{frame}
 %=======
 \begin{frame}{VAE vs Normalizing Flows}
+	\myfootnotewithlink{https://arxiv.org/abs/2007.02731}{Nielsen D., et al., SurVAE Flows: Surjections to Bridge the Gap Between VAEs and Flows, 2020}
 	\begin{table}[]
 		\begin{tabular}{l|c|c}
 			& \textbf{VAE} & \textbf{NF} \\ \hline
@@ -464,6 +464,7 @@
 			\textbf{Parameters}  & $\bphi, \btheta$ & $\btheta \equiv \bphi$\\ 
 		\end{tabular}
 	\end{table}
+	\vspace{-0.3cm}
 	\begin{block}{Theorem}
 		MLE for a normalizing flow is equivalent to maximizing the ELBO for a VAE where:
 		\vspace{-0.3cm}
@@ -474,7 +475,6 @@
 			q(\bz | \bx, \btheta) = \delta (\bz - \bff_{\btheta}(\bx)).
 		\]
 	\end{block}
-	\myfootnotewithlink{https://arxiv.org/abs/2007.02731}{Nielsen D., et al., SurVAE Flows: Surjections to Bridge the Gap Between VAEs and Flows, 2020}
 \end{frame}
 %=======
 \section{Discrete VAE Latent Representations}
@@ -529,6 +529,7 @@
 \end{frame}
 %=======
 \begin{frame}{Discrete VAE Latents}
+	\myfootnotewithlink{https://arxiv.org/pdf/2403.18103}{Chan S., Tutorial on Diffusion Models for Imaging and Vision, 2024}
 	\vspace{-0.3cm}
 	\[
 		\cL_{\bphi, \btheta}(\bx)  = \bbE_{q(c | \bx, \bphi)} \log p(\bx | c, \btheta) + \Ent(q(c | \bx, \bphi)) - \log K \rightarrow \max_{\bphi, \btheta}.
@@ -547,7 +548,6 @@
 		\centering
 		\includegraphics[width=0.9\linewidth]{figs/vae-decoder}
 	\end{figure}
-	\myfootnotewithlink{https://arxiv.org/pdf/2403.18103}{Chan S., Tutorial on Diffusion Models for Imaging and Vision, 2024}
 \end{frame}
 %=======
 \begin{frame}{Summary}
