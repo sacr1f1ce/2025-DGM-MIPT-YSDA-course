@@ -2,14 +2,12 @@
 \input{../utils/preamble}
 \createdgmtitle{1}
 
-\usepackage{tikz}
-\usetikzlibrary{arrows,shapes,positioning,shadows,trees}
-
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
 \begin{frame}[noframenumbering,plain]
 \titlepage
+\resetonslide
 \end{frame}
 
 %=======
@@ -140,6 +138,7 @@
 		$$
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Jensen's Inequality}
 		If $\bx \in \bbR^m$ is a continuous random variable with density $p(\bx)$ and $f: \bbR^m \to \bbR$ is convex, then
 		$$
@@ -147,6 +146,7 @@
 		$$
 		\vspace{-0.7cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Monte Carlo Estimation}
 		Let $\bx \in \bbR^m$ be a continuous random variable with density $p(\bx)$, and $\bff: \bbR^m \to \bbR^d$ be any vector-valued function. Then,
 		$$
@@ -160,16 +160,18 @@
 \begin{frame}{Course Tricks II}
 	\begin{block}{Change of Variables Theorem (CoV)}
 		Suppose $\bx$ is a continuous random variable with density $p(\bx)$, and $\bff: \bbR^m \to \bbR^m$ is differentiable and \textbf{invertible}. If $\by = \bff(\bx)$, then
-		$$
+		\[
 			p(\by) = p(\bx) \left|\det \left(  \frac{\partial \bx}{\partial \by} \right) \right| = p(\bff^{-1}(\by)) \left|\det \left(  \frac{\partial \bff^{-1}(\by)}{\partial \by} \right) \right|.
-		$$
+		\]
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Proof (1D)}
 		Assume $f$ is monotonically increasing.
-		$$
+		\[
 			F_Y(y) = P(Y \leq y) = P(x \leq f^{-1}(y)) = F_X(f^{-1}(y))
-		$$
+		\]
+        \eqpause
 		$$
 			p(y) = \frac{dF_Y(y)}{dy} = \frac{dF_X(f^{-1}(y))}{dy} = \frac{dF_X(x)}{dx} \frac{df^{-1}(y)}{dy} =  p(x) \frac{df^{-1}(y)}{dy}
 		$$
@@ -180,10 +182,11 @@
 	\begin{block}{Law of the Unconscious Statistician (LOTUS)}
 		Let $\bx \in \bbR^m$ be a continuous random variable with density $p(\bx)$, and let $\bff: \bbR^m \to \bbR^m$ be measurable. If $\by = \bff(\bx)$, then
 		$$
-			\bbE_{p(\by)} \bg(\by) = \int p(\by) \bg(\by) d\by = \int p(\bx) \bg(\bff(\bx)) d\bx = \bbE_{p(\bx)} \bg(\bff(\bx)).
+			\bbE_{p(\by)} \bg(\by) = \int p(\by) \bg(\by) d\by \nextonslide{= \int p(\bx) \bg(\bff(\bx)) d\bx = \bbE_{p(\bx)} \bg(\bff(\bx))}.
 		$$
 		\vspace{-0.4cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Dirac Delta Function}
 		Any deterministic variable $\bx_0$ can be interpreted as a random variable with density $p(\bx) = \delta(\bx - \bx_0)$. 
 		\vspace{-0.3cm}
@@ -195,6 +198,7 @@
 			\end{cases} \qquad 
 			\int \delta(\bx) d\bx = 1
 		$$
+        \eqpause
 		$$
 			\bbE_{p(\bx)}\bff(\bx) = \int \delta (\bx - \bx_0) \bff(\bx) d\bx = \bff(\bx_0)
 		$$
@@ -205,14 +209,16 @@
 %=======
 \begin{frame}{Problem Statement}
 	We're given i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pi(\bx)$.
-	
+	\eqpause
 	\begin{block}{Objective}
 		Our aim is to learn a distribution $\pi(\bx)$ that allows us to: 
 		\begin{itemize}
 		    \item Evaluate $\pi(\bx)$ on novel data (answering ``How likely is an object $\bx$?'') --- \textbf{density estimation}; 
+		    \eqpause
 		    \item Generate new samples from $\pi(\bx)$ (sample $\bx \sim \pi(\bx)$) --- \textbf{generation}.
 		\end{itemize}
 	\end{block}
+	\eqpause
 	\begin{block}{Challenge}
 		The data is high-dimensional and complex. For example, image datasets live in $\bbR^{\text{width} \times \text{height} \times \text{channels}}$. The curse of dimensionality makes accurately estimating $\pi(\bx)$ infeasible.
 	\end{block}
@@ -234,21 +240,25 @@
 	        \includegraphics[width=\linewidth]{figs/histogram.png}
 	    \end{figure}
 	\end{minipage}
+    \eqpause
 	\textbf{MNIST example}: $28 \times 28$ grayscale images, with each image $\bx = (x_1, \dots, x_{784})$, $x_i \in \{0, 1\}$:
 	$$
 	    \pi(\bx) = \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}, \dots, x_1).
 	$$
+    \eqpause
 	A complete histogram would require $2^{28 \times 28} - 1$ parameters for~$\pi(\bx)$.\\
 	\textbf{Question:} How many parameters are required in these cases?
 	\begin{align*}
 	    \pi(\bx) &= \pi(x_1) \cdot \pi(x_2)\cdot \dots \cdot \pi(x_m); \\
-	    \pi(\bx) &= \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}).
+        \nextonslide{
+	    \pi(\bx) &= \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}).}
 	\end{align*}
 \end{frame}
 %=======
 \begin{frame}{Problem Statement: Conditional Models}
 	\begin{block}{Conditional Models}
 		In practice, we're typically interested in learning conditional models~$\pi(\bx | \by)$. 
+            \eqpause
 		\begin{itemize}
 			\item $\by = \emptyset$, $\bx$ = image $\quad\Rightarrow$ unconditional image model
 			\item $\by$ = class label, $\bx$ = image $\quad\Rightarrow$ class-conditional image model
@@ -266,9 +276,11 @@
 %=======
 \begin{frame}{Divergences}
 	\begin{itemize}
-	\item Let us fix a probabilistic model $p(\bx | \btheta)$---a parametric family of distributions.\\
+	\item Let us fix a probabilistic model $p(\bx | \btheta)$ -- a parametric family of distributions.\\
+        \eqpause
 	\item Instead of searching among all possible distributions for the true $\pi(\bx)$, we seek a functional approximation $p(\bx | \btheta) \approx \pi(\bx)$.
 	\end{itemize}
+    \eqpause
 	\begin{block}{What is a Divergence?}
 		Let $\cP$ be the set of all probability distributions. A mapping $D: \cP \times \cP \to \bbR$ is called a \textbf{divergence} if 
 		\begin{itemize}
@@ -276,6 +288,7 @@
 			\item $D(\pi \| p) = 0$ if and only if $\pi \equiv p$
 		\end{itemize}
 	\end{block}
+    \eqpause
 	\begin{block}{Divergence Minimization Problem}
 		\vspace{-0.3cm}
 		$$
@@ -288,24 +301,26 @@
 \begin{frame}{Forward KL vs Reverse KL (Kullback-Leibler Divergence)}
 	\begin{block}{Forward KL}
 		\vspace{-0.2cm}
-		$$
-		\KL(\pi \| p) = \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \rightarrow \min_{\btheta}
-		$$
+		\[
+			\KL(\pi \| p) = \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \rightarrow \min_{\btheta}
+		\]
 	\end{block}
+    \eqpause
 	\begin{block}{Reverse KL}
 		\vspace{-0.2cm}
-		$$
-		\KL(p \| \pi) = \int p (\bx| \btheta) \log \frac{p(\bx| \btheta)}{\pi(\bx)} d \bx \rightarrow \min_{\btheta}
-		$$
+		\[
+			\KL(p \| \pi) = \int p (\bx| \btheta) \log \frac{p(\bx| \btheta)}{\pi(\bx)} d \bx \rightarrow \min_{\btheta}
+		\]
 	\end{block}
+    \eqpause
 	What's the practical distinction between these two objectives?
-	
+    \eqpause
 	\begin{block}{Maximum Likelihood Estimation (MLE)}
 	Let $\{\bx_i\}_{i=1}^n$ be i.i.d.\ observed samples.
 		\vspace{-0.3cm}
-		$$
-		\btheta^* = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
-		$$
+		\[
+			\btheta^* = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
+		\]
 	\end{block}
 \end{frame}
 %=======
@@ -314,18 +329,20 @@
 		\vspace{-0.5cm}
 		\begin{align*}
 			\KL(\pi \| p) &= \int \pi(\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d\bx \\
-			&= {\color{violet}\int \pi (\bx) \log \pi(\bx) d \bx} - {\color{teal}\int \pi (\bx) \log p(\bx | \btheta) d \bx} \\
-			&= -{\color{teal}\bbE_{\pi(\bx)} [\log p(\bx | \btheta)]} + {\color{violet}\text{const}} \\
-			& \approx - \frac{1}{n} \sum_{i=1}^n \log p(\bx_i | \btheta) + \text{const} \rightarrow \min_{\btheta}.
+			\nextonslide{&= {\color{violet}\int \pi (\bx) \log \pi(\bx) d \bx} - {\color{teal}\int \pi (\bx) \log p(\bx | \btheta) d \bx}} \\
+			\nextonslide{&= -{\color{teal}\bbE_{\pi(\bx)} [\log p(\bx | \btheta)]} + {\color{violet}\text{const}}} \\
+			\nextonslide{& \approx - \frac{1}{n} \sum_{i=1}^n \log p(\bx_i | \btheta) + \text{const} \rightarrow \min_{\btheta}.}
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	Maximum likelihood estimation is thus equivalent to minimizing a Monte Carlo estimate of the forward KL divergence.
+    \eqpause
 	\begin{block}{Reverse KL}
 		\vspace{-0.5cm}
 		\begin{align*}
 			\KL(p \| \pi) &= \int p(\bx | \btheta) \log \frac{p(\bx | \btheta)}{\pi(\bx)} d \bx \\
-			&= \bbE_{p(\bx | \btheta)} \left[\log p(\bx | \btheta) - \log \pi(\bx)\right] \rightarrow \min_{\btheta}
+			\nextonslide{&= \bbE_{p(\bx | \btheta)} \left[\log p(\bx | \btheta) - \log \pi(\bx)\right] \rightarrow \min_{\btheta}}
 		\end{align*}
 		\vspace{-0.7cm}
 	\end{block}
@@ -389,10 +406,12 @@
 	    $$
 	    \vspace{-0.5cm}
     \end{block}
+    \eqpause
     \begin{itemize}
         \item This maximization is typically solved via gradient-based optimization.
         \item Thus, efficient computation of both $\log p(\bx | \btheta)$ and its gradient $\frac{\partial \log p(\bx | \btheta)}{\partial \btheta}$ is crucial.
     \end{itemize}
+    \eqpause
     \begin{block}{Likelihood as a Product of Conditionals}
     For $\bx = (x_1, \dots, x_m)$, $\bx_{1:j} = (x_1, \dots, x_j)$,
     $$
@@ -400,6 +419,7 @@
         \log p(\bx | \btheta) = {\color{violet}\sum_{j=1}^m \log p(x_j | \bx_{1:j - 1}, \btheta)}
     $$
     \end{block}
+    \eqpause
     \vspace{-0.5cm}
 	 $$
 	     \btheta^* =  \argmax_{\btheta} \sum_{i=1}^n \Big[{\color{violet} \sum_{j=1}^m \log p(x_{ij} | \bx_{i, 1:j - 1}, \btheta)}\Big]
@@ -407,19 +427,24 @@
 \end{frame}
 %=======
 \begin{frame}{Autoregressive Models}
-    $$
-    \log p(\bx| \btheta) = \sum_{j=1}^m \log p(x_j | \bx_{1:j - 1}, \btheta)
-    $$
+    \[
+    	\log p(\bx| \btheta) = \sum_{j=1}^m \log p(x_j | \bx_{1:j - 1}, \btheta)
+    \]
+    \eqpause
     \begin{itemize}
 	    \item Sampling is performed sequentially:
 	    \begin{itemize}
     		\item Sample $\hat{x}_1 \sim p(x_1 | \btheta)$;
+            \eqpause
     		\item Sample $\hat{x}_2 \sim p(x_2 | \hat{x}_1, \btheta)$;
+            \eqpause
     		\item $\ldots$
     		\item Sample $\hat{x}_m \sim p(x_m | \hat{\bx}_{1:m-1}, \btheta)$;
     		\item The generated sample is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \ldots, \hat{x}_m)$.
     	\end{itemize}
+        \eqpause
         \item Each conditional $p(x_j | \bx_{1:j - 1}, \btheta)$ can be modeled using a neural network.
+        \eqpause
         \item Modeling all conditionals separately isn't feasible. To address this, we share parameters across all conditionals.
     \end{itemize}
 \end{frame}
@@ -427,12 +452,14 @@
 \begin{frame}{Autoregressive Models: MLP}
 	\myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{Image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
 	For large $j$, the conditional $p(x_j | \bx_{1:j - 1}, \btheta)$ becomes intractable as the history $\bx_{1:j-1}$ grows variable-length.
+    \eqpause
 	\begin{block}{Markov Assumption}
-		\vspace{-0.5cm}
+		\vspace{-0.7cm}
 		$$
 			p(x_j | \bx_{1:j - 1}, \btheta) = p(x_j | \bx_{j - d:j - 1}, \btheta),\quad d\;\text{is a fixed parameter}.
 		$$
 	\end{block}
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Example}
 		\begin{minipage}[t]{0.39\columnwidth}
@@ -451,6 +478,7 @@
 			   \centering
 			   \includegraphics[width=1.0\linewidth]{figs/sequential_MLP}
 			 \end{figure}
+			 \eqpause
 			 Can we also model continuous-valued data, not just the discrete case?
 		\end{minipage}
 	\end{block}
@@ -458,9 +486,9 @@
 %=======
 \begin{frame}{Autoregressive Models: LLM}
 	\myfootnotewithlink{https://jmtomczak.github.io/blog/20/20\_llms.html}{Image credit: https://jmtomczak.github.io/blog/20/20\_llms.html}
-	$$
+	\[
 		p(x_j | \bx_{1:j - 1}, \btheta) = p(x_j | \bx_{j - d:j - 1}, \btheta),\quad d\ \text{is the context window}.
-	$$
+	\]
 	 \begin{figure}
 		   \centering
 		   \includegraphics[width=1.0\linewidth]{figs/llm_modeling}
@@ -473,10 +501,12 @@
 	$$
   		p(\bx | \btheta) = \prod_{j=1}^{\text{width} \times \text{height}} p(x_j | \bx_{1:j-1}, \btheta)
 	$$
+    \eqpause
 	\begin{minipage}[t]{0.5\columnwidth}
 		\vspace{0.5cm}
 		\begin{itemize}
 			\item A pixel ordering must be selected; the raster scan is a standard choice.
+			\vfill
 		    \item RGB channel dependencies can be modeled explicitly as well.
 		\end{itemize}
 	\end{minipage}%
