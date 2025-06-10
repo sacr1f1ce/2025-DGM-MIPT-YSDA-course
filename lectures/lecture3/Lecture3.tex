@@ -2,13 +2,12 @@
 \input{../utils/preamble}
 \createdgmtitle{3}
 
-\usepackage{tikz}
-\usetikzlibrary{arrows,shapes,positioning,shadows,trees}
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
 \begin{frame}[noframenumbering,plain]
 	\titlepage
+	\resetonslide
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
@@ -118,25 +117,25 @@
 
 	Let us partition $\bx$ and $\bz$ into two groups: 
 	\[
-	\bx = [\bx_1, \bx_2] = [\bx_{1:d}, \bx_{d+1:m}]; \quad \bz = [\bz_1, \bz_2] = [\bz_{1:d}, \bz_{d+1:m}].
+		\bx = [\bx_1, \bx_2] = [\bx_{1:d}, \bx_{d+1:m}]; \quad \bz = [\bz_1, \bz_2] = [\bz_{1:d}, \bz_{d+1:m}].
 	\]
 	\vspace{-0.7cm}
 	\begin{block}{Coupling Layer}
 		\vspace{-0.7cm}
 		\[
-		\begin{cases} {\color{violet}\bx_1} = {\color{teal}\bz_1}; \\ {\color{violet}\bx_2} = {\color{teal}\bz_2} \odot \bsigma_{\btheta}({\color{teal}\bz_1}) + \bmu_{\btheta}({\color{teal}\bz_1}).\end{cases}  
-		\begin{cases} {\color{teal}\bz_1} ={\color{violet} \bx_1}; \\ {\color{teal}\bz_2} = \left({\color{violet}\bx_2} - \bmu_{\btheta}({\color{violet}\bx_1}) \right) \odot \frac{1}{\bsigma_{\btheta}({\color{violet}\bx_1})}.\end{cases}
+			\begin{cases} {\color{violet}\bx_1} = {\color{teal}\bz_1}; \\ {\color{violet}\bx_2} = {\color{teal}\bz_2} \odot \bsigma_{\btheta}({\color{teal}\bz_1}) + \bmu_{\btheta}({\color{teal}\bz_1}).\end{cases}  
+			\begin{cases} {\color{teal}\bz_1} ={\color{violet} \bx_1}; \\ {\color{teal}\bz_2} = \left({\color{violet}\bx_2} - \bmu_{\btheta}({\color{violet}\bx_1}) \right) \odot \frac{1}{\bsigma_{\btheta}({\color{violet}\bx_1})}.\end{cases}
 		\]
 		Both density estimation and sampling require just a single pass!
 	\end{block}
 	\begin{block}{Jacobian}
 		\vspace{-0.3cm}
 		\[
-		\det \left( \frac{\partial \bz}{\partial \bx} \right) = \det 
-		\begin{pmatrix}
-			\bI_d & 0_{d \times (m - d)} \\
-			\frac{\partial \bz_2}{\partial \bx_1} & \frac{\partial \bz_2}{\partial \bx_2}
-		\end{pmatrix} = \prod_{j=1}^{m - d} \frac{1}{\sigma_{j, \btheta}(\bx_1)}.
+			\det \left( \frac{\partial \bz}{\partial \bx} \right) = \det 
+			\begin{pmatrix}
+				\bI_d & 0_{d \times (m - d)} \\
+				\frac{\partial \bz_2}{\partial \bx_1} & \frac{\partial \bz_2}{\partial \bx_2}
+			\end{pmatrix} = \prod_{j=1}^{m - d} \frac{1}{\sigma_{j, \btheta}(\bx_1)}.
 		\]
 	\end{block}
 	A coupling layer is a special instance of an gaussian autoregressive normalizing flow.
@@ -156,15 +155,19 @@
 			&= - \bbE_{\pi(\bx)} \log p(\bx | \btheta) + \text{const} \rightarrow \min_{\btheta}
 		\end{align*}
 	\end{block}
+    \eqpause
+	\vspace{-0.5cm}
 	\begin{block}{Forward KL for Normalizing Flows}
 	    \vspace{-0.1cm}
 		\[
 			\log p(\bx|\btheta) = \log p(\bff_{\btheta}(\bx)) + \log  |\det (\bJ_\bff)|
-		\]		
+		\]
+		\eqpause
 		\[
 			\KL(\pi \| p)  = - \bbE_{\pi(\bx)} \Big[\log p(\bff_{\btheta}(\bx)) + \log  |\det (\bJ_\bff)|\Big] + \text{const} 
 		\]
 		\vspace{-0.2cm}
+		\eqpause
 		\begin{itemize}
 			\item We need to compute $\bff_{\btheta}(\bx)$ and its Jacobian.
 			\item Access to the density $p(\bz)$ is required.
@@ -182,6 +185,7 @@
 			\end{align*}
 		\vspace{-0.7cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Reverse KL for Normalizing Flows (LOTUS Trick)}
   		\vspace{-0.3cm}
 		\[
@@ -191,10 +195,11 @@
 			\KL(p \| \pi)  = \bbE_{p(\bz)} \left[ {\color{violet} \log p(\bz) -  \log |\det (\bJ_\bg)| } - \log \pi(\bg_{\btheta}(\bz)) \right]
 		\]
 		\vspace{-0.3cm}
+		\eqpause
 		\begin{itemize}
-		\item We need to compute $\bg_{\btheta}(\bz)$ and its Jacobian.
-		\item Sampling from $p(\bz)$ is required (though direct evaluation is not), along with evaluating $\pi(\bx)$.
-		\item Evaluating $\bff_{\btheta}(\bx)$ is not required.
+			\item We need to compute $\bg_{\btheta}(\bz)$ and its Jacobian.
+			\item Sampling from $p(\bz)$ is required (though direct evaluation is not), along with evaluating $\pi(\bx)$.
+			\item Evaluating $\bff_{\btheta}(\bx)$ is not required.
 		\end{itemize}
 	\end{block}
 \end{frame}
@@ -204,11 +209,12 @@
 	\begin{block}{Theorem}
 		Fitting the NF model $p(\bx| \btheta)$ to a target distribution $\pi(\bx)$ via the forward KL (MLE) is equivalent to fitting the induced distribution $p(\bz| \btheta)$ to the base distribution $p(\bz)$ via the reverse KL:
 		\vspace{-0.2cm}
-		\[
+        \[
 			\argmin_{\btheta} \KL(\pi(\bx) \| p(\bx | \btheta)) = \argmin_{\btheta} \KL(p(\bz | \btheta) \| p(\bz)).
 		\]
 		\vspace{-0.9cm}
 	\end{block}
+	\eqpause
 	\begin{figure}
 		\includegraphics[width=0.85\linewidth]{figs/flows_how2}
 	\end{figure}
@@ -221,24 +227,26 @@
 		\[
 			\argmin_{\btheta} \KL(\pi(\bx) \| p(\bx | \btheta)) = \argmin_{\btheta} \KL(p(\bz | \btheta) \| p(\bz)).
 		\]
-		\vspace{-0.5cm}
+		\vspace{-0.7cm}
 	\end{block}
 	\begin{block}{Proof}
 		\begin{itemize}
 			\item $\bz \sim p(\bz)$, $\bx = \bg_{\btheta}(\bz)$, so $\bx \sim p(\bx| \btheta)$;
 			\item $\bx \sim \pi(\bx)$, $\bz = \bff_{\btheta}(\bx)$, so $\bz \sim p(\bz | \btheta)$;
 		\end{itemize}
+        \eqpause
 		\vspace{-0.3cm}
 		\begin{align*}
 			\log p(\bz | \btheta) &= \log \pi(\bg_{\btheta}(\bz)) + \log | \det ( \bJ_\bg) |; \\
 			\log p(\bx | \btheta) &= \log p(\bff_{\btheta}(\bx)) + \log | \det ( \bJ_\bff) |.
 		\end{align*}
-		\vspace{-1.5cm}
+        \eqpause
+		\vspace{-1.0cm}
 		\begin{multline*}
-			\\KL\left(p(\bz | \btheta) \| p(\bz) \right) = \bbE_{p(\bz | \btheta)} \bigl[ {\color{violet}\log p(\bz | \btheta)} - \log p(\bz) \bigr] = \\ 
-			= \bbE_{{\color{olive}p(\bz | \btheta)}} \left[ {\color{violet}\log \pi(\bg_{\btheta}(\bz)) +  \log |\det (\bJ_\bg)|} - \log p(\bz) \right] = \\
-			= \bbE_{{\color{olive}\pi(\bx)}} \left[ \log \pi(\bx) {\color{teal} - \log |\det (\bJ_\bff)| - \log p(\bff_{\btheta}(\bx))} \right] = \\
-			= \bbE_{\pi(\bx)} \Big[ \log \pi(\bx) {\color{teal} -\log p(\bx | \btheta)} \Big] = \KL (\pi(\bx) \| p(\bx | \btheta)).
+			\KL\left(p(\bz | \btheta) \| p(\bz) \right) = \bbE_{p(\bz | \btheta)} \bigl[ {\color{violet}\log p(\bz | \btheta)} - \log p(\bz) \bigr]
+			\nextonslide{ = \\ = \bbE_{{\color{olive}p(\bz | \btheta)}} \left[ {\color{violet}\log \pi(\bg_{\btheta}(\bz)) +  \log |\det (\bJ_\bg)|} - \log p(\bz) \right]}
+			\nextonslide{ = \\ = \bbE_{{\color{olive}\pi(\bx)}} \left[ \log \pi(\bx) {\color{teal} - \log |\det (\bJ_\bff)| - \log p(\bff_{\btheta}(\bx))} \right]}
+			\nextonslide{ = \\ = \bbE_{\pi(\bx)} \Big[ \log \pi(\bx) {\color{teal} -\log p(\bx | \btheta)} \Big] = \KL (\pi(\bx) \| p(\bx | \btheta)).}
 		\end{multline*}
 	\end{block}
 \end{frame}
@@ -261,6 +269,7 @@
 			\item $p(\btheta| \bx)$: posterior distribution.
 		\end{itemize}
 	\end{block}
+    \eqpause
 	\begin{block}{Interpretation}
 		\begin{itemize}
 			\item We begin with unknown variables $\btheta$ and a prior belief $p(\btheta)$.
@@ -275,13 +284,16 @@
 		\item $\bX = \{\bx_i\}_{i=1}^n$: observed samples;
 		\item $p(\btheta)$: prior distribution.
 	\end{itemize}
+    \eqpause
 	\begin{block}{Posterior Distribution}
 		\[
 			p(\btheta | \bX) = \frac{p(\bX | \btheta) p(\btheta)}{p(\bX)} = \frac{p(\bX | \btheta) p(\btheta)}{\int p(\bX | \btheta) p(\btheta) d \btheta} 
 		\]
 		\vspace{-0.2cm}
 	\end{block}
+    \eqpause
 	If the evidence $p(\bX)$ is intractable (due to high-dimensional integration), the posterior cannot be computed exactly.
+    \eqpause
     \begin{block}{Maximum a Posteriori (MAP) Estimation}
 	    \vspace{-0.2cm}
 	    \[
@@ -292,23 +304,26 @@
 %=======
 \begin{frame}{Latent Variable Models (LVM)}
 	\begin{block}{Maximum Likelihood Extimation (MLE) Problem}
-		\vspace{-0.5cm}
+		\vspace{-0.7cm}
 		\[
 		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	The distribution $p(\bx | \btheta)$ can be highly complex and often intractable (just like the true data distribution $\pi(\bx)$).
+    \eqpause
 	\begin{block}{Extended Probabilistic Model}
 		Introduce a latent variable $\bz$ for each observed sample $\bx$:
 		\[
-		p(\bx, \bz | \btheta) = p(\bx | \bz, \btheta) p(\bz); \quad 
+			p(\bx, \bz | \btheta) = p(\bx | \bz, \btheta) p(\bz); \quad 
 		\log p(\bx, \bz | \btheta) = \log p(\bx | \bz, \btheta) + \log p(\bz).
 		\]
 		\[
-		p(\bx | \btheta) = \int p(\bx, \bz | \btheta) d\bz = \int p(\bx | \bz, \btheta) p(\bz) d\bz.
+			\nextonslide{p(\bx | \btheta) = \int p(\bx, \bz | \btheta) d\bz = \int p(\bx | \bz, \btheta) p(\bz) d\bz.}
 		\]
 	\end{block}
+    \eqpause
 	\vspace{-0.3cm}
 	\begin{block}{Motivation}
 		Both $p(\bx | \bz, \btheta)$ and $p(\bz)$ are usually much simpler than $p(\bx | \btheta)$.
@@ -318,8 +333,9 @@
 \begin{frame}{Latent Variable Models (LVM)}
     \myfootnote{Bishop\,C. Pattern Recognition and Machine Learning, 2006}
 	\[
-	\log p(\bx | \btheta) = \log \int p(\bx | \bz, \btheta) p(\bz) d\bz \rightarrow \max_{\btheta}
+		\log p(\bx | \btheta) = \log \int p(\bx | \bz, \btheta) p(\bz) d\bz \rightarrow \max_{\btheta}
 	\]
+    \eqpause
 	\vspace{-0.6cm}
 	\begin{block}{Examples}
 		\begin{minipage}[t]{0.45\columnwidth}
@@ -335,6 +351,7 @@
 				\item $p(z) = \Cat(\bpi)$
 			\end{itemize}
 		\end{minipage}%
+        \eqpause
 		\begin{minipage}[t]{0.53\columnwidth}
 			\textit{PCA Model} \\
 			\vspace{-0.5cm}
@@ -356,10 +373,12 @@
 	\[
 		\sum_{i=1}^n \log p(\bx_i | \btheta) = \sum_{i=1}^n \log \int p(\bx_i| \bz_i, \btheta) p(\bz_i) d\bz_i \rightarrow \max_{\btheta}.
 	\]
+    \eqpause
 	\vspace{-0.7cm}
 	\begin{figure}
 		\includegraphics[width=.65\linewidth]{figs/lvm_diagram}
 	\end{figure}
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Naive Approach}
 		\vspace{-0.7cm}
@@ -368,6 +387,7 @@
 		\]
 		\vspace{-0.5cm} \\
 		where $\bz_k \sim p(\bz)$. \\
+        \eqpause
 		\textbf{Challenge:} As the dimensionality of $\bz$ increases, the number of samples needed to adequately cover the latent space grows exponentially.
 	\end{block}
 \end{frame}
@@ -379,16 +399,21 @@
 		\vspace{-0.7cm}
 		\begin{multline*}
 			\log p(\bx| \btheta) 
-			= \log \int p(\bx, \bz | \btheta) d\bz = \log \int \frac{q(\bz)}{q(\bz)} p(\bx, \bz | \btheta) d\bz = \\
-			= \log \bbE_{q} \left[\frac{p(\bx, \bz| \btheta)}{q(\bz)} \right] \geq \bbE_{q} \log \frac{p(\bx, \bz| \btheta)}{q(\bz)} = \cL_{q, \btheta}(\bx)
+			= \log \int p(\bx, \bz | \btheta) d\bz 
+			\nextonslide{= \log \int \frac{q(\bz)}{q(\bz)} p(\bx, \bz | \btheta) d\bz}
+			\nextonslide{= \\ = \log \bbE_{q} \left[\frac{p(\bx, \bz| \btheta)}{q(\bz)} \right]}
+			\nextonslide{ \geq \bbE_{q} \log \frac{p(\bx, \bz| \btheta)}{q(\bz)} = \cL_{q, \btheta}(\bx)}
 		\end{multline*}
 		\vspace{-0.3cm}
 	\end{block}
+    \eqpause
 	Here, $q(\bz)$ is any distribution such that $\int q(\bz) d\bz = 1$.
+    \eqpause
 	\begin{block}{Variational Evidence Lower Bound (ELBO)}
 		\[
 			 \cL_{q, \btheta}(\bx) = \bbE_{q} \log \frac{p(\bx, \bz| \btheta)}{q(\bz)}  \leq \log p(\bx| \btheta) 
 		\]
+    	\eqpause
 		This inequality holds for any choice of $q(\bz)$.
 	\end{block}
 \end{frame}
@@ -402,12 +427,13 @@
 	\begin{block}{Equality Derivation}
 		\vspace{-0.7cm}
 		\begin{multline*}
-			\cL_{q, \btheta}(\bx) = \int q(\bz) \log \frac{\color{teal}p(\bx, \bz | \btheta)}{q(\bz)}d\bz = \\ 
-			= \int q(\bz) \log \frac{\color{teal}p(\bz|\bx, \btheta)p(\bx| \btheta)}{q(\bz)}d\bz = \\
-			= \int q(\bz) \log p(\bx| \btheta) d\bz + \int q(\bz) \log \frac{p(\bz|\bx, \btheta)}{q(\bz)}d\bz = \\
-			= \log p(\bx| \btheta) - \KL(q(\bz) \| p(\bz|\bx, \btheta))
+			\cL_{q, \btheta}(\bx) = \int q(\bz) \log \frac{\color{teal}p(\bx, \bz | \btheta)}{q(\bz)}d\bz 
+			\nextonslide{= \\ = \int q(\bz) \log \frac{\color{teal}p(\bz|\bx, \btheta)p(\bx| \btheta)}{q(\bz)}d\bz}
+			\nextonslide{ = \\ = \int q(\bz) \log p(\bx| \btheta) d\bz + \int q(\bz) \log \frac{p(\bz|\bx, \btheta)}{q(\bz)}d\bz}
+			\nextonslide{ = \\ = \log p(\bx| \btheta) - \KL(q(\bz) \| p(\bz|\bx, \btheta))}
 		\end{multline*}
 	\end{block}
+    \eqpause
 	\vspace{-0.7cm}
 	\begin{block}{Variational Decomposition}
 		\vspace{-0.2cm}
@@ -415,29 +441,35 @@
 			\log p(\bx| \btheta) = \cL_{q, \btheta}(\bx) + {\color{violet}\KL(q(\bz) \| p(\bz|\bx, \btheta))} \geq \cL_{q, \btheta}(\bx).
 		\]
 	\end{block}
+    \eqpause
 	Here, ${\color{violet}\KL(q(\bz) \| p(\bz|\bx, \btheta)) \geq 0}$.
 \end{frame}
 %=======
 \begin{frame}{Variational Evidence Lower Bound (ELBO)}
 	\vspace{-0.3cm}
 	\begin{align*}
-		\cL_{q, \btheta}(\bx) &= \int q(\bz) \log \frac{\color{violet}p(\bx, \bz | \btheta)}{\color{teal}q(\bz)}d\bz = \\ 
-		&= \int q(\bz) \log {\color{violet}p(\bx | \bz, \btheta)} d\bz + \int q(\bz) \log \frac{\color{violet}p(\bz)}{\color{teal}q(\bz)}d\bz \\ 
-		&= \bbE_{q} \log p(\bx | \bz, \btheta) - \KL (q(\bz) \| p(\bz))
+		\cL_{q, \btheta}(\bx) &= \int q(\bz) \log \frac{\color{violet}p(\bx, \bz | \btheta)}{\color{teal}q(\bz)}d\bz \\ 
+		\nextonslide{&= \int q(\bz) \log {\color{violet}p(\bx | \bz, \btheta)} d\bz + \int q(\bz) \log \frac{\color{violet}p(\bz)}{\color{teal}q(\bz)}d\bz} \\ 
+		\nextonslide{&= \bbE_{q} \log p(\bx | \bz, \btheta) - \KL (q(\bz) \| p(\bz))}
 	\end{align*}
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Log-Likelihood Decomposition}
 		\vspace{-0.8cm}
 		\begin{multline*}
-			\log p(\bx| \btheta) = {\color{olive}\cL_{q, \btheta}(\bx)} + \KL(q(\bz) \| p(\bz|\bx, \btheta)) \\ = {\color{olive}\bbE_{q} \log p(\bx | \bz, \btheta) - \KL (q(\bz) \| p(\bz))} + \KL(q(\bz) \| p(\bz|\bx, \btheta)).
+			\log p(\bx| \btheta) = {\color{olive}\cL_{q, \btheta}(\bx)} + \KL(q(\bz) \| p(\bz|\bx, \btheta)) 
+			\nextonslide{ = \\ = {\color{olive}\bbE_{q} \log p(\bx | \bz, \btheta) - \KL (q(\bz) \| p(\bz))} + \KL(q(\bz) \| p(\bz|\bx, \btheta)).}
 		\end{multline*}
 		\vspace{-0.7cm}
 	\end{block}
+    \eqpause
 	\begin{itemize}
 		\item Instead of maximizing the likelihood, maximize the ELBO:
 		\[
 		\max_{\btheta} p(\bx | \btheta) \quad \rightarrow \quad \max_{q, \btheta} \cL_{q, \btheta}(\bx)
 		\]
+        \eqpause
+		\vspace{-0.3cm}
 		\item Maximizing the ELBO with respect to the \textbf{variational} distribution $q$ is equivalent to minimizing the KL divergence:
 		\[
 		\argmax_q \cL_{q, \btheta}(\bx) \equiv \argmin_q \KL(q(\bz) \| p(\bz|\bx, \btheta)).
@@ -452,22 +484,27 @@
 	\begin{multline*}
 		\cL_{q, \btheta}(\bx)  =  \bbE_{q} \log p(\bx | \bz, \btheta) - \KL (q(\bz) \| p(\bz)) = \\ = \bbE_q \Big[ \log p(\bx | \bz, \btheta) - \log \frac{q(\bz)}{p(\bz)} \Big]d\bz \rightarrow \max_{q, \btheta}.
 	\end{multline*}
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Block-Coordinate Optimization}
 		\begin{itemize}
 			\item Initialize $\btheta^*$;
+            \eqpause
 			\item \textbf{E-step} (optimize $\cL_{q, \btheta}(\bx)$ over $q$):
-			\vspace{-0.2cm}
+			\vspace{-0.5cm}
 			\begin{multline*}
 				q^*(\bz) = \argmax_q \cL_{q, \btheta^*}(\bx) = \\
 				= \argmin_q \KL(q(\bz) \| p(\bz | \bx, \btheta^*)) = p(\bz| \bx, \btheta^*);
 			\end{multline*}
+            \eqpause
+			\vspace{-0.3cm}
 			\item \textbf{M-step} (optimize $\cL_{q, \btheta}(\bx)$ over $\btheta$):
 			\vspace{-0.2cm}
 			\[
 			\btheta^* = \argmax_{\btheta} \cL_{q^*, \btheta}(\bx);
 			\]
-			\vspace{-0.2cm}
+			\vspace{-0.3cm}
+            \eqpause
 			\item Repeat the E-step and M-step until convergence.
 		\end{itemize}
 	\end{block}
@@ -485,6 +522,7 @@
 			\includegraphics[width=0.85\linewidth]{figs/em_bishop2}
 		\end{figure}
 	\end{minipage}
+    \eqpause
 	\begin{figure}
 		\includegraphics[width=.55\linewidth]{figs/em_bishop3}
 	\end{figure}
