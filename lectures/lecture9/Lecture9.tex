@@ -6,6 +6,7 @@
 %--------------------------------------------------------------------------------
 \begin{frame}[noframenumbering,plain]
 \titlepage
+    \resetonslide
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
@@ -173,12 +174,13 @@
         \]
         \vspace{-0.5cm}
     \end{block}
+    \eqpause
     \begin{block}{Conditioned Reverse Kernel (\textbf{Tractable})}
         \vspace{-0.6cm}
         \begin{align*}
             q(\bx_{t-1}|\bx_{t}, {\color{olive}\bx_0}) & = \frac{q(\bx_{t}|\bx_{t-1}, {\color{olive}\bx_0}) q(\bx_{t-1} | {\color{olive}\bx_0}) }{q(\bx_{t}| {\color{olive}\bx_0})} \\
-            & = \frac{\cN(\sqrt{1 - \beta_t} \cdot \bx_{t-1}, \beta_t \bI) \cdot \cN(\sqrt{\bar{\alpha}_{t-1}} \cdot \bx_0, (1 - \bar{\alpha}_{t-1}) \cdot \bI)}{ \cN(\sqrt{\bar{\alpha}_t} \cdot \bx_0, (1 - \bar{\alpha}_t) \cdot \bI)} \\
-            &= \cN(\tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t \cdot \bI)
+            \nextonslide{& = \frac{\cN(\sqrt{1 - \beta_t} \cdot \bx_{t-1}, \beta_t \bI) \cdot \cN(\sqrt{\bar{\alpha}_{t-1}} \cdot \bx_0, (1 - \bar{\alpha}_{t-1}) \cdot \bI)}{ \cN(\sqrt{\bar{\alpha}_t} \cdot \bx_0, (1 - \bar{\alpha}_t) \cdot \bI)}} \\
+            \nextonslide{&= \cN(\tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t \cdot \bI)}
         \end{align*}
         \vspace{-0.7cm}
     \end{block}
@@ -197,10 +199,12 @@
         q(\bx_t | \bx_{t-1}) &= \cN(\sqrt{1 - \beta_t} \cdot \bx_{t-1}, \beta_t \cdot \bI); \\
         q(\bx_t | \bx_0) &= \cN(\sqrt{\bar{\alpha}_t} \cdot \bx_0, (1 - \bar{\alpha}_t) \cdot \bI).
     \end{align*}
+    \eqpause
     \textbf{Reverse process} refers to an intractable distribution that can be approximated by a normal distribution (with unknown parameters) for small $\beta_t$:
     \[
         q(\bx_{t-1}|\bx_{t}) = \frac{q(\bx_{t}|\bx_{t-1}) q(\bx_{t-1})}{q(\bx_{t})} \approx \cN \left(\bmu_{\btheta, t}(\bx_t), \bsigma_{\btheta, t}^2(\bx_t)\right)
     \]
+    \eqpause
     \textbf{Conditioned reverse process} is a normal distribution with known parameters, describing how to denoise a noisy image $\bx_t$ when we know the clean image $\bx_0$.
     \[
         q(\bx_{t-1}|\bx_{t}, {\color{olive}\bx_0}) = \cN(\tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t \cdot \bI)
@@ -219,9 +223,11 @@
         \]    
         \vspace{-0.7cm}
     \end{block}
+    \eqpause
     \begin{figure}
         \includegraphics[width=0.8\linewidth]{figs/diffusion_pgm_forward}
     \end{figure}
+    \eqpause
     \vspace{-0.3cm}
     \begin{block}{Forward Diffusion}
         \begin{itemize}
@@ -241,10 +247,12 @@
     \[
         p(\bx, \bz | \btheta) = p(\bx | \bz, \btheta) p(\bz | \btheta)
     \]    
+    \eqpause
     \vspace{-0.5cm}
     \begin{figure}
         \includegraphics[width=0.8\linewidth]{figs/diffusion_pgm_reverse}
     \end{figure}
+    \eqpause
     \vspace{-0.2cm}
     \begin{block}{Reverse Diffusion}
         \begin{itemize}
@@ -252,12 +260,16 @@
             \[
                 p(\bx | \bz, \btheta) = p(\bx_0 | \bx_1, \btheta).
             \]
+            \vspace{-0.7cm}
+            \eqpause
             \item Prior distribution
             \vspace{-0.3cm}
             \[
                 p(\bz | \btheta) = p(\bx_1, \dots, \bx_T | \btheta) = \prod_{t=2}^T p(\bx_{t - 1} | \bx_t, \btheta)  \cdot p(\bx_T).
             \]
+            \vspace{-0.3cm}
         \end{itemize}
+        \eqpause
         \textbf{Note:} This differs from the vanilla VAE due to the complex decoder $p(\bx | \bz, \btheta)$ and the standard normal prior $p(\bz)$.
     \end{block}
 \end{frame}
@@ -273,13 +285,15 @@
         \]
         \vspace{-0.5cm}
     \end{block}
+    \eqpause
     \begin{block}{Derivation}
         \vspace{-0.5cm}
         \begin{align*}
             \cL_{\bphi, \btheta}(\bx) &= \bbE_{q({\color{teal}\bx_{1:T}} | \bx_0)} \log \frac{p(\bx_0, {\color{teal}\bx_{1:T}} | \btheta)}{q({\color{teal}\bx_{1:T}} | \bx_0)} \\
-            & = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \prod_{t=1}^T p(\bx_{t-1} | \bx_t, \btheta) }{\prod_{t=1}^T {\color{violet}q(\bx_t | \bx_{t-1})}}
+            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \prod_{t=1}^T p(\bx_{t-1} | \bx_t, \btheta) }{\prod_{t=1}^T {\color{violet}q(\bx_t | \bx_{t-1})}}}
         \end{align*}
         \vspace{-0.3cm}
+        \eqpause
         \begin{itemize}
             \item Let's try to decompose the ELBO into individual KL divergence terms.
             \item We need to replace $q(\bx_t | \bx_{t - 1})$ with $q(\bx_{t - 1} | \bx_t)$ in the denominator.
@@ -293,16 +307,17 @@
     \[
          {\color{teal}q(\bx_t | \bx_{t-1}, \bx_0)}  = \frac{q(\bx_{t-1}|\bx_t, \bx_0)q(\bx_{t} | \bx_0)}{q(\bx_{t-1}| \bx_0)}
     \]
+    \eqpause
     \vspace{-0.3cm}
     \begin{block}{Derivation (continued)}
         \vspace{-0.6cm}
         {\small
         \begin{align*}
             \cL_{\bphi, \btheta}(\bx) & = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \prod_{t=1}^T p(\bx_{t-1} | \bx_t, \btheta) }{\prod_{t=1}^T {\color{violet}q(\bx_t | \bx_{t-1})}}  \\ 
-            & = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \prod_{t=1}^T p(\bx_{t-1} | \bx_t, \btheta) }{\prod_{t=1}^T q(\bx_t | \bx_{t-1}, {\color{olive}\bx_0})}  \\ 
-            & = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) p(\bx_0 | \bx_1, \btheta) \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{q(\bx_1 | \bx_0)\prod_{t=2}^T {\color{teal}q(\bx_t | \bx_{t-1}, \bx_0)}} \\
-            & = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) p(\bx_0 | \bx_1, \btheta) \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{{\color{violet}q(\bx_1 | \bx_0)}\prod_{t=2}^T \frac{q(\bx_{t-1}|\bx_t, \bx_0) {\color{violet}q(\bx_{t} | \bx_0)}}{{\color{violet}q(\bx_{t-1}| \bx_0)}}} \\
-            & = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{{\color{violet}p(\bx_T)} {\color{olive}p(\bx_0 | \bx_1, \btheta)} \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{{\color{violet}q(\bx_T | \bx_0)}\prod_{t=2}^T q(\bx_{t-1}|\bx_t, \bx_0)} 
+            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \prod_{t=1}^T p(\bx_{t-1} | \bx_t, \btheta) }{\prod_{t=1}^T q(\bx_t | \bx_{t-1}, {\color{olive}\bx_0})}  }\\ 
+            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) p(\bx_0 | \bx_1, \btheta) \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{q(\bx_1 | \bx_0)\prod_{t=2}^T {\color{teal}q(\bx_t | \bx_{t-1}, \bx_0)}} }\\
+            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) p(\bx_0 | \bx_1, \btheta) \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{{\color{violet}q(\bx_1 | \bx_0)}\prod_{t=2}^T \frac{q(\bx_{t-1}|\bx_t, \bx_0) {\color{violet}q(\bx_{t} | \bx_0)}}{{\color{violet}q(\bx_{t-1}| \bx_0)}}} }\\
+            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{{\color{violet}p(\bx_T)} {\color{olive}p(\bx_0 | \bx_1, \btheta)} \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{{\color{violet}q(\bx_T | \bx_0)}\prod_{t=2}^T q(\bx_{t-1}|\bx_t, \bx_0)} }
         \end{align*}}
     \end{block}
 \end{frame}
@@ -313,12 +328,12 @@
         \vspace{-0.7cm}
         {\small
         \begin{multline*}
-            \cL_{\bphi, \btheta}(\bx) = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{{\color{violet}p(\bx_T)} {\color{olive}p(\bx_0 | \bx_1, \btheta)} \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{{\color{violet}q(\bx_T | \bx_0)}\prod_{t=2}^T q(\bx_{t-1}|\bx_t, \bx_0)}  = \\
-            = \bbE_{{\color{teal}q(\bx_{1:T} | \bx_0)}} \biggl[ \log {\color{olive}p(\bx_0 | \bx_1, \btheta)} + \log {\color{violet}\frac{p(\bx_T)}{q(\bx_T | \bx_0)}} + \sum_{t=2}^T \log \left( \frac{p(\bx_{t-1} | \bx_t, \btheta)}{q(\bx_{t-1}|\bx_{t}, \bx_0)}\right) \biggr] = \\
-             = \bbE_{{\color{teal}q(\bx_1 | \bx_0)}} \log p(\bx_0 | \bx_1, \btheta) + \bbE_{{\color{teal}q(\bx_T | \bx_0)}} \log \frac{p(\bx_T)}{q(\bx_T | \bx_0)} + \\
-              + \sum_{t=2}^T \bbE_{{\color{teal}q(\bx_{t-1}, \bx_t | \bx_0)}} \log \left( \frac{p(\bx_{t-1} | \bx_t, \btheta)}{q(\bx_{t-1}|\bx_{t}, \bx_0)}\right) \biggr] = \\
-              = \bbE_{q(\bx_1 | \bx_0)} \log p(\bx_0 | \bx_1, \btheta) - \KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr) - \\
-                        - \sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)}_{\cL_t}
+            \cL_{\bphi, \btheta}(\bx) = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{{\color{violet}p(\bx_T)} {\color{olive}p(\bx_0 | \bx_1, \btheta)} \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{{\color{violet}q(\bx_T | \bx_0)}\prod_{t=2}^T q(\bx_{t-1}|\bx_t, \bx_0)} 
+            \nextonslide{ = \\ = \bbE_{{\color{teal}q(\bx_{1:T} | \bx_0)}} \biggl[ \log {\color{olive}p(\bx_0 | \bx_1, \btheta)} + \log {\color{violet}\frac{p(\bx_T)}{q(\bx_T | \bx_0)}} + \sum_{t=2}^T \log \left( \frac{p(\bx_{t-1} | \bx_t, \btheta)}{q(\bx_{t-1}|\bx_{t}, \bx_0)}\right) \biggr] }
+            \nextonslide{= \\ = \bbE_{{\color{teal}q(\bx_1 | \bx_0)}} \log p(\bx_0 | \bx_1, \btheta) + \bbE_{{\color{teal}q(\bx_T | \bx_0)}} \log \frac{p(\bx_T)}{q(\bx_T | \bx_0)} + \\
+             + \sum_{t=2}^T \bbE_{{\color{teal}q(\bx_{t-1}, \bx_t | \bx_0)}} \log \left( \frac{p(\bx_{t-1} | \bx_t, \btheta)}{q(\bx_{t-1}|\bx_{t}, \bx_0)}\right) \biggr] }
+            \nextonslide{= \\ = \bbE_{q(\bx_1 | \bx_0)} \log p(\bx_0 | \bx_1, \btheta) - \KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr) - \\
+            - \sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)}_{\cL_t}}
         \end{multline*}
         }
         \vspace{-0.3cm}
@@ -333,17 +348,20 @@
             - {\color{teal}\sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)}_{\cL_t}}
         \end{multline*}
         \vspace{-0.5cm}
+    \eqpause
     \begin{itemize}
         \item {\color{olive}First term} is the decoder distribution
         \[
             \log p(\bx_0 | \bx_1, \btheta) = \log \cN \bigl(\bx_0 | \bmu_{\btheta, t}(\bx_1), \bsigma_{\btheta, t}^2(\bx_1)\bigr),
         \] 
         with $\bx_1 \sim q(\bx_1 | \bx_0)$.
+        \eqpause
         \item {\color{violet}Second term} is constant: 
         \begin{itemize}
             \item $p(\bx_T) = \cN(0, \bI)$;
             \item $q(\bx_T | \bx_0) = \cN(\sqrt{\bar{\alpha}_T} \cdot \bx_0, (1 - \bar{\alpha}_T) \cdot \bI)$.
         \end{itemize}
+        \eqpause
         \item {\color{teal}Third term} is the main contributor to the ELBO.
     \end{itemize}
 \end{frame}
@@ -364,27 +382,29 @@
 %=======
 \begin{frame}{ELBO for Gaussian Diffusion Model}
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
-    \vspace{-0.3cm}
     \[
         \cL_t = \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)
     \]
-    \vspace{-0.4cm}
+    \vspace{-0.7cm}
     \begin{align*}
         q(\bx_{t-1} | \bx_t, \bx_0) &= \cN(\bx_{t-1} | \tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t \bI), \\
         p(\bx_{t - 1} | \bx_t, \btheta) &= \cN \bigl(\bx_{t - 1} | \bmu_{\btheta, t}(\bx_t), {\color{violet}\bsigma_{\btheta, t}^2(\bx_t)}\bigr)
     \end{align*}
+    \eqpause
     Let's assume that
     \[
         {\color{violet}\bsigma_{\btheta, t}^2(\bx_t) = \tilde{\beta}_t \bI} \quad \Rightarrow \quad p(\bx_{t - 1} | \bx_t, \btheta) = \cN \bigl(\bx_{t - 1} | \bmu_{\btheta, t}(\bx_t), {\color{violet}\tilde{\beta}_t \bI} \bigr).
     \]
+    \eqpause
     Theoretically, the optimal $\bsigma_{\btheta, t}^2(\bx_t)$ lies in $[\tilde{\beta}_t, \beta_t]$:
     \begin{itemize}
         \item $\beta_t$ is optimal for $\bx_0 \sim \cN(0, \bI)$;
         \item $\tilde{\beta}_t$ is optimal for $\bx_0 \sim \delta(\bx_0 - \bx^*)$.
     \end{itemize}
+    \eqpause
     \begin{align*}
         \cL_t &= \bbE_{q(\bx_t | \bx_0)} KL\Bigl(\cN\bigl(\tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t \bI \bigr) \| \cN\bigl(\bmu_{\btheta, t}(\bx_t), \tilde{\beta}_t \bI\bigr)\Bigr) \\ 
-        &= \bbE_{q(\bx_t | \bx_0)} \left[\frac{1}{2\tilde{\beta}_t} \bigl\| \tilde{\bmu}_t(\bx_t, \bx_0) - \bmu_{\btheta, t}(\bx_t) \bigr\|^2  \right]
+        \nextonslide{&= \bbE_{q(\bx_t | \bx_0)} \left[\frac{1}{2\tilde{\beta}_t} \bigl\| \tilde{\bmu}_t(\bx_t, \bx_0) - \bmu_{\btheta, t}(\bx_t) \bigr\|^2  \right]}
     \end{align*}
 \end{frame}
 %=======
@@ -403,6 +423,7 @@
             \vspace{-0.7cm}
         \end{enumerate}
     \end{block}
+    \eqpause
     \begin{block}{Sampling}
         \begin{enumerate}
             \item Sample $\bx_T \sim \cN(0, \bI)$.
@@ -421,25 +442,27 @@
     \[
         \tilde{\bmu}_t(\bx_t, \bx_0) = \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \cdot \bx_t + \frac{\sqrt{\bar{\alpha}_{t-1}}(1 - \alpha_t)}{1 - \bar{\alpha}_t} \cdot {\color{olive} \bx_0}
     \]
+    \eqpause
     \vspace{-0.2cm}
     \[
-        \bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon \quad \Rightarrow \quad {\color{olive} \bx_0} = \frac{\bx_t -  \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon}{\sqrt{\bar{\alpha}_t}}
+        \bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon \quad \nextonslide{\Rightarrow \quad {\color{olive} \bx_0} = \frac{\bx_t -  \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon}{\sqrt{\bar{\alpha}_t}}}
     \]
+    \eqpause
     \vspace{-0.3cm}
     \begin{itemize}
-    \item There is a linear relationship between $\bepsilon$, $\bx_t$, and $\bx_0$.
-    \item Let's try to rewrite this mean using only $\bx_t$ and $\bepsilon$.
+        \item There is a linear relationship between $\bepsilon$, $\bx_t$, and $\bx_0$.
+        \item Let's try to rewrite this mean using only $\bx_t$ and $\bepsilon$.
     \end{itemize}
+    \eqpause
     \vspace{-0.2cm}
     \begin{align*}
         \tilde{\bmu}_t(\bx_t, \bepsilon) &= \frac{\sqrt{\alpha_t}(1 - \bar{\alpha}_{t-1})}{1 - \bar{\alpha}_t} \cdot \bx_t + \frac{\sqrt{\bar{\alpha}_{t-1}}(1 - \alpha_t)}{1 - \bar{\alpha}_t} \cdot {\color{olive} \left(\frac{\bx_t -  \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon}{\sqrt{\bar{\alpha}_t}}\right)} \\
-        &= \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon
+        \nextonslide{&= \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon}
     \end{align*}
 \end{frame}
 %=======
 \begin{frame}{Reparametrization of DDPM}
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
-    \vspace{-0.3cm}
     \[
         \cL_t = \bbE_{\color{violet}q(\bx_t | \bx_0)} \left[ {\color{olive}\frac{1}{2\tilde{\beta}_t}} \bigl\| \tilde{\bmu}_t(\bx_t, \bx_0) - \bmu_{\btheta, t}(\bx_t) \bigr\|^2  \right]
     \]
@@ -448,15 +471,17 @@
         \vspace{-0.7cm}
         \begin{align*}
             \tilde{\bmu}_t(\bx_t, \bx_0) &= \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon \\
-            \bmu_{\btheta, t}(\bx_t) &= \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - {\color{teal}\frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}}} \cdot \bepsilon_{\btheta, t}(\bx_t)
+            \nextonslide{\bmu_{\btheta, t}(\bx_t) &= \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - {\color{teal}\frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}}} \cdot \bepsilon_{\btheta, t}(\bx_t)}
         \end{align*}
         \vspace{-0.7cm}
     \end{block}
+    \eqpause
     \vspace{-0.5cm}
     \begin{align*}
         \cL_t &=  \bbE_{\color{violet} \bepsilon \sim \cN(0, \bI)} \left[ \frac{{\color{teal}(1 - \alpha_t)^2}}{{\color{olive}2\tilde{\beta}_t} {\color{teal} \alpha_t (1 - \bar{\alpha}_t)}} \bigl\| \bepsilon - \bepsilon_{\btheta, t}({\color{violet}\bx_t}) \bigr\|^2 \right] \\
-        & =  \bbE_{\color{violet}\bepsilon \sim \cN(0, \bI)} \left[ \frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t (1 - \bar{\alpha}_t)} \Bigl\| \bepsilon - \bepsilon_{\btheta, t}\bigl( {\color{violet}\sqrt{\bar{\alpha}_t} \bx_0 + \sqrt{1 - \bar{\alpha}_t} \bepsilon}\bigr) \Bigr\|^2 \right]
+        \nextonslide{& =  \bbE_{\color{violet}\bepsilon \sim \cN(0, \bI)} \left[ \frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t (1 - \bar{\alpha}_t)} \Bigl\| \bepsilon - \bepsilon_{\btheta, t}\bigl( {\color{violet}\sqrt{\bar{\alpha}_t} \bx_0 + \sqrt{1 - \bar{\alpha}_t} \bepsilon}\bigr) \Bigr\|^2 \right]}
     \end{align*}
+    \eqpause
     At every step of the reverse process, we attempt to predict the noise~$\bepsilon$ that was used in the forward diffusion process!
 \end{frame}
 %=======
@@ -464,12 +489,14 @@
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
     \begin{multline*}
         \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log p(\bx_0 | \bx_1, \btheta)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-        - \sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)}_{\cL_t}
+        - \sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t-1} | \bx_t, \btheta )\bigr)}_{\cL_t}
     \end{multline*}
+    \eqpause
     \vspace{-0.3cm}
     \[
         \cL_t  = \bbE_{\bepsilon \sim \cN(0, \bI)} \left[ \frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t (1 - \bar{\alpha}_t)} \Bigl\| \bepsilon - \bepsilon_{\btheta, t}\bigl( \sqrt{\bar{\alpha}_t} \bx_0 + \sqrt{1 - \bar{\alpha}_t} \bepsilon\bigr) \Bigr\|^2 \right]
     \]
+    \eqpause
     Let's drop the scaling coefficient.
     \begin{block}{Simplified Objective}
         \vspace{-0.3cm}
@@ -538,6 +565,7 @@
             \item The prior distribution is given by a parametric Gaussian Markov chain $p(\bx_{t-1} | \bx_t, \btheta)$.
         \end{itemize}
     \end{block}
+    \eqpause
     \begin{minipage}{0.5\linewidth}
         \begin{block}{Forward Process}
             \begin{enumerate}
@@ -547,6 +575,7 @@
             \end{enumerate}
         \end{block}
     \end{minipage}%
+    \eqpause
     \begin{minipage}{0.55\linewidth}
         \begin{block}{Reverse Process}
             \begin{enumerate}
@@ -568,6 +597,7 @@
             \item Compute the loss $ \cL_{\text{simple}} = \| \bepsilon - \bepsilon_{\btheta, t}(\bx_t) \|^2 $.
         \end{enumerate}
     \end{block}
+    \eqpause
     \begin{block}{Sampling (Ancestral Sampling)}
         \begin{enumerate}
             \item Sample $\bx_T \sim \cN(0, \bI)$.

@@ -147,6 +147,7 @@
 	\[
 		q(\bx_{\sigma}) = \int q(\bx_{\sigma} | \bx) \pi(\bx) d\bx
 	\]
+    \eqpause
 	\vspace{-0.5cm} 
 	\begin{block}{Assumption}
 		The solution to
@@ -156,6 +157,7 @@
 		\vspace{-0.3cm}
 		satisfies $\bs_{\btheta, \sigma}(\bx_{\sigma}) \approx \bs_{\btheta, 0}(\bx_0) = \bs_{\btheta}(\bx)$ if $\sigma$ is sufficiently small.
 	\end{block}
+    \eqpause
 	\begin{itemize}
 		\item The score function of the corrupted data closely approximates that of the original data
 		\item The score function $\bs_{\btheta, \sigma}(\bx_{\sigma})$ is parameterized by $\sigma$
@@ -166,13 +168,14 @@
 \begin{frame}{Denoising Score Matching}
     \myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
 	\begin{block}{Theorem}
-	\vspace{-0.5cm}
-	\begin{multline*}
-		\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\
-		= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
-	\end{multline*}
-	\vspace{-0.5cm}
+		\vspace{-0.5cm}
+		\begin{multline*}
+			\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\
+			= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
+		\end{multline*}
+		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Gradient of the Noise Kernel}
 		\vspace{-0.3cm}
 		\[
@@ -184,6 +187,7 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{itemize}
 		\item The right-hand side does not require evaluating $\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})$ or $\nabla_{\bx_{\sigma}} \log \pi(\bx_{\sigma})$
 		\item The neural network $\bs_{\btheta, \sigma}(\bx_{\sigma})$ is trained to \textbf{denoise} the corrupted samples $\bx_{\sigma}$
@@ -200,12 +204,14 @@
 	\end{multline*}
 	\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Proof}
 		\vspace{-0.7cm}
 		\begin{multline*}
-			\bbE_{q(\bx_{\sigma})} h(\bx_{\sigma}) = \int {\color{violet}q(\bx_{\sigma})} h(\bx_{\sigma}) d\bx_{\sigma} = \\
-			= \int \left({\color{violet}\int q(\bx_{\sigma} | \bx) \pi(\bx) d\bx}\right) h(\bx_{\sigma}) d\bx_{\sigma} =  \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}  h(\bx_{\sigma})
+			\bbE_{q(\bx_{\sigma})} h(\bx_{\sigma}) = \int {\color{violet}q(\bx_{\sigma})} h(\bx_{\sigma}) d\bx_{\sigma} 
+			\nextonslide{= \\ = \int \left({\color{violet}\int q(\bx_{\sigma} | \bx) \pi(\bx) d\bx}\right) h(\bx_{\sigma}) d\bx_{\sigma} =  \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}  h(\bx_{\sigma})}
 		\end{multline*}
+        \eqpause
 		\vspace{-0.7cm}
 		{\small
 		\begin{multline*}
@@ -219,22 +225,23 @@
 \begin{frame}{Denoising Score Matching}
     \myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
 	\begin{block}{Theorem}
-	\vspace{-0.5cm}
-	\begin{multline*}
-		\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\
-		= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
-	\end{multline*}
-	\vspace{-0.5cm}
+		\vspace{-0.5cm}
+		\begin{multline*}
+			\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\
+			= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
+		\end{multline*}
+		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Proof (Continued)}
 		\vspace{-0.7cm}
 		{\small
 		\begin{multline*}
-			\bbE_{q(\bx_{\sigma})} \left[{\color{teal}\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})} \right] = \int q(\bx_{\sigma}) \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \frac{\nabla_{\bx_{\sigma}} {\color{violet}q(\bx_{\sigma})}}{q(\bx_{\sigma})} \right] d\bx_{\sigma} = \\
-			= \int \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}}\left({\color{violet}\int q(\bx_{\sigma} | \bx) \pi(\bx) d\bx}\right) \right] d\bx_{\sigma} = \\
-			=  \int \int \pi(\bx) \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}}q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx = \\
-			= \int \int \pi(\bx) {\color{olive} q(\bx_{\sigma} | \bx)} \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx = \\
-			= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)} \left[{\color{teal}\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right]
+			\bbE_{q(\bx_{\sigma})} \left[{\color{teal}\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})} \right] = \int q(\bx_{\sigma}) \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \frac{\nabla_{\bx_{\sigma}} {\color{violet}q(\bx_{\sigma})}}{q(\bx_{\sigma})} \right] d\bx_{\sigma} 
+			\nextonslide{= \\ = \int \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}}\left({\color{violet}\int q(\bx_{\sigma} | \bx) \pi(\bx) d\bx}\right) \right] d\bx_{\sigma}}
+			\nextonslide{ = \\ =  \int \int \pi(\bx) \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}}q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx}
+			\nextonslide{ = \\ = \int \int \pi(\bx) {\color{olive} q(\bx_{\sigma} | \bx)} \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx}
+			\nextonslide{ = \\ = \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)} \left[{\color{teal}\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right]}
 		\end{multline*}
 		}
 	\end{block}
@@ -244,27 +251,30 @@
     \myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
 	\vspace{-0.3cm}
 	\begin{block}{Theorem}
-	\vspace{-0.7cm}
-	\begin{multline*}
-		\bbE_{q(\bx_{\sigma})}\underbrace{\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2}_{h(\bx_{\sigma})} = \\
-		= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
-	\end{multline*}
-	\vspace{-0.9cm}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\bbE_{q(\bx_{\sigma})}\underbrace{\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2}_{h(\bx_{\sigma})} = \\
+			= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
+		\end{multline*}
+		\vspace{-0.9cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Proof (Continued)}
 		\vspace{-0.3cm}
 		\[
 			\bbE_{q(\bx_{\sigma})} h(\bx_{\sigma})=  \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}  h(\bx_{\sigma})
 		\]
+        \eqpause
 		\[
 			\bbE_{q(\bx_{\sigma})} \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right] = \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)} \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right]
 		\]
+        \eqpause
 		\vspace{-0.5cm}
 		{\small
 		\begin{multline*}
 			\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\ 
-			= {\color{olive}\bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}}\left[\| \bs_{\btheta, \sigma}(\bx_{\sigma}) \|^2 - 2 \bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{teal}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right] + \text{const}(\btheta) \\
-			= {\color{olive}\bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}} \left\|\bs_{\btheta, \sigma}(\bx_{\sigma}) - {\color{teal}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right\|_2^2 + \text{const}(\btheta)
+			= {\color{olive}\bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}}\left[\| \bs_{\btheta, \sigma}(\bx_{\sigma}) \|^2 - 2 \bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{teal}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right] + \text{const}(\btheta)
+			\nextonslide{= \\ = {\color{olive}\bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}} \left\|\bs_{\btheta, \sigma}(\bx_{\sigma}) - {\color{teal}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right\|_2^2 + \text{const}(\btheta)}
 		\end{multline*}
 		}
 		\vspace{-0.8cm}
@@ -278,22 +288,26 @@
 	\[
 		\bbE_{\pi(\bx)}\left\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pi(\bx) \right\|_2^2 \rightarrow \min_{\btheta}
 	\]
+    \eqpause
 	\vspace{-0.5cm} \\
 	Noisy objective:
 	\vspace{-0.2cm}
 	\[
 		\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_\sigma) - \nabla_\bx \log q(\bx_{\sigma}) \right\|_2^2 \rightarrow \min_{\btheta}
 	\]
+    \eqpause
 	\vspace{-0.5cm} \\
 	This is equivalent to a denoising task:
 	\vspace{-0.2cm}
 	\[
 		\bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 \rightarrow \min_{\btheta}
 	\]
+    \eqpause
 	\vspace{-0.3cm}
 	\[
 		\bbE_{\pi(\bx)} \bbE_{\cN(0, \bI)}\left\| \bs_{\btheta, \sigma}(\bx + \sigma \bepsilon) + \frac{\bepsilon}{\sigma} \right\|_2^2 \rightarrow \min_{\btheta}
 	\]
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Langevin Dynamics}
 		\vspace{-0.3cm}
@@ -343,6 +357,7 @@
 			q(\bx_1) \approx \pi(\bx), \;\; q(\bx_T) \approx \cN(0, \sigma_T^2 \bI)
 		\]
 	\end{itemize}
+    \eqpause
 	\vspace{-0.3cm}
 	\begin{figure}
 		\includegraphics[width=0.6\linewidth]{figs/multi_scale}
@@ -359,7 +374,9 @@
 	\[
 		\sum_{t=1}^T {\color{violet}\sigma_t^2} \bbE_{\pi(\bx)} \bbE_{q(\bx_t | \bx)}\left\| \bs_{\btheta, \sigma_t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \right\|_2^2 \rightarrow \min_{\btheta}
 	\]
+    \eqpause
 	Here, $\nabla_{\bx_t} \log q(\bx_t | \bx) = - \frac{\bx_t - \bx}{\sigma_t^2} = - \frac{\bepsilon}{\sigma_t}$
+    \eqpause
 	\begin{block}{Training Procedure}
 		\begin{enumerate}
 			\item Sample $\bx_0 \sim \pi(\bx)$
@@ -369,6 +386,7 @@
 		\end{enumerate}
 		\vspace{-0.3cm}
 	\end{block}
+    \eqpause
 	How do we sample from such a model?
 \end{frame}
 %=======
@@ -386,6 +404,7 @@
 			\item Update $\bx_0 := \bx_L$ and reduce to the next lower $\sigma_t$
 		\end{itemize}
 	\end{block}
+    \eqpause
 	\begin{figure}
 		\includegraphics[width=0.9\linewidth]{figs/ald}
 	\end{figure}
@@ -395,13 +414,17 @@
 %=======
 \begin{frame}{Forward Gaussian Diffusion Process}
     \myfootnotewithlink{http://proceedings.mlr.press/v37/sohl-dickstein15.pdf}{Sohl-Dickstein J. Deep Unsupervised Learning using Nonequilibrium Thermodynamics, 2015}
+
 	Let $\bx_0 = \bx \sim \pi(\bx)$, $\beta_t \ll 1$. Define a Markov chain:
 	\[
 		\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon_t, \;\; \bepsilon_t \sim \cN(0, \bI)
 	\]
+	\vspace{-0.5cm}
+    \eqpause
 	\[
 		q(\bx_t | \bx_{t-1}) = \cN(\sqrt{1 - \beta_t} \bx_{t-1}, \beta_t \bI)
 	\]
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Langevin Dynamics}
 		\vspace{-0.3cm}
@@ -410,11 +433,13 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\vspace{-0.7cm}
 	\begin{multline*}
 		\bx_t = \sqrt{1 - \beta_t}\, \bx_{t - 1} + \sqrt{\beta_t} \bepsilon_t \approx \left(1 - \frac{\beta_t}{2}\right)\bx_{t-1} + \sqrt{\beta_t} \bepsilon_t = \\
-		\bx_{t-1} + \frac{ \color{violet}  \beta_t}{2} {\color{teal} ( -\bx_{t-1} )} + \sqrt{ \color{violet}  \beta_t} \bepsilon_t
+		= \bx_{t-1} + \frac{ \color{violet}  \beta_t}{2} {\color{teal} ( -\bx_{t-1} )} + \sqrt{ \color{violet}  \beta_t} \bepsilon_t
 	\end{multline*}
+    \eqpause
 	\vspace{-0.7cm}
 	\begin{itemize}
 		\item ${\color{violet} \beta_t = \eta }$
@@ -430,21 +455,23 @@
 	\[
 		q(\bx_t | \bx_{t-1}) = \cN(\sqrt{1 - \beta_t} \bx_{t-1}, \beta_t \bI)
 	\]
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Statement 1}
 		Let $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}_t = \prod_{s=1}^t \alpha_s = \prod_{s=1}^t (1 - \beta_s)$. Then
 		\[
 			q(\bx_t | \bx_0) = \cN(\sqrt{\bar{\alpha}_t} \,\bx_0, (1 - \bar{\alpha}_t) \bI)
 		\]
+        \eqpause
 		Thus, samples at any timestep $t$ can be generated directly from $\bx_0$
 		\vspace{-0.2cm}
 		{\small
 		\begin{multline*}
-			\bx_t = \sqrt{\alpha_t} {\color{teal}\bx_{t-1}} + \sqrt{1 - \alpha_t} \bepsilon_t = \\
-			= \sqrt{\alpha_t} ( {\color{teal} \sqrt{\alpha_{t-1}} \bx_{t-2} + \sqrt{1 - \alpha_{t-1}} \bepsilon_{t-1} } ) + \sqrt{1 - \alpha_t} \bepsilon_t = \\
-			= \sqrt{\alpha_t \alpha_{t-1}} \bx_{t-2} + ( {\color{violet} \sqrt{\alpha_t (1-\alpha_{t-1})} \bepsilon_{t-1} + \sqrt{1-\alpha_t} \bepsilon_t } ) = \\
-			= \sqrt{\alpha_t \alpha_{t-1}} \bx_{t-2} + {\color{violet} \sqrt{1-\alpha_t \alpha_{t-1}} \bepsilon'_t} \\
-			= \ldots = \sqrt{\bar{\alpha}_t}\, \bx_0 + \sqrt{1-\bar{\alpha}_t} \bepsilon, \quad \bepsilon \sim \cN(0, \bI)
+			\bx_t = \sqrt{\alpha_t} {\color{teal}\bx_{t-1}} + \sqrt{1 - \alpha_t} \bepsilon_t
+			\nextonslide{ = \\ = \sqrt{\alpha_t} ( {\color{teal} \sqrt{\alpha_{t-1}} \bx_{t-2} + \sqrt{1 - \alpha_{t-1}} \bepsilon_{t-1} } ) + \sqrt{1 - \alpha_t} \bepsilon_t}
+			\nextonslide{ = \\ = \sqrt{\alpha_t \alpha_{t-1}} \bx_{t-2} + ( {\color{violet} \sqrt{\alpha_t (1-\alpha_{t-1})} \bepsilon_{t-1} + \sqrt{1-\alpha_t} \bepsilon_t } )}
+			\nextonslide{ = \\ = \sqrt{\alpha_t \alpha_{t-1}} \bx_{t-2} + {\color{violet} \sqrt{1-\alpha_t \alpha_{t-1}} \bepsilon'_t}}
+			\nextonslide{= \\ = \ldots = \sqrt{\bar{\alpha}_t}\, \bx_0 + \sqrt{1-\bar{\alpha}_t} \bepsilon, \quad \bepsilon \sim \cN(0, \bI)}
 		\end{multline*}
 		}
 	\end{block}
@@ -452,7 +479,7 @@
 %=======
 \begin{frame}{Forward Gaussian Diffusion Process}
     \myfootnote{\href{https://arxiv.org/abs/2403.18103}{Chan S. Tutorial on Diffusion Models for Imaging and Vision, 2024} \\ \href{http://proceedings.mlr.press/v37/sohl-dickstein15.pdf}{Sohl-Dickstein J. Deep Unsupervised Learning using Nonequilibrium Thermodynamics, 2015}}
-	\vspace{-0.7cm}
+	\vspace{-0.3cm}
 	{\small
 	\[
 		q(\bx_t | \bx_{t-1}) = \cN\left(\sqrt{1 - \beta_t} \bx_{t-1}, \beta_t \bI\right); \quad q(\bx_t | \bx_0) = \cN\left(\sqrt{\bar{\alpha}_t} \bx_0, (1 - \bar{\alpha}_t) \bI\right)
@@ -462,16 +489,19 @@
 	\begin{figure}
 		\includegraphics[width=0.8\linewidth]{figs/conditional_diffusion}
 	\end{figure}
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Statement 2}
 		Applying the Markov chain to any distribution $\pi(\bx)$ yields $\bx_\infty \sim p_\infty(\bx) = \cN(0, \bI)$, the \textbf{stationary} (limiting) distribution:
 		\[
 			p_\infty(\bx) = \int q(\bx | \bx') p_\infty(\bx') d\bx' 
 		\]
+
+		\vspace{-0.5cm}
+        \eqpause
 		\[
 			p_\infty(\bx) = \int q(\bx_\infty | \bx_0) \pi(\bx_0) d\bx_0 \approx \cN(0, \bI) \int \pi(\bx_0) d\bx_0 = \cN(0, \bI)
 		\]
-		\vspace{-0.8cm}
 	\end{block}
  \end{frame}
 %=======
@@ -482,12 +512,14 @@
 	\begin{figure}
 		\includegraphics[width=0.5\linewidth]{figs/diffusion_over_time}
 	\end{figure}
-	\vspace{-0.6cm}
+    \eqpause
+	\vspace{-0.5cm}
 	\begin{enumerate}
 		\item $\bx_0 = \bx \sim \pi(\bx)$
 		\item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon$, $\bepsilon \sim \cN(0, \bI)$, $t \geq 1$
 		\item After $T \gg 1$ steps: $\bx_T \sim p_\infty(\bx) = \cN(0, \bI)$
 	\end{enumerate}
+    \eqpause
 	If this process can be reversed, we can sample from $\pi(\bx)$ by starting from noise $p_\infty(\bx) = \cN(0, \bI)$. \\
 	Our goal now becomes inverting this diffusion.
 \end{frame}
@@ -505,6 +537,7 @@
 		\]
 		\vspace{-0.6cm} 
 	\end{block}
+    \eqpause
 	\begin{block}{Gaussian Diffusion}
 		\vspace{-0.7cm} 
 		\[
@@ -515,14 +548,16 @@
 		\]
 		\vspace{-0.6cm} 
 	\end{block}
+    \eqpause
 	\begin{block}{Theorem (Denoising Score Matching)}
-	\vspace{-0.7cm}
-	\begin{multline*}
-		\bbE_{q(\bx_t)}\left\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t) \right\|_2^2 = \\
-		= \bbE_{\pi(\bx)} \bbE_{q(\bx_t | \bx)}\left\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \right\|_2^2 + \text{const}(\btheta)
-	\end{multline*}
-	\vspace{-0.5cm}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\bbE_{q(\bx_t)}\left\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t) \right\|_2^2 = \\
+			= \bbE_{\pi(\bx)} \bbE_{q(\bx_t | \bx)}\left\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \right\|_2^2 + \text{const}(\btheta)
+		\end{multline*}
+		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\textbf{Note:} This enables applying the NCSN approach with annealed Langevin dynamics to diffusion-based denoising models.
 \end{frame}
 %=======
@@ -533,6 +568,7 @@
 	\begin{figure}
 		\includegraphics[width=0.8\linewidth]{figs/DDPM}
 	\end{figure}
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Forward Process}
 		\vspace{-0.3cm}
@@ -541,11 +577,13 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Reverse Process}
 		\vspace{-0.3cm}
 		\[
 			q(\bx_{t-1}\mid\bx_{t}) = \frac{q(\bx_{t}\mid\bx_{t-1}) {\color{violet}q(\bx_{t-1})}}{{\color{violet}q(\bx_{t})}} \approx p(\bx_{t - 1} | \bx_t, \btheta)
 		\]
+        \eqpause
 		\vspace{-0.3cm}
 		${\color{violet}q(\bx_{t-1})}$ and ${\color{violet}q(\bx_{t})}$ are intractable:
 		\[
@@ -557,19 +595,20 @@
 \begin{frame}{Reverse Gaussian Diffusion Process}
     \myfootnote{\href{}{Feller W. On the theory of stochastic processes, with particular reference to applications, 1949} \\ 
     \href{https://arxiv.org/abs/2112.07804}{Xiao Z., Kreis K., Vahdat A. Tackling the generative learning trilemma with denoising diffusion GANs, 2021}}
-		\vspace{-0.4cm}
-		\[
-			q(\bx_{t-1}|\bx_{t}) = \frac{q(\bx_{t}|\bx_{t-1}) {\color{violet}q(\bx_{t-1})}}{{\color{violet}q(\bx_{t})}} 
-		\]
-		\vspace{-0.4cm}
-		\begin{block}{Theorem (Feller, 1949)}
-			If $\beta_t$ is sufficiently small, $q(\bx_{t-1}|\bx_t)$ is Gaussian {\color{gray}(thus, diffusion requires $T \approx 1000$ steps for convergence)}
-		\end{block}
-		\vspace{-0.3cm}
-		\begin{figure}
-			\includegraphics[width=0.7\linewidth]{figs/inverse_distr_1d}
-		\end{figure}
-	\end{frame} 
+	\vspace{-0.4cm}
+	\[
+		q(\bx_{t-1}|\bx_{t}) = \frac{q(\bx_{t}|\bx_{t-1}) {\color{violet}q(\bx_{t-1})}}{{\color{violet}q(\bx_{t})}} 
+	\]
+	\vspace{-0.4cm}
+	\begin{block}{Theorem (Feller, 1949)}
+		If $\beta_t$ is sufficiently small, $q(\bx_{t-1}|\bx_t)$ is Gaussian {\color{gray}(thus, diffusion requires $T \approx 1000$ steps for convergence)}
+	\end{block}
+	\eqpause
+	\vspace{-0.3cm}
+	\begin{figure}
+		\includegraphics[width=0.7\linewidth]{figs/inverse_distr_1d}
+	\end{figure}
+\end{frame} 
 %=======
 \begin{frame}{Reverse Gaussian Diffusion Process (Ancestral Sampling)}
     \myfootnotewithlink{https://lilianweng.github.io/posts/2021-07-11-diffusion-models/}{Weng L. What are Diffusion Models?, blog post, 2021}
@@ -584,6 +623,7 @@
 		q(\bx_{t-1}|\bx_{t}) \approx p(\bx_{t - 1} | \bx_t, \btheta) = \cN\bigl(\bmu_{\btheta, t}(\bx_t), \bsigma^2_{\btheta, t}(\bx_t)\bigr)
 	\]
 	{\color{gray}Feller's theorem justifies this Gaussian assumption.}
+	\eqpause
 	\begin{minipage}{0.5\linewidth}
 		\begin{block}{Forward Process}
 			\begin{enumerate}
@@ -593,6 +633,7 @@
 			\end{enumerate}
 		\end{block}
 	\end{minipage}%
+    \eqpause
 	\begin{minipage}{0.55\linewidth}
 		\begin{block}{Reverse Process}
 			\begin{enumerate}
@@ -602,6 +643,7 @@
 			\end{enumerate}
 		\end{block}
 	\end{minipage}
+    \eqpause
 	\textbf{Note:} The forward process is non-learnable, i.e., it does not involve trainable parameters
 \end{frame}
 %=======

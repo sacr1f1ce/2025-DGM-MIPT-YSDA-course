@@ -1,14 +1,13 @@
 \documentclass{beamer}
 \input{../utils/preamble}
 \createdgmtitle{7}
-\usepackage{tikz}
 
-\usetikzlibrary{arrows,shapes,positioning,shadows,trees}
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
 \begin{frame}[noframenumbering,plain]
-\titlepage
+	\titlepage
+	\resetonslide	
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
@@ -50,10 +49,10 @@
 		\min_{G} V(G, D^*) = \min_{G} \left[ 2 \JSD(\pi \| p) - \log 4 \right] = -\log 4, \quad \pi(\bx) = p(\bx | \btheta).
 	\]
 	If the generator can be \textbf{any} function and the discriminator is \textbf{optimal} at each step, then the generator is \textbf{guaranteed to converge} to the data distribution.  
-	\end{frame}
+\end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
+	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 	\begin{itemize}
 		\item The generator is updated in the parameter space; the discriminator isn't optimal at every iteration.
 		\item Both generator and discriminator loss typically oscillate during GAN training.
@@ -72,7 +71,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-\myfootnote{\href{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014} \\
+	\myfootnote{\href{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014} \\
 		\href{https://arxiv.org/abs/1701.04862}{Arjovsky M., Bottou L. Towards Principled Methods for Training Generative Adversarial Networks, 2017}}
 	\begin{block}{Main Issues With Standard GANs}
 		\begin{itemize}
@@ -97,7 +96,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-\myfootnotewithlink{https://udlbook.github.io/udlbook/}{Simon J.D. Prince. Understanding Deep Learning, 2023}
+	\myfootnotewithlink{https://udlbook.github.io/udlbook/}{Simon J.D. Prince. Understanding Deep Learning, 2023}
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.8\linewidth]{figs/discrete_wasserstein}
@@ -118,7 +117,7 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
+	\myfootnotewithlink{https://arxiv.org/abs/1701.07875}{Arjovsky M., Chintala S., Bottou L. Wasserstein GAN, 2017}
 	\begin{block}{Theorem (Kantorovich-Rubinstein Duality)}
 		\vspace{-0.2cm}
 		\[
@@ -157,7 +156,9 @@
 			\item \textbf{Test:} assess generalization by reporting likelihood.
 		\end{itemize}
 	\end{block}
+	\eqpause
 	Not all models have tractable likelihoods \\ (VAE: compare ELBO values; GAN: \textbf{???}).
+	\eqpause
 	\begin{block}{Desirable Properties for Samples}
 		\begin{itemize}
 			\item Sharpness
@@ -165,6 +166,7 @@
 				\centering
 				\includegraphics[width=0.9\linewidth]{figs/sharpness}
 			\end{figure}
+			\eqpause
 			\item Diversity
 			\begin{figure}
 				\centering
@@ -177,11 +179,12 @@
 \subsection{Frechet Inception Distance (FID)}
 %=======
 \begin{frame}{Wasserstein Metric}
-\myfootnotewithlink{https://arxiv.org/abs/1706.08500}{Heusel M. et al. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium, 2017}
+	\myfootnotewithlink{https://arxiv.org/abs/1706.08500}{Heusel M. et al. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium, 2017}
 	\vspace{-0.2cm}
 	\[
 		W_s(\pi, p) = \inf_{\gamma \in \Gamma(\pi, p)} \left(\bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \|^s\right)^{1/s}
 	\]
+	\eqpause
 	\vspace{-0.3cm}
 	\begin{block}{Wasserstein GAN (Optimal Transport)}
 		\vspace{-0.5cm}
@@ -190,14 +193,16 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\begin{block}{Theorem}
 		If $\pi(\bx) = \cN(\bmu_\pi, \bSigma_\pi)$, $p(\by) = \cN(\bmu_p, \bSigma_p)$, then
 		\vspace{-0.2cm}
 		\[
-		W_2^2(\pi, p) = \| \bmu_{\pi} - \bmu_{p}\|^2 + \text{tr} \left[ \bSigma_{\pi} + \bSigma_p - 2 \left(\bSigma_{\pi}^{1/2} \bSigma_p \bSigma_{\pi}^{1/2} \right)^{1/2} \right]
+			W_2^2(\pi, p) = \| \bmu_{\pi} - \bmu_{p}\|^2 + \text{tr} \left[ \bSigma_{\pi} + \bSigma_p - 2 \left(\bSigma_{\pi}^{1/2} \bSigma_p \bSigma_{\pi}^{1/2} \right)^{1/2} \right]
 		\]
 		\vspace{-0.7cm}
 	\end{block}
+	\eqpause
 	\begin{block}{Frechet Inception Distance}
 		\vspace{-0.3cm}
 		\[
@@ -208,7 +213,7 @@
 \end{frame}
 %=======
 \begin{frame}{Frechet Inception Distance (FID)}
-\myfootnotewithlink{https://arxiv.org/abs/2401.09603}{Jayasumana S. et al. Rethinking FID: Towards a Better Evaluation Metric for Image Generation, 2024}
+	\myfootnotewithlink{https://arxiv.org/abs/2401.09603}{Jayasumana S. et al. Rethinking FID: Towards a Better Evaluation Metric for Image Generation, 2024}
 	\vspace{-0.3cm}
 	\[
 		\FID (\pi, p) = \| \bmu_{\pi} - \bmu_{p}\|^2 + \text{tr} \left[ \bSigma_{\pi} + \bSigma_p - 2 \left(\bSigma_{\pi}^{1/2} \bSigma_p \bSigma_{\pi}^{1/2} \right)^{1/2} \right]
@@ -219,6 +224,7 @@
 		\item We use a pretrained image embedder to get latent representations $\bz = \bff(\bx)$.
 		\item $\bmu_{\pi}$, $\bSigma_{\pi}$ and $\bmu_{p}$, $\bSigma_p$ are statistics of latent representations for samples from $\pi(\bx)$ and $p(\bx | \btheta)$.
 	\end{itemize}
+	\eqpause
 	\begin{block}{$FID(p(\bx), \cN(0, \bI))$}
 		\begin{figure}
 			\includegraphics[width=0.95\linewidth]{figs/fid_normal}
@@ -227,11 +233,12 @@
 \end{frame}
 %=======
 \begin{frame}{Frechet Inception Distance (FID)}
-\myfootnotewithlink{https://arxiv.org/abs/2401.09603}{Jayasumana S. et al. Rethinking FID: Towards a Better Evaluation Metric for Image Generation, 2024}
+	\myfootnotewithlink{https://arxiv.org/abs/2401.09603}{Jayasumana S. et al. Rethinking FID: Towards a Better Evaluation Metric for Image Generation, 2024}
 	\vspace{-0.4cm}
 	\[
-	\FID (\pi, p) =  \| \bmu_{\pi} - \bmu_{p}\|^2 + \text{tr} \left[ \bSigma_{\pi} + \bSigma_p - 2 \left(\bSigma_{\pi}^{1/2} \bSigma_p \bSigma_{\pi}^{1/2} \right)^{1/2} \right]
+		\FID (\pi, p) =  \| \bmu_{\pi} - \bmu_{p}\|^2 + \text{tr} \left[ \bSigma_{\pi} + \bSigma_p - 2 \left(\bSigma_{\pi}^{1/2} \bSigma_p \bSigma_{\pi}^{1/2} \right)^{1/2} \right]
 	\]
+	\eqpause
 	\vspace{-0.3cm}
 	\begin{block}{Drawbacks}
 		\begin{itemize}
@@ -240,7 +247,7 @@
 			\item May not correlate with human evaluation.
 		\end{itemize}
 	\end{block}
-
+	\eqpause
 	\begin{figure}
 		\includegraphics[width=0.7\linewidth]{figs/fid_vs_human_eval}
 	\end{figure}
@@ -257,6 +264,7 @@
 			\item \textbf{Diversity}: their variation should match that in the training data.
 		\end{itemize}
 	\end{block}
+	\eqpause
 	\vspace{-0.5cm}
 	\begin{figure}
 		\includegraphics[width=0.95\linewidth]{figs/pr_curve}
@@ -269,12 +277,13 @@
 \end{frame}
 %=======
 \begin{frame}{Precision-Recall}
-\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
+	\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
 	\vspace{-0.2cm}
 	\begin{itemize}
 		\item $\cS_{\pi} = \{\bx_i\}_{i=1}^{n} \sim \pi(\bx)$ -- real samples;
 		\item $\cS_{p} = \{\bx_i\}_{i=1}^{n} \sim p(\bx | \btheta)$ -- generated samples.
 	\end{itemize}
+	\eqpause
 	Define a binary function:
 	\vspace{-0.2cm}
 	\[
@@ -284,23 +293,27 @@
 			0, & \text{otherwise.}
 		\end{cases}
 	\]
+	\eqpause
 	\vspace{-0.3cm}
 	\[
 		\text{Precision} (\cS_{\pi}, \cS_{p}) = \frac{1}{n} \sum_{\bx \in \cS_{p}} \bbI(\bx, \cS_{\pi}); \quad \text{Recall} (\cS_{\pi}, \cS_{p}) = \frac{1}{n} \sum_{\bx \in \cS_{\pi}} \bbI(\bx, \cS_{p}).
 	\]
+	\eqpause
 	\vspace{-0.6cm}
 	\begin{figure}
 		\includegraphics[width=0.75\linewidth]{figs/pr_k_nearest}
 	\end{figure}
+	\eqpause
 	Embed the samples using a pretrained network (as in FID).
 \end{frame}
 %=======
 \begin{frame}{Precision-Recall}
-\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
+	\myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
 	\vspace{-0.3cm}
 	\begin{figure}
 		\includegraphics[width=\linewidth]{figs/pr_vs_fid}
 	\end{figure}
+	\eqpause
 	\vspace{-0.3cm}
 	\begin{figure}
 		\includegraphics[width=0.75\linewidth]{figs/pr_truncation}
@@ -310,7 +323,7 @@
 \subsection{CLIP Score}
 %=======
 \begin{frame}{CLIP Score}
-\myfootnotewithlink{https://arxiv.org/pdf/2103.00020}{Radford A. et al. Learning transferable visual models from natural language supervision, 2021} 
+	\myfootnotewithlink{https://arxiv.org/pdf/2103.00020}{Radford A. et al. Learning transferable visual models from natural language supervision, 2021} 
 	\vspace{-0.5cm}
 	\begin{minipage}{0.5\linewidth}
 		\begin{block}{Unconditional Model}
@@ -318,16 +331,19 @@
 				\includegraphics[width=0.95\linewidth]{figs/uncond_model}
 			\end{figure}
 		\end{block}
+		\vspace{0.2cm}
 	\end{minipage}%
 	\begin{minipage}{0.5\linewidth}
-		\vspace{0.2cm}
 		\begin{block}{Conditional Model}
 			\begin{figure}
 				\includegraphics[width=0.95\linewidth]{figs/cond_model}
 			\end{figure}
 		\end{block}
 	\end{minipage}
+
+	\eqpause
 	We need a way to measure not only the quality of the generated image, but also how well it's aligned with the prompt.
+	\eqpause
 	\begin{figure}
 		\includegraphics[width=0.6\linewidth]{figs/clip}
 	\end{figure}
@@ -336,12 +352,13 @@
 \subsection{Human Evaluation}
 %=======
 \begin{frame}{Human Evaluation}
-\myfootnotewithlink{https://ya.ru/ai/art}{YandexART 2.5, 2025} 
+	\myfootnotewithlink{https://ya.ru/ai/art}{YandexART 2.5, 2025} 
 	\begin{itemize}
 		\item No automated metric is perfect.
 		\item The best way to evaluate generative models is by human assessment.
 		\item It's important to assess various properties.
 	\end{itemize}
+	\eqpause
 	\begin{figure}
 		\includegraphics[width=1.0\linewidth]{figs/yaart_2.5}
 	\end{figure}
@@ -361,13 +378,15 @@
 			\item If we reparameterize as $\hat{p}(\bx | \btheta) = \exp(-f_{\btheta}(\bx))$, we eliminate the non-negativity constraint.
 		\end{itemize}
 	\end{block}
+	\eqpause
 	\vspace{-0.3cm}
 	\begin{block}{Unnormalized Density}
 		The gradient of the normalized log-density equals that of the unnormalized log-density:
 		\[
-			\nabla_{\bx} \log p(\bx | \btheta) = \nabla_{\bx} \log \hat{p}(\bx | \btheta) - \nabla_{\bx} \log Z_{\btheta} = \nabla_{\bx} \log \hat{p}(\bx | \btheta)
+			\nabla_{\bx} \log p(\bx | \btheta) = \nabla_{\bx} \log \hat{p}(\bx | \btheta) - \nabla_{\bx} \log Z_{\btheta} \nextonslide{= \nabla_{\bx} \log \hat{p}(\bx | \btheta)}
 		\]
 	\end{block}
+	\eqpause
 	\vspace{-0.3cm}
 	\begin{itemize}
 		\item Suppose we already have this density (normalized or not) $p(\bx | \btheta)$.
@@ -376,7 +395,7 @@
 \end{frame}
 %=======
 \begin{frame}{Langevin Dynamics}
-\myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
+	\myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
 	\vspace{-0.4cm}
 	\begin{block}{Theorem (Informal)}
 		Let $\bx_0$ be a random vector. Under mild regularity conditions, samples from the following dynamics will eventually follow $p(\bx | \btheta)$ (for sufficiently small $\eta$ and large $l$):
@@ -386,6 +405,7 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\begin{minipage}{0.55\linewidth}
 		\begin{itemize}
 			\item What if $\bepsilon_l = \boldsymbol{0}$?
@@ -405,7 +425,7 @@
 \section{Score Matching}
 %=======
 \begin{frame}{Score Matching}
-\myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
+	\myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
 	\begin{block}{Score Function}
 		\vspace{-0.3cm}
 		 \[
@@ -413,6 +433,7 @@
 		 \]
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\begin{block}{Langevin Dynamics}
 		If we know the score function $\bs_{\btheta}(\bx) = \nabla_{\bx}\log p(\bx| \btheta)$, we can generate samples from the model using Langevin dynamics:
 		\[
@@ -420,6 +441,7 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\begin{block}{Fisher Divergence}
 		\vspace{-0.5cm}
 		\begin{multline*}
@@ -431,7 +453,7 @@
 \end{frame}
 %=======
 \begin{frame}{Score Matching}
-\myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
+	\myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
 	\begin{block}{Fisher Divergence}
 		\vspace{-0.3cm}
 		\[
@@ -443,22 +465,26 @@
 		\centering
 		\includegraphics[width=\linewidth]{figs/smld}
 	\end{figure}
+	\eqpause
 	\textbf{Problem:} We don't know $\nabla_\bx \log \pi(\bx)$.
 \end{frame}
 %=======
 \section{Denoising Score Matching}
 %=======
 \begin{frame}{Denoising Score Matching}
-\myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
+	\myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
 
 	Let us perturb the original data $\bx \sim \pi(\bx)$ with Gaussian noise:
+	\vspace{-0.3cm}
 	\[
 		\bx_{\sigma} = \bx + \sigma \cdot \bepsilon, \quad \bepsilon \sim \cN(0, \bI), \quad q(\bx_{\sigma} | \bx) = \cN(\bx, \sigma^2 \cdot \bI)
 	\]
+	\eqpause
 	\vspace{-0.4cm}
 	\[
 		q(\bx_{\sigma}) = \int q(\bx_{\sigma} | \bx) \pi(\bx) d\bx.
 	\]
+	\eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Assumption}
 		The solution to
@@ -468,6 +494,7 @@
 		\vspace{-0.3cm} \\
 		satisfies $\bs_{\btheta, \sigma}(\bx_{\sigma}) \approx \bs_{\btheta, 0}(\bx_0) = \bs_{\btheta}(\bx)$ if $\sigma$ is sufficiently small.
 	\end{block}
+	\eqpause
 	\begin{itemize}
 		\item The score function of the noised data nearly matches the score function of the original data.
 		\item The score function $\bs_{\btheta, \sigma}(\bx_{\sigma})$ is parameterized by $\sigma$.
@@ -476,24 +503,27 @@
 \end{frame}
 %=======
 \begin{frame}{Denoising Score Matching}
-\myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
+	\myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
 	\begin{block}{Theorem}
-	\vspace{-0.5cm}
-	\begin{multline*}
-		\bbE_{q(\bx_{\sigma})}\big\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \big\|^2_2 = \\
+		\vspace{-0.5cm}
+		\begin{multline*}
+			\bbE_{q(\bx_{\sigma})}\big\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \big\|^2_2 = \\
 		= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\big\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \big\|^2_2 + \text{const}(\btheta)
-	\end{multline*}
-	\vspace{-0.5cm}
+		\end{multline*}
+		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\begin{block}{Gradient of the Noise Kernel}
 		\vspace{-0.3cm}
 		\[
 			\bx_{\sigma} = \bx + \sigma \cdot \bepsilon, \quad q(\bx_{\sigma} | \bx) = \cN(\bx, \sigma^2 \cdot \bI)
 		\]
+		\eqpause
 		\vspace{-0.3cm}
 		\[
 			\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) = - \frac{\bx_{\sigma} - \bx}{\sigma^2}  = - \frac{\bepsilon}{\sigma}
 		\]
+		\eqpause
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{itemize}
@@ -503,24 +533,27 @@
 \end{frame}
 %=======
 \begin{frame}{Denoising Score Matching}
-\myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
+	\myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
 	Initial objective:
 	\vspace{-0.2cm}
 	\[
 		\bbE_{\pi(\bx)}\big\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pi(\bx) \big\|^2_2 \rightarrow \min_{\btheta}
 	\]
+	\eqpause
 	\vspace{-0.5cm} \\
 	Noised objective:
 	\vspace{-0.2cm}
 	\[
 		\bbE_{q(\bx_{\sigma})}\big\| \bs_{\btheta, \sigma}(\bx_\sigma) - \nabla_\bx \log q(\bx_{\sigma}) \big\|^2_2 \rightarrow \min_{\btheta}
 	\]
+	\eqpause
 	\vspace{-0.5cm} \\
 	This is equivalent to a denoising task:
 	\vspace{-0.2cm}
 	\[
 		\bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\big\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \big\|^2_2 \rightarrow \min_{\btheta}
 	\]
+	\eqpause
 	\vspace{-0.3cm}
 	\[
 		\bbE_{\pi(\bx)} \bbE_{\cN(0, \bI)}\left\| \bs_{\btheta, \sigma}(\bx + \sigma \cdot \bepsilon) + \frac{\bepsilon}{\sigma} \right\|^2_2 \rightarrow \min_{\btheta}
