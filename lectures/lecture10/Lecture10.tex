@@ -2,14 +2,12 @@
 \input{../utils/preamble}
 \createdgmtitle{10}
 
-\usepackage{tikz}
-
-\usetikzlibrary{arrows,shapes,positioning,shadows,trees}
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
 \begin{frame}[noframenumbering,plain]
 \titlepage
+	\resetonslide	
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
@@ -143,20 +141,26 @@
 		\vspace{-0.7cm}
 		\begin{align*}
 			\cL_t &= \bbE_{\bepsilon \sim \cN(0, \bI)} \left[ \frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t  (1 - \bar{\alpha}_t)}  \left\|  \bepsilon_{\btheta, t} (\bx_t) - \bepsilon\right\|_2^2  \right] \\
+			\nextonslide{
 			& = \bbE_{\bepsilon \sim \cN(0, \bI)} \left[ \frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t }  \Bigl\| {\color{violet} \frac{\bepsilon_{\btheta, t}  (\bx_t) }{\sqrt{1 - \bar{\alpha}_t}}} - {\color{teal}\frac{\bepsilon}{\sqrt{1 - \bar{\alpha}_t}}}\Bigr\|_2^2  \right]
+			}
 		\end{align*}
 		\vspace{-0.7cm}
 	\end{block}
+	\eqpause
 	\vspace{-0.5cm}
 	\begin{align*}
 		q(\bx_t | \bx_0) &= \cN(\sqrt{\bar{\alpha}_t} \cdot \bx_0, (1 - \bar{\alpha}_t) \cdot \bI) \\
-		\nabla_{\bx_t} \log q(\bx_t | \bx_0) &= - \frac{\bx_t - \sqrt{\bar{\alpha}_t} \cdot \bx_0}{1 - \bar{\alpha}_t} = {\color{teal}-  \frac{\bepsilon}{\sqrt{1 - \bar{\alpha}_t}}}.
+		\nextonslide{\nabla_{\bx_t} \log q(\bx_t | \bx_0) &= - \frac{\bx_t - \sqrt{\bar{\alpha}_t} \cdot \bx_0}{1 - \bar{\alpha}_t} = {\color{teal}-  \frac{\bepsilon}{\sqrt{1 - \bar{\alpha}_t}}}.}
 	\end{align*}
+	\eqpause
 	We can reparameterize the model as: 
 		\vspace{-0.2cm}
 		\[
 			\bs_{\btheta, t}(\bx_t) = {\color{violet}- \frac{\bepsilon_{\btheta, t}(\bx_t)}{\sqrt{1 - \bar{\alpha}_t}}} = \nabla_{\bx_t} \log p(\bx_t | \btheta).
 		\]
+		\vspace{-0.3cm}
+		\eqpause
 		\[
 			\cL_t = \bbE_{q(\bx_t | \bx_0)} \left[ \frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t}  \Bigl\|  \bs_{\btheta, t} (\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \Bigr\|_2^2  \right]
 		\]
@@ -172,8 +176,10 @@
 		\[
 			\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon
 		\]
+		\eqpause
 		In practice, {\color{olive}this coefficient} is often omitted.
 	\end{block}
+	\eqpause
 	\begin{block}{NCSN Objective}
 		\vspace{-0.3cm}
 		\[
@@ -184,6 +190,7 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\textbf{Maximizing the ELBO leads to the same objective as denoising score matching!}
 \end{frame}
 %=======
@@ -193,12 +200,16 @@
 			\vspace{-0.7cm}
 			\begin{align*}
 				\bx_T &\sim \cN(0, \bI) \\
-				\bx_{t - 1} &= {\color{teal}\bmu_{\btheta, t}(\bx_t)} + \sigma_t \cdot \bepsilon \\
-				& ={\color{teal}\frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon_{\btheta, t}(\bx_t)} +  \sigma_t \cdot \bepsilon \\
-				& = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot \bs_{\btheta, t} (\bx_t) +  \sigma_t \cdot \bepsilon
+				\bx_{t - 1} &= {\color{teal}\bmu_{\btheta, t}(\bx_t)} + \sigma_t \cdot \bepsilon 
+				\nextonslide{\\& ={\color{teal}\frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon_{\btheta, t}(\bx_t)} +  \sigma_t \cdot \bepsilon
+				}
+				\nextonslide{
+				\\ & = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot \bs_{\btheta, t} (\bx_t) +  \sigma_t \cdot \bepsilon
+				}
 			\end{align*}
 			\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\begin{block}{NCSN Sampling (Annealed Langevin Dynamics)}
 		\begin{itemize}
 			\item Sample $\bx_T^0 \sim \cN(0, \sigma_T^2\, \bI) \approx q(\bx_T)$.
@@ -224,7 +235,9 @@
 				\item NCSN: $\bx_t = \bx_0 + \sigma_t \cdot \bepsilon$.
 				\item One can generalize to $q(\bx_t |\bx_0) = \cN(\alpha_t \cdot \bx_0, \sigma^2_t\, \bI)$.
 			\end{itemize}
+		\eqpause
 		\item The objectives coincide: ELBO $\equiv$ score-matching.
+		\eqpause
 		\item The sampling procedures differ:
 			\begin{itemize}
 				\item Ancestral sampling in DDPM;
@@ -292,11 +305,13 @@
 	\item Given \textbf{supervised} data $\{(\bx_i, \by_i)\}_{i=1}^n$, we can treat $\by$ as an additional input:
 	\begin{itemize}
 		\item $p(x_j | \bx_{1:j-1}, {\color{olive}\by}, \btheta)$ for AR models;
-		\item Encoder $q(\bz | \bx, {\color{olive}\by}, \bphi)$ and decoder $p(\bx | \bz, {\color{olive}\by}, \btheta)$ for VAEs;
+				\item Encoder $q(\bz | \bx, {\color{olive}\by}, \bphi)$ and decoder $p(\bx | \bz, {\color{olive}\by}, \btheta)$ for VAEs;
 		\item $G_{\btheta}(\bz, {\color{olive}\by})$ for NFs and GANs;
 		\item $p(\bx_{t-1} | \bx_t, {\color{olive}\by}, \btheta)$ for DDPMs.
 	\end{itemize}
+	\eqpause
 	\item For \textbf{unsupervised} data $\{\bx_i\}_{i=1}^n$, it becomes necessary to devise a way to transform the unconditional model $p(\bx | \btheta)$ into a conditional version.
+	\eqpause
 	\item Being able to control the strength of guidance is especially valuable.
 	\end{itemize}
 \end{frame}
@@ -309,6 +324,7 @@
 				\item Suitable for unsupervised data;
 				\item Utilizes an auxiliary classifier (which still requires supervision for classifier training).
 			\end{itemize}
+		\eqpause
 		\item \textbf{Classifier-Free Guidance:} 
 			\begin{itemize}
 				\item Best suited for supervised data;
@@ -328,11 +344,14 @@
 			\vspace{-0.3cm}
 			\begin{align*}
 				\bx_{t - 1} &= \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot {\color{teal}\bs_{\btheta, t} (\bx_t)} +  \sigma_t \cdot \bepsilon \\
+				\nextonslide{
 				& = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot {\color{teal} \nabla_{\bx_t} \log p(\bx_t | \btheta)} +  \sigma_t \cdot \bepsilon
+				}
 			\end{align*}
 			\vspace{-0.5cm}
 		\end{enumerate}
 	\end{block}
+	\eqpause
 	\begin{block}{Conditional Generation}
 		\vspace{-0.5cm}
 		\[
@@ -355,16 +374,23 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\begin{block}{Conditional Distribution}
 		\vspace{-0.7cm}
 		\begin{align*}
 			{\color{olive}\nabla_{\bx_t} \log p(\bx_t | \by, \btheta)} &= \nabla_{\bx_t} \log \left(\frac{p(\by | \bx_t)p(\bx_t | \btheta)}{p(\by)} \right)\\
+			\nextonslide{
 			&= \nabla_{\bx_t} \log p(\by | \bx_t) + {\color{violet}\nabla_{\bx_t} \log p(\bx_t | \btheta)}\\
+			}
+			\nextonslide{
 			&= {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)} {\color{violet}- \frac{\bepsilon_{\btheta, t}(\bx_t)}{\sqrt{1 - \bar{\alpha}_t}}}
+			}
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	Let's reparameterize: $\nabla_{\bx_t} \log p(\bx_t | \by, \btheta) = - \frac{\bepsilon_{\btheta, t}(\bx_t, \by)}{\sqrt{1 - \bar{\alpha}_t}}$.
+	\eqpause
 	\begin{block}{Classifier-Corrected Noise Prediction}
 		\vspace{-0.3cm}
 		\[
@@ -382,6 +408,7 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\begin{block}{Guidance Scale}
 		\vspace{-0.3cm}
 		\[
@@ -389,6 +416,7 @@
 		\]
 		Here, the {\color{teal}guidance scale $\gamma$} adjusts the strength of classifier guidance.
 	\end{block}
+	\eqpause
 	\begin{block}{Training}
 		\begin{itemize}
 			\item Train the DDPM as before.
@@ -396,6 +424,7 @@
 		\end{itemize}
 		\vspace{-0.2cm}
 	\end{block}
+	\eqpause
 	\begin{block}{Guided Sampling}
 		\vspace{-0.3cm}
 		\[
@@ -413,18 +442,25 @@
 		\]
 		\vspace{-0.7cm}
 	\end{block}
+	\eqpause
 	\begin{block}{Guidance-Scaled Conditional Distribution}
 		\[
 			\frac{\bepsilon_{\btheta, t}(\bx_t, \by)}{\sqrt{1 - \bar{\alpha}_t}} = \frac{\bepsilon_{\btheta, t}(\bx_t)}{\sqrt{1 - \bar{\alpha}_t}} - {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
 		\]
+		\eqpause
 		\vspace{-0.5cm}
 		\begin{align*}
 			\nabla_{\bx_t}^{\gamma} \log p(\bx_t | \by, \btheta) &= \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot \nabla_{\bx_t} \log p(\by | \bx_t) \\
+			\nextonslide{
 			&= \nabla_{\bx_t} \log p(\bx_t | \btheta) + \nabla_{\bx_t} \log p(\by | \bx_t)^{\gamma} \\
+			}
+			\nextonslide{
 			&= \nabla_{\bx_t} \log \left( \frac{p(\by | \bx_t)^{\gamma} p(\bx_t | \btheta)}{Z} \right)
+			}
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\textbf{Note:} Increasing $\gamma$ sharpens $p(\by | \bx_t)$ (with $Z$ independent of $\bx_t$).
 \end{frame}
 %=======
@@ -436,20 +472,26 @@
 		\item The previous approach relies on training an additional classifier $p(\by | \bx_t)$ for noisy images.	
 		\item We now introduce a method to sidestep this requirement.
 	\end{itemize}
+	\eqpause
 	\[
 		\nabla_{\bx_t}^{\gamma} \log p(\bx_t | \by, \btheta) = \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)}
 	\]
+	\eqpause
 	\vspace{-0.7cm}
 	\begin{align*}
 		{\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)} &= \nabla_{\bx_t} \log \left( \frac{p(\bx_t| \by, \btheta) p(\by)}{p(\bx_t | \btheta)} \right) \\
+		\nextonslide{
 		&=  \nabla_{\bx_t} \log p(\bx_t| \by, \btheta) -\nabla_{\bx_t} \log  p(\bx_t | \btheta)
+		}
 	\end{align*}
+	\eqpause
 	\vspace{-0.8cm}
 	\begin{multline*}
-		\nabla_{\bx_t}^{\gamma} \log p(\bx_t | \by, \btheta) = \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot \nabla_{\bx_t} {\color{violet}\log p(\by | \bx_t)} = \\
-		= \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot \bigl( {\color{violet}\nabla_{\bx_t} \log p(\bx_t| \by, \btheta) - \nabla_{\bx_t} \log  p(\bx_t | \btheta)} \bigr) = \\
-		=  (1 - \gamma) \cdot  \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot  \nabla_{\bx_t} \log p(\bx_t| \by, \btheta)
+		\nabla_{\bx_t}^{\gamma} \log p(\bx_t | \by, \btheta) = \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot \nabla_{\bx_t} {\color{violet}\log p(\by | \bx_t)}
+		\nextonslide{ = \\ = \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot \bigl( {\color{violet}\nabla_{\bx_t} \log p(\bx_t| \by, \btheta) - \nabla_{\bx_t} \log  p(\bx_t | \btheta)} \bigr)}
+		\nextonslide{ = \\ =  (1 - \gamma) \cdot  \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot  \nabla_{\bx_t} \log p(\bx_t| \by, \btheta)}
 	\end{multline*}
+	\eqpause
 	\textbf{Note:} When $\gamma = 1$, the original identity is restored.
 \end{frame}
 %=======
@@ -458,9 +500,11 @@
 	\[
 		\nabla_{\bx_t}^{\gamma} \log p(\bx_t | \by, \btheta) =  (1 - \gamma) \cdot  \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot  \nabla_{\bx_t} \log p(\bx_t| \by, \btheta)
 	\]
+	\eqpause
 	\[
 		\frac{\hat{\bepsilon}_{\btheta, t}(\bx_t, \by)}{\sqrt{1 - \bar{\alpha}_t}} = (1 - \gamma) \cdot  \frac{\bepsilon_{\btheta, t}(\bx_t)}{\sqrt{1 - \bar{\alpha}_t}} +  \gamma \cdot \frac{\bepsilon_{\btheta, t}(\bx_t, \by)}{\sqrt{1 - \bar{\alpha}_t}} 
 	\]
+	\eqpause
 	\begin{block}{Classifier-Free Corrected Noise Prediction}
 		\vspace{-0.3cm}
 		\[
@@ -468,10 +512,13 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\begin{itemize}
 		\item Train a single model $\bepsilon_{\btheta, t}(\bx_t, \by)$ using \textbf{supervised} data, alternating between conditioning and unconditional training (i.e., using $\by = \emptyset$).
+		\eqpause
 		\item Apply the model for both conditioning modes during inference.
 	\end{itemize}
+	\eqpause
 	\begin{block}{Guided Sampling}
 		\vspace{-0.3cm}
 		\[
@@ -493,6 +540,7 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 
 	\vspace{-0.3cm}
 	\begin{figure}
@@ -505,7 +553,7 @@
 	\vspace{-0.4cm}
 \end{frame}
 %=======
-\begin{frame}{Discrete-Time Normalizing Flows: Towards Continuous Time}
+\begin{frame}{Towards Continuous-Time Normalizing Flows}
 	\begin{itemize}
 		\item Up to this point, we have considered discrete-time normalizing flows:
 		\vspace{-0.3cm}
@@ -514,12 +562,15 @@
 		 \]
 		\item Let us now move to the general case of continuous time, using a mapping $\bx(t): \bbR \rightarrow \bbR^m$ to describe continuous dynamics.
 	\end{itemize}
+	\eqpause
 	\begin{block}{Continuous-Time Dynamics}
 		Consider an Ordinary Differential Equation (ODE):
 		\vspace{-0.3cm}
 		\begin{align*}
 		   \frac{d \bx(t)}{dt} &= \bff_{\btheta}(\bx(t), t); \quad \text{with initial condition }\bx(t_0) = \bx_0. \\
+		   \nextonslide{
 		   \bx(t_1) &= \int^{t_1}_{t_0} \bff_{\btheta}(\bx(t), t) d t  + \bx_0
+		   }
 		\end{align*}
 		\vspace{-0.6cm}
 	\end{block}
@@ -530,9 +581,11 @@
 	\vspace{-0.5cm}
 	\begin{align*}
 		\frac{d \bx(t)}{dt} &= \bff_{\btheta}(\bx(t), t); \quad \text{with initial condition }\bx(t_0) = \bx_0. \\
-		\bx(t_1) &= \int^{t_1}_{t_0} \bff_{\btheta}(\bx(t), t) d t  + \bx_0 \approx {\color{teal}\texttt{ODESolve}_f(\bx_0, \btheta, t_0, t_1)}.
+		\bx(t_1) &= \int^{t_1}_{t_0} \bff_{\btheta}(\bx(t), t) d t  + \bx_0 \nextonslide{\approx {\color{teal}\texttt{ODESolve}_f(\bx_0, \btheta, t_0, t_1)}.}
 	\end{align*}
+	\eqpause
 	Here, we require the numerical routine $\texttt{ODESolve}_f(\bx_0, \btheta, t_0, t_1)$.
+	\eqpause
 	\begin{block}{Euler Update Step}
 		\begin{minipage}[t]{0.6\columnwidth}
 			\vspace{-0.5cm}
@@ -543,6 +596,7 @@
 	  			\bx(t + \Delta t) = \bx(t) + \Delta t \cdot \bff_{\btheta}(\bx(t), t)
 			\]
 		\end{minipage}%
+		\eqpause
 		\begin{minipage}[t]{0.4\columnwidth}
 			\vspace{-0.3cm}
 			\begin{figure}
@@ -551,6 +605,7 @@
 			\end{figure}
 		\end{minipage}
 	\end{block}
+	\eqpause
 	\textbf{Note:} The Euler method is the simplest ODE solver but can be unstable in practice. More advanced schemes, such as Runge-Kutta, are typically employed.
 \end{frame}
 %=======
@@ -570,6 +625,7 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+	\eqpause
 	\begin{itemize}
 		\item Consider $[t_0, t_1] = [0, 1]$ for simplicity.
 		\item If $\bx(0)$ is a random variable with density~$p_0(\bx)$,
@@ -582,11 +638,13 @@
 	\[
  		\frac{d \bx(t)}{dt} = \bff_{\btheta}(\bx(t), t); \quad \text{with initial condition }\bx(t_0) = \bx_0
 	\]
+	\eqpause
 	\vspace{-0.5cm}
 	\begin{itemize}
 		\item $p_t(\bx) = p(\bx, t)$ describes the \textbf{probability path} interpolating between $p_0(\bx)$ and $p_1(\bx)$.
 		\item {\color{gray}What is the difference between $p_t(\bx(t))$ and $p_t(\bx)$?}
 	\end{itemize}
+	\eqpause
 	\begin{figure}
 		\centering
 		\includegraphics[width=0.75\linewidth]{figs/cnf_flow.png}
@@ -598,13 +656,15 @@
 	\begin{block}{Theorem (Picard)}
 		If $\bff$ is uniformly Lipschitz continuous in $\bx$ and continuous in $t$, then the ODE admits a \textbf{unique} solution.
 	\end{block}
+	\eqpause
 	This guarantees the ODE is \textbf{uniquely reversible}. 
 	\begin{align*}
 		\bx(1) &= \bx(0) + \int_{0}^{1} \bff_{\btheta}(\bx(t), t) dt \\
 		\bx(0) &= \bx(1) + \int_{1}^{0} \bff_{\btheta}(\bx(t), t) dt
 	\end{align*}
+	\eqpause
 	\textbf{Note:} Unlike discrete-time flows, $\bff$ need not be invertible (uniqueness ensures bijection).
-	
+	\eqpause
 	How can we compute $p_t(\bx)$ at arbitrary $t$?
 \end{frame}
 %=======

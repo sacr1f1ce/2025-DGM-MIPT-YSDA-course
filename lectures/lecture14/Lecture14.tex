@@ -2,19 +2,12 @@
 \input{../utils/preamble}
 \createdgmtitle{14}
 
-\usepackage{tikz}
-
-\usetikzlibrary{arrows,shapes,positioning,shadows,trees}
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
 \begin{frame}[noframenumbering,plain]
-%\thispagestyle{empty}
 \titlepage
-\end{frame}
-%=======
-\begin{frame}{Outline}
-	\tableofcontents
+	\resetonslide
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
@@ -113,6 +106,10 @@
 	\end{figure}
 \end{frame}
 %=======
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+%=======
 \section{Latent Space Models}
 %=======
 \subsection{Score-Based Models}
@@ -127,6 +124,7 @@
 		\end{figure}
 		\vspace{-0.3cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Flow Matching}
 		\vspace{-0.3cm}
 		\begin{figure}
@@ -139,24 +137,27 @@
 %=======
 \begin{frame}{Vector Quantized VAE (VQ-VAE)}
     \myfootnote{\href{https://arxiv.org/abs/2004.02088}{Zhao Y. et al. Feature Quantization Improves GAN Training, 2020} \\ \href{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017}}
+
 	Define a dictionary space $\{\be_k\}_{k=1}^K$, where $\be_k \in \bbR^C$ and $K$ is the dictionary’s size.
 	\vspace{-0.5cm}
 	\begin{minipage}[t]{0.45\columnwidth}
 		\[
 			\bz_q = \bq (\bz) = \be_{k^*}
 		\]
-		Here $k^* = \argmin_k \| \bz - \be_k \|$.
+        Here $k^* = \argmin_k \| \bz - \be_k \|$.
 	\end{minipage}%
 	\begin{minipage}[t]{0.55\columnwidth}
 		\vspace{-0.5cm}
 		\begin{figure}
 			\includegraphics[width=\linewidth]{figs/fqgan_cnn}
 		\end{figure}
-	\end{minipage}		
+	\end{minipage}	
+	\vspace{0.5cm}	
+    \eqpause
 	\[
 		\cL_{\bphi, \btheta}(\bx)  =  \log p(\bx | \bz_q, \btheta) - \log K
 	\]
-	\vspace{-0.5cm}
+	\vspace{-0.3cm}
 	\begin{figure}
 		\centering
 		\includegraphics[width=\linewidth]{figs/vqvae}
@@ -192,6 +193,7 @@
 	\begin{figure}
 		\includegraphics[width=0.9\linewidth]{figs/var_idea}
 	\end{figure}
+    \eqpause
 	\begin{figure}
 		\includegraphics[width=0.9\linewidth]{figs/var_training}
 	\end{figure}
@@ -212,6 +214,7 @@
 	\begin{figure}
 		\includegraphics[width=0.45\linewidth]{figs/trilemma}
 	\end{figure}
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{figure}
 		\includegraphics[width=0.9\linewidth]{figs/gen_comp_table}

@@ -2,14 +2,12 @@
 \input{../utils/preamble}
 \createdgmtitle{12}
 
-\usepackage{tikz}
-
-\usetikzlibrary{arrows,shapes,positioning,shadows,trees}
 %--------------------------------------------------------------------------------
 \begin{document}
 %--------------------------------------------------------------------------------
 \begin{frame}[noframenumbering,plain]
 \titlepage
+	\resetonslide
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
@@ -172,16 +170,18 @@
 			\bx_{t-1} &= \bx + \sigma_{t-1} \cdot \bepsilon_{t-1}, & q(\bx_{t-1} | \bx) &= \cN(\bx, \sigma_{t-1}^2 \cdot \bI)
 		\end{align*}
 	\end{block}
+	\eqpause
 	\vspace{-1.0cm}
 	\[
 		\bx_t = \bx_{t - 1} + \sqrt{\sigma^2_t - \sigma^2_{t-1}} \cdot \bepsilon, \quad q(\bx_{t} | \bx_{t-1}) = \cN(\bx_{t-1}, (\sigma_t^2 - \sigma_{t-1}^2) \cdot \bI)
 	\]
+	\eqpause
 	Let's transform this Markov chain into the continuous stochastic process~$\bx(t)$ by letting $T \rightarrow \infty$:
 	\vspace{-0.3cm}
 	\begin{align*}
-		\bx(t) &= \bx(t - dt) + \sqrt{\sigma^2(t) - \sigma^2(t - dt)} \cdot {\color{violet}\bepsilon} \\
-		&= \bx(t - dt) + \sqrt{\frac{\sigma^2(t) - \sigma^2(t - dt)}{dt} {\color{violet}dt}} \cdot {\color{violet}\bepsilon} \\
-		&= \bx(t - dt) + \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot {\color{violet}d \bw}
+		\bx(t) &= \bx(t - dt) + \sqrt{\sigma^2(t) - \sigma^2(t - dt)} \cdot {\color{violet}\bepsilon}
+		\nextonslide{\\ &= \bx(t - dt) + \sqrt{\frac{\sigma^2(t) - \sigma^2(t - dt)}{dt} {\color{violet}dt}} \cdot {\color{violet}\bepsilon}}
+		 \nextonslide{\\ &= \bx(t - dt) + \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot {\color{violet}d \bw}}
 	\end{align*}
 	\vspace{-0.5cm}
 \end{frame}
@@ -192,6 +192,7 @@
 	\[
 		\bx(t) = \bx(t - dt) + \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw
 	\]
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Variance Exploding SDE}
 		\vspace{-0.3cm}
@@ -200,10 +201,12 @@
 		\]
 		$\sigma(t)$ is a monotonically increasing function.
 	\end{block}
+    \eqpause
 	\vspace{-0.7cm}
 	\[
 		d\bx = \bff(\bx, t) dt + g(t) d \bw, \quad \bff(\bx, t) = 0, \quad g(t) = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} 
 	\]
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{align*}
 		d\bx &= \left(-\frac{1}{2} \frac{ d [\sigma^2(t)]}{dt} \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt \qquad\quad\, \text{(probability flow ODE)} \\
@@ -220,12 +223,14 @@
 		\]
 		\vspace{-0.7cm}
 	\end{block}
+    \eqpause
 	Let's turn this Markov chain into a continuous stochastic process by letting $T \rightarrow \infty$ and setting $\beta_t = \beta(\frac{t}{T}) \cdot \frac{1}{T}$ (where $dt = \frac{1}{T}$):
 	\begin{multline*}
-		{\color{teal}\bx(t)} = \sqrt{1 - \beta(t) dt} \cdot \bx(t - dt) + \sqrt{\beta(t)dt} \cdot \bepsilon \approx \\
-		\approx (1 - \frac{1}{2} \beta(t) dt) \cdot \bx(t - dt) + \sqrt{\beta(t){\color{violet}dt}} \cdot {\color{violet}\bepsilon} = \\
-		= {\color{teal}\bx(t - dt)} - \frac{1}{2} \beta(t) \bx(t - dt) dt  + \sqrt{\beta(t)} \cdot {\color{violet}d \bw}
+		{\color{teal}\bx(t)} = \sqrt{1 - \beta(t) dt} \cdot \bx(t - dt) + \sqrt{\beta(t)dt} \cdot \bepsilon 
+		\nextonslide{\approx \\ \approx (1 - \frac{1}{2} \beta(t) dt) \cdot \bx(t - dt) + \sqrt{\beta(t){\color{violet}dt}} \cdot {\color{violet}\bepsilon}}
+		\nextonslide{= \\ = {\color{teal}\bx(t - dt)} - \frac{1}{2} \beta(t) \bx(t - dt) dt  + \sqrt{\beta(t)} \cdot {\color{violet}d \bw}}
 	\end{multline*}
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Variance Preserving SDE}
 		\vspace{-0.3cm}
@@ -247,6 +252,7 @@
 		\]
 	\end{block}
 	Variance is preserved as long as $\bx(0)$ has unit variance.
+    \eqpause
 	\begin{align*}
 		d\bx &= \left(- \frac{1}{2} \beta(t) \bx(t) - \frac{1}{2} \beta(t) \frac{\partial}{\partial \bx} \log p_t(\bx) \right) dt \quad\quad \text{(probability flow ODE)} \\
 		d\bx &= \left(- \frac{1}{2} \beta(t) \bx(t) - \beta(t) \frac{\partial}{\partial \bx} \log p_t(\bx)\right) dt + \sqrt{\beta(t)} d \bw\ \ \text{(reverse SDE)}
@@ -255,10 +261,11 @@
 %=======
 \begin{frame}{Diffusion SDE}
 	\myfootnotewithlink{https://arxiv.org/abs/2206.00927}{Lu C. et al. Dpm-solver: A fast ode solver for diffusion probabilistic model sampling in around 10 steps, 2022}
-	\vspace{-0.5cm}
+	\vspace{-0.3cm}
 	\[
 		d\bx = {\color{teal}\bff(\bx, t)} dt + {\color{violet}g(t)} d \bw
 	\]
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Variance Exploding SDE (NCSN)}
 		\vspace{-0.3cm}
@@ -274,6 +281,7 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Efficient Solvers}
 		\begin{itemize}
 		\item Converting SDEs to PF-ODEs yields more efficient inference.
@@ -295,6 +303,7 @@
 		\vspace{-0.5cm}
 	\end{block}
 	Is it possible to train score-based diffusion models in continuous time?
+    \eqpause
 	\begin{block}{Continuous-Time Objective}
 		\vspace{-0.7cm}
 		\[
@@ -302,6 +311,7 @@
 		\]
 		\vspace{-0.7cm}
 	\end{block}
+    \eqpause
 	\vspace{-0.4cm}
 	\begin{figure}
 		\includegraphics[width=0.75\linewidth]{figs/sbgm}
@@ -318,12 +328,14 @@
 		\]
 		\vspace{-0.7cm}
 	\end{block}
+    \eqpause
 	\[
 		q(\bx(t) | \bx(0)) = \cN\Bigl(\bmu(\bx(t), \bx(0)), \bsigma^2(\bx(t), \bx(0)) \cdot \bI \Bigr)
 	\]
 	\[
 		\nabla_{\bx(t)} \log q(\bx(t) | \bx(0)) = - \frac{1}{\bsigma} \odot (\bx(t) - \bmu)
 	\]
+    \eqpause
 	\[
 		d \bx = \sqrt{\frac{ d [\sigma^2(t)]}{dt}} \cdot d \bw \ \ \mbox{(Variance Exploding SDE)}
 	\]
@@ -331,6 +343,7 @@
 	\[
 		d \bx = - \frac{1}{2} \beta(t) \bx(t) dt + \sqrt{\beta(t)} \cdot d \bw \ \ \mbox{(Variance Preserving SDE)}
 	\]
+    \eqpause
 	Is it possible to explicitly derive $\bmu(\bx(t), \bx(0))$ and $\bSigma(\bx(t), \bx(0))$ for VE-SDE and VP-SDE?
 \end{frame}
 %=======
@@ -349,12 +362,13 @@
 			\frac{d \bSigma(\bx(t), \bx(0))}{dt} = \bbE \left[ \bff \cdot (\bx(t) - \bmu)^T + (\bx(t) - \bmu) \cdot \bff^T | \bx(0)\right] + g^2(t) \cdot \bI
 		\]
 	\end{block}
+    \eqpause
 	\begin{block}{Proof}
 		\vspace{-0.7cm}
 		\begin{align*}
-			\bbE\left[{\color{violet}d\bx} | \bx(0) \right] &= \bbE\left[{\color{violet}\bff(\bx, t) dt} | \bx(0) \right] + \bbE\left[{\color{violet}g(t) d \bw} | \bx(0) \right] \\
-			&= \bbE\left[\bff(\bx, t) | \bx(0) \right] dt + g(t) \bbE\left[d \bw | \bx(0) \right] \\
-			&= \bbE\left[\bff(\bx, t) | \bx(0) \right] dt
+			\bbE\left[{\color{violet}d\bx} | \bx(0) \right] &= \bbE\left[{\color{violet}\bff(\bx, t) dt} | \bx(0) \right] + \bbE\left[{\color{violet}g(t) d \bw} | \bx(0) \right]
+			\nextonslide{\\ &= \bbE\left[\bff(\bx, t) | \bx(0) \right] dt + g(t) \bbE\left[d \bw | \bx(0) \right]}
+			\nextonslide{\\ &= \bbE\left[\bff(\bx, t) | \bx(0) \right] dt}
 		\end{align*}
 	\end{block}
 \end{frame}
@@ -368,24 +382,31 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Proof (Continued)}
 		\vspace{-0.3cm}
 		\[
 			\bbE\left[d\bx | \bx(0) \right] = \bbE\left[\bff(\bx, t) | \bx(0) \right] dt
 		\]
+        \eqpause
 		\[
 			\frac{d \bbE\left[\bx(t) | \bx(0) \right]}{dt} = \frac{d \bmu(\bx(t), \bx(0))}{dt} = \bbE\left[\bff(\bx, t) | \bx(0) \right] 
 		\]
 	\end{block}
+    \eqpause
 	\vspace{-0.3cm}
 	\begin{block}{Examples}
 		\vspace{-0.5cm}
 		\[
 			\textbf{NCSN:}\quad	\bff(\bx, t) = 0 \quad \Rightarrow \quad \bmu = \bx(0)
 		\]
+        \eqpause
+		\vspace{-0.5cm}
 		\[
 			\textbf{DDPM:}\quad \bff(\bx, t) = - \frac{1}{2} \beta(t) \bx(t)\;\;   \Rightarrow\quad \frac{d \bmu}{dt} = - \frac{1}{2} \beta(t) \bmu
 		\]
+        \eqpause
+		\vspace{-0.3cm}
 		\[
 			\bmu = \bx(0) \exp\left(- \frac{1}{2} \int_0^t \beta(s)ds\right)
 		\]
@@ -404,6 +425,7 @@
 	\[
 		q(\bx(t) | \bx(0)) = \cN\Bigl(\bmu(\bx(t), \bx(0)), \bSigma(\bx(t), \bx(0))\Bigr)
 	\]
+    \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{NCSN}
 		\vspace{-0.3cm}
@@ -412,13 +434,15 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{block}{DDPM}
-		\vspace{-0.3cm}
+		\vspace{-0.5cm}
 		\[
 			q(\bx(t) | \bx(0)) = \cN\left(\bx(0) e^{-\frac{1}{2} \int_0^t\beta(s)ds}, \left(1 - e^{- \int_0^t\beta(s)ds}\right) \cdot \bI\right)
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	Here we omit the derivations of the variance.
 	
 \end{frame}
@@ -432,6 +456,7 @@
 		\end{figure}
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{itemize}
 		\item Discretizing the reverse SDE provides ancestral sampling.
 		\item Discretizing the probability flow ODE yields deterministic sampling.
@@ -445,12 +470,13 @@
 
 	Let's return to ODE dynamics $\bx(t)$ in the interval $t \in [0, 1]$:
 	\begin{itemize}
-	\item $\bx_0 \sim p_0(\bx) = p(\bx)$, $\bx_1 \sim p_1(\bx) =  \pi(\bx)$;
-	\item $p(\bx)$ is a base distribution (e.g., $\cN(0, \bI)$), and $\pi(\bx)$ is the true data distribution.
+		\item $\bx_0 \sim p_0(\bx) = p(\bx)$, $\bx_1 \sim p_1(\bx) =  \pi(\bx)$;
+		\item $p(\bx)$ is a base distribution (e.g., $\cN(0, \bI)$), and $\pi(\bx)$ is the true data distribution.
 	\end{itemize}
 	\[
 		\frac{d \bx}{dt} = \bff (\bx, t),  \quad \text{with initial condition } \bx(0) = \bx_0.
 	\]
+    \eqpause
 	\vspace{-0.3cm}
 	\begin{block}{KFP Theorem (Continuity Equation)}
 		\vspace{-0.5cm}
@@ -459,6 +485,7 @@
 		\]
 		\vspace{-0.3cm}
 	\end{block}
+    \eqpause
 	\begin{itemize}
 		\item It's hard to solve the continuity equation directly due to the trace term.
 		\item There's a method (the adjoint method) that solves this equation directly, but it's unstable and unscalable.
@@ -478,6 +505,7 @@
 		\item Knowing the vector field $\bff (\bx, t)$, the KFP (or continuity) equation allows us to compute the density $p_t(\bx)$.
 		\item Flow matching provides an alternative approach to Neural ODEs.
 	\end{itemize}
+    \eqpause
 	\begin{block}{Flow Matching}
 		\vspace{-0.3cm}
 		\[
@@ -485,6 +513,7 @@
 		\]
 		\vspace{-0.3cm}
 	\end{block}
+    \eqpause
 	\begin{itemize}
 		\item Approximate the true vector field $\bff (\bx, t)$ using $\bff_{\btheta}(\bx, t)$.
 		\item Use $\bff_{\btheta}(\bx, t)$ for deterministic sampling from the ODE.
@@ -521,12 +550,13 @@
 		\vspace{-0.5cm}
 	\end{block}
 	Here, $p_t(\bx | \bz)$ is a \textbf{conditional probability path}.
-	
+	\eqpause
 	The conditional probability path $p_t(\bx | \bz)$ satisfies the KFP theorem:
 	\[
 		{\color{violet}\frac{\partial p_t(\bx | \bz)}{\partial t} = - \text{div}\left(\bff(\bx, \bz, t) p_t(\bx | \bz)\right)},
 	\]
 	where $\bff(\bx, \bz, t)$ is a \textbf{conditional vector field}:
+	\eqpause
 	\[
 		\frac{d\bx}{dt} = \bff(\bx, t) \quad \Rightarrow \quad \frac{d\bx}{dt} = \bff(\bx, \bz, t)
 	\]
@@ -548,12 +578,15 @@
 		\]
 		\vspace{-0.5cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Proof}
 		\vspace{-0.7cm}
 		\begin{multline*}
-			\frac{\partial p_t(\bx)}{\partial t} = \frac{\partial}{\partial t} \int p_t(\bx | \bz) p(\bz) d \bz =  \int \left( {\color{violet} \frac{\partial p_t(\bx | \bz)}{\partial t} } \right) p(\bz) d \bz = \\
-			= \int \left( {\color{violet} - \text{div}\left(\bff(\bx, \bz, t) p_t(\bx | \bz)\right) } \right) p(\bz) d \bz = \\
-			= - \text{div} \left({\color{teal}\int \bff(\bx, \bz, t) p_t(\bx | \bz) p(\bz) d \bz }\right) = - \text{div}  \left(\bff(\bx, t) p_t(\bx)\right)
+			\frac{\partial p_t(\bx)}{\partial t} = \frac{\partial}{\partial t} \int p_t(\bx | \bz) p(\bz) d \bz 
+			\nextonslide{=  \int \left( {\color{violet} \frac{\partial p_t(\bx | \bz)}{\partial t} } \right) p(\bz) d \bz}
+			\nextonslide{ = \\ = \int \left( {\color{violet} - \text{div}\left(\bff(\bx, \bz, t) p_t(\bx | \bz)\right) } \right) p(\bz) d \bz}
+			\nextonslide{ = \\ = - \text{div} \left({\color{teal}\int \bff(\bx, \bz, t) p_t(\bx | \bz) p(\bz) d \bz }\right)} 
+			\nextonslide{= - \text{div}  \left(\bff(\bx, t) p_t(\bx)\right)}
 		\end{multline*}
 	\end{block}
 \end{frame}
@@ -574,9 +607,11 @@
 		\]
 		\vspace{-0.3cm}
 	\end{block}
+    \eqpause
 	\begin{block}{Theorem}
 		If $\text{supp}(p_t(\bx)) = \bbR^m$, then the optimal value of the FM objective equals the optimal value of the CFM objective.
 	\end{block}
+    \eqpause
 	\begin{block}{Proof}
 		This can be proved in a similar way as in the denoising score matching theorem.
 	\end{block}
@@ -588,6 +623,7 @@
 		\centering
 		\includegraphics[width=0.75\linewidth]{figs/cfm_uncond_to_cond}
 	\end{figure}
+    \eqpause
 	\begin{itemize}
 		\item We don't want to directly model $p_t(\bx)$, since it's complex.
 		\item We've shown it's possible to solve the CFM task instead of the FM task.
