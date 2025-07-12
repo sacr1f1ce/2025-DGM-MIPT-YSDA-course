@@ -111,21 +111,39 @@
 	\end{figure}
 \end{frame}
 %=======
-\begin{frame}{Stable Diffusion 3 -- Flow Matching}
-	\myfootnotewithlink{https://stability.ai/news/stable-diffusion-3}{Image credit: https://stability.ai/news/stable-diffusion-3}
-		\begin{figure}
-			\includegraphics[width=\linewidth]{figs/sd3_1}
-		\end{figure}
-		\begin{figure}
-			\includegraphics[width=\linewidth]{figs/sd3_2}
-		\end{figure}
-\end{frame}
-%=======
 \begin{frame}{Sora -- Video Generation}
 	\myfootnotewithlink{https://openai.com/index/sora}{Image credit: https://openai.com/index/sora}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/sora}
+	\end{figure}
+\end{frame}
+%=======
+\begin{frame}{GPT4o Image Editing}
+	\myfootnotewithlink{https://openai.com/index/introducing-4o-image-generation/}{Image credit: https://openai.com/index/introducing-4o-image-generation/}
+	\textbf{Prompt:} Give this cat a detective hat and a monocle
+	\begin{minipage}[t]{0.5\columnwidth}		
 		\begin{figure}
-			\includegraphics[width=\linewidth]{figs/sora}
+			\includegraphics[width=0.94\linewidth]{figs/gpt4o_editing1}
 		\end{figure}
+	\end{minipage}%
+	\begin{minipage}[t]{0.45\columnwidth}		
+		\begin{figure}
+			\includegraphics[width=0.93\linewidth]{figs/gpt4o_editing2}
+		\end{figure}
+	\end{minipage}
+\end{frame}
+%=======
+\begin{frame}{Open Problems in Generative Models}
+	\myfootnotewithlink{https://arxiv.org/abs/2501.09038}{Motamed S. et al. Do generative video models understand physical principles?, 2025}
+	\begin{itemize}
+		\item Video generation
+		\item 3D scene generation
+		\item Understanding of physical processes
+		\item Multimodal end-to-end models
+	\end{itemize}	
+	\begin{figure}
+		\includegraphics[width=0.55\linewidth]{figs/physics_understand}
+	\end{figure}
 \end{frame}
 %=======
 \section{Course Tricks}
@@ -232,8 +250,8 @@
 		    \hat{\pi}_k = \hat{\pi}(x = k) = \frac{\sum_{i=1}^n [x_i = k]}{n}.
 		$$
 		\textbf{Curse of dimensionality:} The number of bins rises exponentially. \\
-		\end{minipage}%
-		\begin{minipage}[t]{0.4\columnwidth}
+	\end{minipage}%
+	\begin{minipage}[t]{0.4\columnwidth}
 		\vspace{-0.5cm}
 	    \begin{figure}[h]
 	        \centering
