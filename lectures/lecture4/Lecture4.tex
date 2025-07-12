@@ -10,36 +10,6 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019} 
-	\begin{block}{Forward KL for NF}
-	  	\vspace{-0.1cm}
-		\[
-			\log p(\bx|\btheta) = \log p(\bff_{\btheta}(\bx)) + \log  |\det (\bJ_\bff)|
-		\]
-		\vspace{-0.3cm}
-	\end{block}
-	\begin{block}{Reverse KL for NF}
-  		\vspace{-0.1cm}
-		\[
-			\KL(p \| \pi)  = \bbE_{p(\bz)} \left[  \log p(\bz) -  \log |\det (\bJ_\bg)| - \log \pi(\bg_{\btheta}(\bz)) \right]
-		\]
-		\vspace{-0.5cm}
-	\end{block}
-	\begin{block}{Flow KL Duality}
-	  	\vspace{-0.3cm}
-		\[
-			\argmin_{\btheta} \KL(\pi(\bx) \| p(\bx | \btheta)) = \argmin_{\btheta} \KL(p(\bz | \btheta) \| p(\bz))
-		\]
-		\vspace{-0.3cm}
-		\begin{itemize}
-			\item $p(\bz)$ is the base distribution; $\pi(\bx)$ is the data distribution;
-			\item $\bz \sim p(\bz)$, $\bx = \bg_{\btheta}(\bz)$, so $\bx \sim p(\bx| \btheta)$;
-			\item $\bx \sim \pi(\bx)$, $\bz = \bff_{\btheta}(\bx)$, so $\bz \sim p(\bz | \btheta)$.
-		\end{itemize}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Recap of Previous Lecture}
 	\begin{block}{Posterior Distribution (Bayes' Theorem)}
 		\[
 			p(\btheta | \bx) = \frac{p(\bx | \btheta) p(\btheta)}{p(\bx)} = \frac{p(\bx | \btheta) p(\btheta)}{\int p(\bx | \btheta) p(\btheta) d \btheta} 
