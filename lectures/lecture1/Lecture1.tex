@@ -226,20 +226,22 @@
 \section{Problem Statement}
 %=======
 \begin{frame}{Problem Statement}
-	We're given i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pi(\bx)$.
+	We're given \textbf{finite} number of i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pi(\bx)$.
 	\eqpause
 	\begin{block}{Objective}
 		Our aim is to learn a distribution $\pi(\bx)$ that allows us to: 
 		\begin{itemize}
+		    \item Generate new samples from $\pi(\bx)$ (sample $\bx \sim \pi(\bx)$) --- \textbf{generation}.		    
+			\eqpause
 		    \item Evaluate $\pi(\bx)$ on novel data (answering ``How likely is an object $\bx$?'') --- \textbf{density estimation}; 
-		    \eqpause
-		    \item Generate new samples from $\pi(\bx)$ (sample $\bx \sim \pi(\bx)$) --- \textbf{generation}.
 		\end{itemize}
 	\end{block}
 	\eqpause
 	\begin{block}{Challenge}
 		The data is high-dimensional and complex. For example, image datasets live in $\bbR^{\text{width} \times \text{height} \times \text{channels}}$. The curse of dimensionality makes accurately estimating $\pi(\bx)$ infeasible.
 	\end{block}
+	\eqpause
+	\textbf{Note:} here we use a strong assumption that our data is continuous (thus avoiding the domain of texts).
 \end{frame}
 %=======
 \begin{frame}{Histogram as a Generative Model}
@@ -275,8 +277,8 @@
 %=======
 \begin{frame}{Problem Statement: Conditional Models}
 	\begin{block}{Conditional Models}
-		In practice, we're typically interested in learning conditional models~$\pi(\bx | \by)$. 
-            \eqpause
+		In practice, we're typically interested in learning conditional models (sampling from conditional distribution~$\pi(\bx | \by)$. 
+        \eqpause
 		\begin{itemize}
 			\item $\by = \emptyset$, $\bx$ = image $\quad\Rightarrow$ unconditional image model
 			\item $\by$ = class label, $\bx$ = image $\quad\Rightarrow$ class-conditional image model
