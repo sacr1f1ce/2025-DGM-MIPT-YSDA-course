@@ -618,6 +618,37 @@
 \end{frame}
 %=======
 \begin{frame}{Conditional Flow Matching}
+    \myfootnotewithlink{https://arxiv.org/abs/2302.00482}{Tong A., et al. Improving and Generalizing Flow-Based Generative Models with Minibatch Optimal Transport, 2023}
+	\begin{block}{Theorem}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\argmin_{\btheta} \bbE_{t \sim U[0, 1]} \bbE_{\bx \sim p_t(\bx)}\left\| \bff(\bx, t) - \bff_{\btheta}(\bx, t) \right\|^2 = \\
+			= \argmin_{\btheta} \bbE_{t \sim U[0, 1]} \bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}\left\| \bff(\bx, \bz, t) - \bff_{\btheta}(\bx, t) \right\|^2
+		\end{multline*}
+		\vspace{-0.7cm}
+	\end{block}
+    \eqpause
+	\begin{block}{Proof}
+		\vspace{-0.5cm}
+		{\small
+		\begin{multline*}
+			\bbE_{\bx \sim p_t(\bx)}\left\| \bff(\bx, t) - \bff_{\btheta}(\bx, t) \right\|^2 = \\ 
+			= {\color{olive}\bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}}\left[\| \bff_{\btheta}(\bx, t) \|^2 - 2 {\color{teal}\bff_{\btheta}^T(\bx, t)\bff(\bx, t)} \right] + \text{const}(\btheta)
+		\end{multline*}
+		}
+		\eqpause
+		\vspace{-1.0cm}
+		{\small
+		\begin{multline*}
+			\bbE_{p_t(\bx)} \left[{\color{teal}\bff_{\btheta}^T(\bx, t)\bff(\bx, t)} \right] = \int p_t(\bx) \left[\bff_{\btheta}^T(\bx, t) \left( \int p_t(\bz | \bx)\bff(\bx, \bz, t)d\bz \right) \right] d\bx 
+			\nextonslide{ = \\ = \int \int {\color{violet}p_t(\bx) p_t(\bz | \bx)} \left[\bff_{\btheta}^T(\bx, t) \bff(\bx, \bz, t) \right] d\bz d\bx}
+			\nextonslide{ = \\ = {\color{violet}\bbE_{p(\bz)} \bbE_{p_t(\bx | \bz)}} \left[\bff_{\btheta}^T(\bx, t) \bff(\bx, \bz, t) \right]}
+		\end{multline*}
+		}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Conditional Flow Matching}
     \myfootnotewithlink{https://dl.heeere.com/conditional-flow-matching/blog/conditional-flow-matching}{image credit: A Visual Dive into Conditional Flow Matching}
 	\begin{figure}
 		\centering
