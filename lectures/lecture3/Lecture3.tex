@@ -395,7 +395,7 @@
 			\item \textbf{M-step} (optimize $\cL_{q, \btheta}(\bx)$ over $\btheta$):
 			\vspace{-0.2cm}
 			\[
-			\btheta^* = \argmax_{\btheta} \cL_{q^*, \btheta}(\bx);
+				\btheta^* = \argmax_{\btheta} \cL_{q^*, \btheta}(\bx);
 			\]
 			\vspace{-0.3cm}
             \eqpause
@@ -422,10 +422,90 @@
 	\end{figure}
 \end{frame}
 %=======
+\section{Amortized Inference}
+%=======
+\begin{frame}{Amortized Variational Inference}
+	\begin{block}{E-step}
+		\vspace{-0.3cm}
+		\[
+			q(\bz) = \argmax_q \cL_{q, \btheta^*}(\bx) = \argmin_q \KL(q \| p) =
+		p(\bz| \bx, \btheta^*).
+		\]
+		\eqpause
+		$q(\bz)$ approximates the true posterior $p(\bz| \bx, \btheta^*)$, hence it is called \textbf{variational posterior}.				
+		\eqpause
+		\begin{itemize}
+			\item {\color{violet}$p(\bz| \bx, \btheta^*)$ may be \textbf{intractable}};
+			\item {\color{teal}$q(\bz)$ is individual for each data point $\bx$}.
+		\end{itemize}
+	\end{block}
+	\eqpause
+	\begin{block}{Variational Bayes}
+		We restrict the family of possible distributions $q(\bz)$ to a parametric class $q(\bz|\bx, \bphi)$, {\color{teal}conditioned on data $\bx$} and {\color{violet}parameterized by $\bphi$}.
+		\eqpause
+		\begin{itemize}
+			\item E-step
+			\[
+				\bphi_k = \bphi_{k-1} + \left.\eta \cdot \nabla_{\bphi} \cL_{\bphi, \btheta_{k-1}}(\bx)\right|_{\bphi=\bphi_{k-1}}
+			\]
+			\item M-step
+			\[
+				\btheta_k = \btheta_{k-1} + \left.\eta \cdot \nabla_{\btheta} \cL_{\bphi_k, \btheta}(\bx)\right|_{\btheta=\btheta_{k-1}}
+			\]
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Variational EM Illustration}
+	\myfootnote{Bishop C., Deep Learning: Foundations and Concepts, 2024}
+	\begin{itemize}
+		\item E-step:
+		\[
+			\bphi_k = \bphi_{k-1} + \left.\eta \cdot \nabla_{\bphi} \cL_{\bphi, \btheta_{k-1}}(\bx)\right|_{\bphi=\bphi_{k-1}}
+		\]
+		\item M-step:
+		\[
+			\btheta_k = \btheta_{k-1} + \left.\eta \cdot \nabla_{\btheta} \cL_{\bphi_k, \btheta}(\bx)\right|_{\btheta=\btheta_{k-1}}
+		\]
+	\end{itemize}
+	\begin{figure}
+		\includegraphics[width=\linewidth]{figs/em_bishop4}
+	\end{figure}
+		
+\end{frame}
+%=======
+\begin{frame}{Variational EM Algorithm}
+	\begin{block}{ELBO}
+		\vspace{-0.5cm}
+		\[
+			\log p(\bx| \btheta) = \cL_{\bphi, \btheta}(\bx) + \KL(q(\bz | \bx, \bphi) \| p(\bz|\bx, \btheta)) \geq \cL_{\bphi, \btheta}(\bx).
+		\]
+		\[
+		 	\cL_{q, \btheta}(\bx) = \bbE_{q} \log p(\bx | \bz, \btheta) - \KL(q(\bz | \bx, \bphi) \| p(\bz))
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	\begin{itemize}
+		\item \textbf{E-step:}
+		\vspace{-0.3cm}
+		\[
+			\bphi_k = \bphi_{k-1} + \left.\eta \cdot \nabla_{\bphi} \cL_{\bphi, \btheta_{k-1}}(\bx)\right|_{\bphi=\bphi_{k-1}},
+		\]
+		\vspace{-0.3cm} \\
+		where $\bphi$ denotes the parameters of the variational posterior $q(\bz | \bx, \bphi)$.
+		\item \textbf{M-step:}
+		\[
+			\btheta_k = \btheta_{k-1} + \left.\eta \cdot \nabla_{\btheta} \cL_{\bphi_k, \btheta}(\bx)\right|_{\btheta=\btheta_{k-1}},
+		\]
+		where $\btheta$ represents the parameters of the generative model $p(\bx | \bz, \btheta)$.
+	\end{itemize}
+	\eqpause
+	The remaining step is to obtain \textbf{unbiased} Monte Carlo estimates of the gradients: $\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx)$ and $\nabla_{\btheta} \cL_{\bphi, \btheta}(\bx)$. 
+\end{frame}
+%=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item Flow duality establishes the relationship between the data and latent spaces using forward and reverse KL formulations.
-		\vfill
 		\item The Bayesian framework generalizes nearly all standard machine learning methods.
 		\vfill
 		\item LVMs introduce latent representations for observed data, enabling more interpretable models.
@@ -433,6 +513,8 @@
 		\item LVMs maximize the variational evidence lower bound (ELBO) to obtain maximum likelihood estimates for the parameters.
 		\vfill
 		\item The general variational EM algorithm optimizes the ELBO within LVMs to recover the MLE for the parameters $\btheta$.
+		\vfill
+		\item Amortized variational inference enables efficient estimation of the ELBO via Monte Carlo estimation.
 	\end{itemize}
 \end{frame}
 \end{document}

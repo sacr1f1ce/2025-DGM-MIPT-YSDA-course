@@ -10,37 +10,6 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\begin{block}{EM-Algorithm}
-	\begin{itemize}
-		\item E-Step:
-		\[
-			q^*(\bz) = \argmax_q \cL_{q, \btheta^*}(\bx)
-			= \argmin_q \KL(q(\bz) \| p(\bz | \bx, \btheta^*));
-		\]
-		\item M-Step:
-		\[
-			\btheta^* = \argmax_{\btheta} \cL_{q^*, \btheta}(\bx);
-		\]
-	\end{itemize}
-	\end{block}
-	\vspace{-0.5cm}
-	\begin{block}{Amortized Variational Inference}
-	Restrict the family of possible distributions $q(\bz)$ to a parameterized class $q(\bz|\bx, \bphi)$, conditioned on samples $\bx$ and defined by $\bphi$.
-	\end{block}
-	\textbf{Variational Bayes}
-	\begin{itemize}
-		\item E-Step:
-		\[
-			\bphi_k = \bphi_{k-1} + \left.\eta \cdot \nabla_{\bphi} \cL_{\bphi, \btheta_{k-1}}(\bx)\right|_{\bphi=\bphi_{k-1}}
-		\]
-		\item M-Step:
-		\[
-			\btheta_k = \btheta_{k-1} + \left.\eta \cdot \nabla_{\btheta} \cL_{\bphi_k, \btheta}(\bx)\right|_{\btheta=\btheta_{k-1}}
-		\]
-	\end{itemize}
-\end{frame}
-%=======
-\begin{frame}{Recap of Previous Lecture}
 	\vspace{-0.3cm}
 	\[
 		\cL_{\bphi, \btheta}(\bx)  = \bbE_{q(\bz | \bx, \bphi)} \log p(\bx | \bz , \btheta) - \KL(q(\bz| \bx, \bphi) \| p(\bz)) \rightarrow \max_{\bphi, \btheta}.
