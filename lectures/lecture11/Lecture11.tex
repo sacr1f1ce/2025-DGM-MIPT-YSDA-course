@@ -121,21 +121,21 @@
 		\vspace{-0.5cm}
 		\begin{align*}
 			\frac{d \bx(t)}{dt} &= \bff_{\btheta}(\bx(t), t);\quad \text{where } \bx(t_0) = \bx_0. \\
-			\bx(t_1) &= \int^{t_1}_{t_0} \bff_{\btheta}(\bx(t), t) d t  + \bx_0 \approx {\color{teal}\texttt{ODESolve}_f(\bx_0, \btheta, t_0, t_1)}.
+			\bpsi_t(\bx_0) &= \int^{t_1}_{t_0} \bff_{\btheta}(\bx(t), t) d t  + \bx_0 \approx {\color{teal}\texttt{ODESolve}_f(\bx_0, \btheta, t_0, t_1)}.
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
-	Here, $\bff_{\btheta}: \bbR^m \times [t_0, t_1] \rightarrow \bbR^m$ is a vector field.
+	\begin{itemize}
+		\item $\bff_{\btheta}: \bbR^m \times [t_0, t_1] \rightarrow \bbR^m$ is a vector field.
+		\item $\bpsi: \bbR^m \times [t_0, t_1] \rightarrow \bbR^m$ is a flow (the solution of ODE):
+	\end{itemize}
 	\begin{block}{Euler Update Step (ODESolve)}
 		\vspace{-0.3cm}
 		\[
-  			\bx(t + \Delta t) = \bx(t) + \Delta t \cdot \bff_{\btheta}(\bx(t), t)
+  			\bx(t + h) = \bx(t) + h \cdot \bff_{\btheta}(\bx(t), t)
 		\]
 	\end{block}
-	\begin{itemize}
-		\item The Euler method is the simplest version of \texttt{ODESolve}, but it's unstable in practice.
-		\item More advanced numerical methods (such as Runge-Kutta) are often used instead.
-	\end{itemize}
+	More advanced numerical methods (such as Runge-Kutta) are often used instead of unstable Euler update step.
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
@@ -204,26 +204,61 @@
 \section{SDE Basics}
 %=======
 \begin{frame}{Stochastic Differential Equation (SDE)}
+	\myfootnotewithlink{https://arxiv.org/pdf/2506.02070}{Holderrieth P., Erives E. An Introduction to Flow Matching and Diffusion Models, 2025}
+	\begin{block}{Wiener Process}
+		$\bw(t)$ is the standard Wiener process (Brownian motion), defined by:
+		\vspace{-0.3cm}
+		\begin{minipage}{0.5\columnwidth}
+			\begin{enumerate}
+				\item $\bw(0) = 0$ (almost surely);
+				\item $\bw(t)$ has independent increments;
+				\item $\bw(t)$ trajectories are continuous;
+				\item $\bw(t) - \bw(s) \sim \cN(0, (t-s) \bI)$ for $t>s$;
+			\end{enumerate}
+		\end{minipage}%
+		\begin{minipage}{0.45\columnwidth}
+			\centering
+			\includegraphics[width=\linewidth]{figs/brownian_motion}
+		\end{minipage}
+	\end{block}
+	\eqpause
+	$d\bw = \bw(t+dt) - \bw(t) = \cN(0, \bI \cdot dt ) = \bepsilon \cdot \sqrt{dt}$, where $\bepsilon \sim \cN(0, \bI)$.
+\end{frame}
+%=======
+\begin{frame}{Stochastic Differential Equation (SDE)}
+	\[
+ 		\frac{d \bx}{dt} = \bff(\bx, t) \Rightarrow d\bx = \bff(\bx, t) dt
+	\]
+	\eqpause
 	Let's define a stochastic process $\bx(t)$ with initial condition $\bx(0) \sim p_0(\bx) = \pi(\bx)$:
 	\[
-		d\bx = \bff(\bx, t) dt + g(t) d \bw
+		d\bx = \bff(\bx, t) dt + {\color{violet}g(t) d \bw}
 	\]
 	\eqpause
 	\vspace{-0.5cm}
 	\begin{itemize}
-		 \item $\bff(\bx, t): \bbR^m \times [0, 1] \rightarrow \bbR^m$ is the \textbf{drift} function.
-		 \item $g(t): \bbR \rightarrow \bbR$ is the \textbf{diffusion} function.
-		 \item If $g(t)=0$, we recover the standard ODE.
-		\eqpause
-		 \item $\bw(t)$ is the standard Wiener process (Brownian motion), defined by:
-		 \begin{enumerate}
-		 	\item $\bw(0) = 0$ (almost surely);
-		 	\item $\bw(t)$ has independent increments;
-		 	\item $\bw(t)$ trajectories are continuous;
-			\item $\bw(t) - \bw(s) \sim \cN(0, (t-s) \bI)$ for $t>s$;
-		 \end{enumerate}
-			\eqpause
-		 \item $d\bw = \bw(t+dt) - \bw(t) = \cN(0, \bI \cdot dt ) = \bepsilon \cdot \sqrt{dt}$, where $\bepsilon \sim \cN(0, \bI)$.
+		 \item $\bff(\bx, t): \bbR^m \times [0, 1] \rightarrow \bbR^m$ is the \textbf{drift} term (vector field).
+		 \item $g(t): \bbR \rightarrow \bbR$ is the \textbf{diffusion} term (if $g(t)=0$, we recover the standard ODE).
+		 \item $\bw(t)$ is the standard Wiener process ($d\bw = \bepsilon \cdot \sqrt{dt}$).
+		 \item We do not have the flow $\bpsi_t(\bx_0)$ notion anymore, since trajectories are stochastic
+	\end{itemize}
+\end{frame}
+%=======
+\begin{frame}{Stochastic Differential Equation (SDE)}
+	\[
+		d\bx = \bff(\bx, t) dt + g(t) d \bw
+	\]
+	\begin{block}{Theorem}
+		If $\bff$ is continuously differentiable with a bounded derivative in $\bx$ and continuous in $t$ and $g(t)$ is continuous then the SDE has the solution given by unique proces $\bx(t)$.
+	\end{block}
+
+	\begin{itemize}
+		\item Unlike ODEs, the initial condition $\bx(0)$ doesn't uniquely determine the trajectory.
+		\item There are two sources of randomness: 
+		\begin{itemize}
+			\item the initial distribution $p_0(\bx)$;
+			\item the Wiener process $\bw(t)$.
+		\end{itemize}
 	\end{itemize}
 \end{frame}
 %=======
@@ -232,12 +267,8 @@
 		d\bx = \bff(\bx, t) dt + g(t) d \bw
 	\]
 	\vspace{-0.3cm}
-	\begin{itemize}
-		\item Unlike ODEs, the initial condition $\bx(0)$ doesn't uniquely determine the trajectory.
-		\item There are two sources of randomness: the initial distribution $p_0(\bx)$ and the Wiener process $\bw(t)$.
-	\end{itemize}
 	\eqpause
-	\begin{block}{Discretizing the SDE (Euler Method) – \texttt{SDESolve}}
+	\begin{block}{Discretizing the SDE (Euler Update Step) – \texttt{SDESolve}}
 		\vspace{-0.3cm}
 		\[
 			\bx(t + dt) = \bx(t) + \bff(\bx(t), t) \cdot dt + g(t) \cdot \bepsilon \cdot \sqrt{dt}
