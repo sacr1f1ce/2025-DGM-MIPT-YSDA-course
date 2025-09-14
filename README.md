@@ -6,9 +6,9 @@ The course is devoted to modern generative models (mostly in the application to 
 We will study the following types of generative models:
 - autoregressive models,
 - latent variable models,
-- normalization flow models,
 - adversarial models,
-- diffusion and score models.
+- diffusion and score models,
+- flow matching.
 
 Special attention is paid to the properties of various classes of generative models, their interrelationships, theoretical prerequisites and methods of quality assessment.
 
@@ -23,11 +23,11 @@ The course is accompanied by practical tasks that allow you to understand the pr
 
 ## Materials
 
-<!---
 | # | Date | Description | Slides |
 |---|---|---|---|
-| 1 | February, 20 | <b>Lecture 1:</b> Logistics. Generative models overview and motivation. Problem statement. Divergence minimization framework. Autoregressive models (ImageGPT). | [slides](lectures/lecture1/Lecture1.pdf) |
+| 1 | September, 16 | <b>Lecture 1:</b> Logistics. Generative models overview and motivation. Problem statement. Divergence minimization framework. Autoregressive models (ImageGPT). | [slides](lectures/lecture1/Lecture1.pdf) |
 |  |  | <b>Seminar 1:</b> Introduction. Maximum likelihood estimation. Histograms. Bayes theorem. PixelCNN. VAR. | [slides](seminars/seminar1/) |
+<!---
 | 2 | February, 27 | <b>Lecture 2:</b> Normalizing Flow (NF) intuition and definition. Linear NF. Gaussian autoregressive NF. Coupling layer (RealNVP). | [slides](lectures/lecture2/Lecture2.pdf) |
 |  |  | <b>Seminar 2:</b> Planar and Radial Flows. Forward vs Reverse KL. | [slides](seminars/seminar2/seminar2.ipynb) |
 | 3 | March, 6 | <b>Lecture 3:</b> Forward and reverse KL divergence for NF. Latent variable models (LVM). Variational lower bound (ELBO). EM-algorithm. | [slides](lectures/lecture3/Lecture3.pdf) |

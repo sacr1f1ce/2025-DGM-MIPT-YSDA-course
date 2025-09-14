@@ -150,9 +150,9 @@
 %=======
 \begin{frame}{Course Tricks I}
 	\begin{block}{Log-Derivative Trick}
-		Given a differentiable function $f: \bbR^m \to \bbR$,
+		Given a differentiable function $p: \bbR^m \to \bbR$ (usually density function),
 		$$
-			\nabla \log f(\bx) = \frac{1}{f(\bx)} \cdot \nabla f(\bx).
+			\nabla \log p(\bx) = \frac{1}{p(\bx)} \cdot \nabla p(\bx).
 		$$
 		\vspace{-0.5cm}
 	\end{block}
@@ -226,19 +226,19 @@
 \section{Problem Statement}
 %=======
 \begin{frame}{Problem Statement}
-	We're given \textbf{finite} number of i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pi(\bx)$.
+	We're given \textbf{finite} number of i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pd(\bx)$.
 	\eqpause
 	\begin{block}{Objective}
-		Our aim is to learn a distribution $\pi(\bx)$ that allows us to: 
+		Our aim is to learn a distribution $\pd(\bx)$ that allows us to: 
 		\begin{itemize}
-		    \item Generate new samples from $\pi(\bx)$ (sample $\bx \sim \pi(\bx)$) --- \textbf{generation}.		    
+		    \item Generate new samples from $\pd(\bx)$ (sample $\bx \sim \pd(\bx)$) --- \textbf{generation}.		    
 			\eqpause
-		    \item Evaluate $\pi(\bx)$ on novel data (answering ``How likely is an object $\bx$?'') --- \textbf{density estimation}; 
+		    \item Evaluate $\pd(\bx)$ on novel data (answering ``How likely is an object $\bx$?'') --- \textbf{density estimation}; 
 		\end{itemize}
 	\end{block}
 	\eqpause
 	\begin{block}{Challenge}
-		The data is high-dimensional and complex. For example, image datasets live in $\bbR^{\text{width} \times \text{height} \times \text{channels}}$. The curse of dimensionality makes accurately estimating $\pi(\bx)$ infeasible.
+		The data is high-dimensional and complex. For example, image datasets live in $\bbR^{\text{width} \times \text{height} \times \text{channels}}$. The curse of dimensionality makes accurately estimating $\pd(\bx)$ infeasible.
 	\end{block}
 	\eqpause
 	\textbf{Note:} here we use a strong assumption that our data is continuous (thus avoiding the domain of texts).
@@ -263,42 +263,40 @@
     \eqpause
 	\textbf{MNIST example}: $28 \times 28$ grayscale images, with each image $\bx = (x_1, \dots, x_{784})$, $x_i \in \{0, 1\}$:
 	$$
-	    \pi(\bx) = \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}, \dots, x_1).
+	    \pd(\bx) = p(x_1) \cdot p(x_2 | x_1) \cdot \dots \cdot p(x_m | x_{m-1}, \dots, x_1).
 	$$
     \eqpause
-	A complete histogram would require $2^{28 \times 28} - 1$ parameters for~$\pi(\bx)$.\\
+	A complete histogram would require $2^{28 \times 28} - 1$ parameters for~$\pd(\bx)$.\\
+    \eqpause
 	\textbf{Question:} How many parameters are required in these cases?
 	\begin{align*}
-	    \pi(\bx) &= \pi(x_1) \cdot \pi(x_2)\cdot \dots \cdot \pi(x_m); \\
-        \nextonslide{
-	    \pi(\bx) &= \pi(x_1) \cdot \pi(x_2 | x_1) \cdot \dots \cdot \pi(x_m | x_{m-1}).}
+	    \pd(\bx) &= p(x_1) \cdot p(x_2)\cdot \dots \cdot p(x_m); \\
+	    \pd(\bx) &= p(x_1) \cdot p(x_2 | x_1) \cdot \dots \cdot p(x_m | x_{m-1}).
 	\end{align*}
 \end{frame}
 %=======
-\begin{frame}{Problem Statement: Conditional Models}
-	\begin{block}{Conditional Models}
-		In practice, we're typically interested in learning conditional models (sampling from conditional distribution~$\pi(\bx | \by)$. 
-        \eqpause
-		\begin{itemize}
-			\item $\by = \emptyset$, $\bx$ = image $\quad\Rightarrow$ unconditional image model
-			\item $\by$ = class label, $\bx$ = image $\quad\Rightarrow$ class-conditional image model
-			\item $\by$ = text prompt, $\bx$ = image $\quad\Rightarrow$ text-to-image model
-			\item $\by$ = image, $\bx$ = image $\quad\Rightarrow$ image-to-image model
-			\item $\by$ = image, $\bx$ = text $\quad\Rightarrow$ image-to-text (image captioning) model
-			\item $\by$ = English text, $\bx$ = Russian text $\quad\Rightarrow$ sequence-to-sequence model (machine translation) model
-			\item $\by$ = sound, $\bx$ = text $\quad\Rightarrow$ speech-to-text (automatic speech recognition) model
-			\item $\by$ = text, $\bx$ = sound $\quad\Rightarrow$ text-to-speech model
-		\end{itemize}
-	\end{block}
+\begin{frame}{ Conditional Models}
+	In practice, we're typically interested in learning conditional models (sampling from conditional distribution~$\pd(\bx | \by)$). 
+	\eqpause
+	\begin{itemize}
+		\item $\by = \emptyset$, $\bx$ = image $\quad\Rightarrow\quad$ unconditional image model
+		\item $\by$ = class label, $\bx$ = image $\quad\Rightarrow\quad$ class-conditional image model
+		\item $\by$ = text prompt, $\bx$ = image $\quad\Rightarrow\quad$ text-to-image model
+		\item $\by$ = image, $\bx$ = image $\quad\Rightarrow\quad$ image-to-image model
+		\item $\by$ = image, $\bx$ = text $\quad\Rightarrow\quad$ image-to-text (image captioning) model
+		\item $\by$ = English text, $\bx$ = Russian text $\quad\Rightarrow\quad$ sequence-to-sequence model (machine translation) model
+		\item $\by$ = sound, $\bx$ = text $\quad\Rightarrow\quad$ speech-to-text (automatic speech recognition) model
+		\item $\by$ = text, $\bx$ = sound $\quad\Rightarrow\quad$ text-to-speech model
+	\end{itemize}
 \end{frame}
 %=======
 \section{Divergence Minimization Framework}
 %=======
 \begin{frame}{Divergences}
 	\begin{itemize}
-	\item Let us fix a probabilistic model $p(\bx | \btheta)$ -- a parametric family of distributions.\\
+	\item Let us fix a probabilistic model $\pt(\bx)$ from a parametric family of distributions $\{p(\bx | \btheta) \, | \, \btheta \in \bTheta\}$.\\
         \eqpause
-	\item Instead of searching among all possible distributions for the true $\pi(\bx)$, we seek a functional approximation $p(\bx | \btheta) \approx \pi(\bx)$.
+	\item Instead of searching among all possible distributions for the true $\pd(\bx)$, we seek a functional approximation $\pt(\bx) \approx \pd(\bx)$.
 	\end{itemize}
     \eqpause
 	\begin{block}{What is a Divergence?}
@@ -312,9 +310,9 @@
 	\begin{block}{Divergence Minimization Problem}
 		\vspace{-0.3cm}
 		$$
-		\min_{\btheta} D(\pi \| p)
+		\min_{\btheta} D(\pd \| \pt)
 		$$
-		where $\pi(\bx)$ is the true data distribution and $p(\bx | \btheta)$ is the model distribution.
+		where $\pd(\bx)$ is the true data distribution and $\pt(\bx)$ is the model distribution.
 	\end{block}
 \end{frame}
 %=======
@@ -322,14 +320,14 @@
 	\begin{block}{Forward KL}
 		\vspace{-0.2cm}
 		\[
-			\KL(\pi \| p) = \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d \bx \rightarrow \min_{\btheta}
+			\KL(\pd \| \pt) = \int \pd(\bx) \log \frac{\pd(\bx)}{\pt(\bx)} d \bx \rightarrow \min_{\btheta}
 		\]
 	\end{block}
     \eqpause
 	\begin{block}{Reverse KL}
 		\vspace{-0.2cm}
 		\[
-			\KL(p \| \pi) = \int p (\bx| \btheta) \log \frac{p(\bx| \btheta)}{\pi(\bx)} d \bx \rightarrow \min_{\btheta}
+			\KL(\pt \| \pd) = \int \pt(\bx) \log \frac{\pt(\bx)}{\pd(\bx)} d \bx \rightarrow \min_{\btheta}
 		\]
 	\end{block}
     \eqpause
@@ -339,7 +337,7 @@
 	Let $\{\bx_i\}_{i=1}^n$ be i.i.d.\ observed samples.
 		\vspace{-0.3cm}
 		\[
-			\btheta^* = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
+			\btheta^* = \argmax_{\btheta} \prod_{i=1}^n \pt(\bx_i) = \argmax_{\btheta} \sum_{i=1}^n \log \pt(\bx_i).
 		\]
 	\end{block}
 \end{frame}
@@ -348,10 +346,10 @@
 	\begin{block}{Forward KL}
 		\vspace{-0.5cm}
 		\begin{align*}
-			\KL(\pi \| p) &= \int \pi(\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)} d\bx \\
-			\nextonslide{&= {\color{violet}\int \pi (\bx) \log \pi(\bx) d \bx} - {\color{teal}\int \pi (\bx) \log p(\bx | \btheta) d \bx}} \\
-			\nextonslide{&= -{\color{teal}\bbE_{\pi(\bx)} [\log p(\bx | \btheta)]} + {\color{violet}\text{const}}} \\
-			\nextonslide{& \approx - \frac{1}{n} \sum_{i=1}^n \log p(\bx_i | \btheta) + \text{const} \rightarrow \min_{\btheta}.}
+			\KL(\pd \| \pt) &= \int \pd(\bx) \log \frac{\pd(\bx)}{\pt(\bx)} d\bx \\
+			\nextonslide{&= {\color{violet}\int \pd(\bx) \log \pd(\bx) d \bx} - {\color{teal}\int \pd(\bx) \log \pt(\bx) d \bx}} \\
+			\nextonslide{&= -{\color{teal}\bbE_{\pd(\bx)} [\log \pt(\bx)]} + {\color{violet}\text{const}}} \\
+			\nextonslide{& \approx - \frac{1}{n} \sum_{i=1}^n \log \pt(\bx_i) + \text{const} \rightarrow \min_{\btheta}.}
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
@@ -361,8 +359,8 @@
 	\begin{block}{Reverse KL}
 		\vspace{-0.5cm}
 		\begin{align*}
-			\KL(p \| \pi) &= \int p(\bx | \btheta) \log \frac{p(\bx | \btheta)}{\pi(\bx)} d \bx \\
-			\nextonslide{&= \bbE_{p(\bx | \btheta)} \left[\log p(\bx | \btheta) - \log \pi(\bx)\right] \rightarrow \min_{\btheta}}
+			\KL(\pt \| \pd) &= \int \pt(\bx) \log \frac{\pt(\bx)}{\pd(\bx)} d \bx \\
+			\nextonslide{&= \bbE_{\pt(\bx)} \left[\log \pt(\bx) - \log \pd(\bx)\right] \rightarrow \min_{\btheta}}
 		\end{align*}
 		\vspace{-0.7cm}
 	\end{block}
@@ -422,48 +420,46 @@
     \begin{block}{MLE Problem}
 	    \vspace{-0.4cm}
 	    $$
-	        \btheta^* = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta)
+	        \btheta^* = \argmax_{\btheta} \prod_{i=1}^n \pt(\bx_i) = \argmax_{\btheta} \sum_{i=1}^n \log \pt(\bx_i)
 	    $$
 	    \vspace{-0.5cm}
     \end{block}
     \eqpause
     \begin{itemize}
         \item This maximization is typically solved via gradient-based optimization.
-        \item Thus, efficient computation of both $\log p(\bx | \btheta)$ and its gradient $\frac{\partial \log p(\bx | \btheta)}{\partial \btheta}$ is crucial.
+        \item Thus, efficient computation of both $\log \pt(\bx)$ and its gradient $\frac{\partial \log \pt(\bx)}{\partial \btheta}$ is crucial.
     \end{itemize}
     \eqpause
     \begin{block}{Likelihood as a Product of Conditionals}
     For $\bx = (x_1, \dots, x_m)$, $\bx_{1:j} = (x_1, \dots, x_j)$,
     $$
-        p(\bx | \btheta) = \prod_{j=1}^m p(x_j | \bx_{1:j - 1}, \btheta);\quad
-        \log p(\bx | \btheta) = {\color{violet}\sum_{j=1}^m \log p(x_j | \bx_{1:j - 1}, \btheta)}
+        \pt(\bx) = \prod_{j=1}^m \pt(x_j | \bx_{1:j - 1});\quad
+        \log \pt(\bx) = {\color{violet}\sum_{j=1}^m \log \pt(x_j | \bx_{1:j - 1})}
     $$
     \end{block}
     \eqpause
     \vspace{-0.5cm}
 	 $$
-	     \btheta^* =  \argmax_{\btheta} \sum_{i=1}^n \Big[{\color{violet} \sum_{j=1}^m \log p(x_{ij} | \bx_{i, 1:j - 1}, \btheta)}\Big]
+	     \btheta^* =  \argmax_{\btheta} \sum_{i=1}^n \Big[{\color{violet} \sum_{j=1}^m \log \pt(x_{ij} | \bx_{i, 1:j - 1})}\Big]
 	 $$
 \end{frame}
 %=======
 \begin{frame}{Autoregressive Models}
     \[
-    	\log p(\bx| \btheta) = \sum_{j=1}^m \log p(x_j | \bx_{1:j - 1}, \btheta)
+    	\log \pt(\bx) = \sum_{j=1}^m \log \pt(x_j | \bx_{1:j - 1})
     \]
     \eqpause
     \begin{itemize}
 	    \item Sampling is performed sequentially:
 	    \begin{itemize}
-    		\item Sample $\hat{x}_1 \sim p(x_1 | \btheta)$;
-            \eqpause
-    		\item Sample $\hat{x}_2 \sim p(x_2 | \hat{x}_1, \btheta)$;
-            \eqpause
+    		\item Sample $\hat{x}_1 \sim \pt(x_1)$;
+    		\item Sample $\hat{x}_2 \sim \pt(x_2 | \hat{x}_1)$;
     		\item $\ldots$
-    		\item Sample $\hat{x}_m \sim p(x_m | \hat{\bx}_{1:m-1}, \btheta)$;
+    		\item Sample $\hat{x}_m \sim \pt(x_m | \hat{\bx}_{1:m-1})$;
     		\item The generated sample is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \ldots, \hat{x}_m)$.
     	\end{itemize}
         \eqpause
-        \item Each conditional $p(x_j | \bx_{1:j - 1}, \btheta)$ can be modeled using a neural network.
+        \item Each conditional $\pt(x_j | \bx_{1:j - 1})$ can be modeled using a neural network.
         \eqpause
         \item Modeling all conditionals separately isn't feasible. To address this, we share parameters across all conditionals.
     \end{itemize}
@@ -471,12 +467,12 @@
 %=======
 \begin{frame}{Autoregressive Models: MLP}
 	\myfootnotewithlink{https://jmtomczak.github.io/blog/2/2\_ARM.html}{Image credit: https://jmtomczak.github.io/blog/2/2\_ARM.html}
-	For large $j$, the conditional $p(x_j | \bx_{1:j - 1}, \btheta)$ becomes intractable as the history $\bx_{1:j-1}$ grows variable-length.
+	For large $j$, the conditional $\pt(x_j | \bx_{1:j - 1})$ becomes intractable as the history $\bx_{1:j-1}$ grows variable-length.
     \eqpause
 	\begin{block}{Markov Assumption}
-		\vspace{-0.7cm}
+		\vspace{-0.3cm}
 		$$
-			p(x_j | \bx_{1:j - 1}, \btheta) = p(x_j | \bx_{j - d:j - 1}, \btheta),\quad d\;\text{is a fixed parameter}.
+			\pt(x_j | \bx_{1:j - 1}) = \pt(x_j | \bx_{j - d:j - 1}),\quad d\;\text{is a fixed parameter}.
 		$$
 	\end{block}
     \eqpause
@@ -489,7 +485,7 @@
 				\item $x_j \in \{0, 255\}$
 				\item $\bh_j = \mathrm{MLP}_{\btheta}(x_{j - 1}, x_{j - 2})$
 				\item $\bpi_j = \mathrm{softmax}(\bh_j)$
-				\item $p(x_j | x_{j - 1}, x_{j - 2}, \btheta) = \Cat(\bpi_j)$
+				\item $\pt(x_j | x_{j - 1}, x_{j - 2}) = \Cat(\bpi_j)$
 			\end{itemize}
 			}
 		\end{minipage}%
@@ -507,7 +503,7 @@
 \begin{frame}{Autoregressive Models: LLM}
 	\myfootnotewithlink{https://jmtomczak.github.io/blog/20/20\_llms.html}{Image credit: https://jmtomczak.github.io/blog/20/20\_llms.html}
 	\[
-		p(x_j | \bx_{1:j - 1}, \btheta) = p(x_j | \bx_{j - d:j - 1}, \btheta),\quad d\ \text{is the context window}.
+		\pt(x_j | \bx_{1:j - 1}) = \pt(x_j | \bx_{j - d:j - 1}),\quad d\ \text{is the context window}.
 	\]
 	 \begin{figure}
 		   \centering
@@ -517,9 +513,9 @@
 %=======
 \begin{frame}{Autoregressive Models for Images}
 	\myfootnotewithlink{https://arxiv.org/abs/1601.06759}{Oord A., Kalchbrenner N., Kavukcuoglu K. Pixel Recurrent Neural Networks, 2016}
-	How do we model the distribution $\pi(\bx)$ of natural images?
+	How do we model the distribution $\pd(\bx)$ of natural images?
 	$$
-  		p(\bx | \btheta) = \prod_{j=1}^{\text{width} \times \text{height}} p(x_j | \bx_{1:j-1}, \btheta)
+  		\pt(\bx) = \prod_{j=1}^{\text{width} \times \text{height}} \pt(x_j | \bx_{1:j-1})
 	$$
     \eqpause
 	\begin{minipage}[t]{0.5\columnwidth}
@@ -558,7 +554,7 @@
     	\vfill
         \item Autoregressive sampling is simple, but inherently sequential.
         \vfill
-        \item Joint density evaluation multiplies all conditional probabilities $p(x_j | \bx_{1:j - 1}, \btheta)$.
+        \item Joint density evaluation multiplies all conditional probabilities $\pt(x_j | \bx_{1:j - 1})$.
         \vfill
      	\item ImageGPT applies a transformer architecture to sequences of raster-ordered image pixels.
     \end{itemize}
