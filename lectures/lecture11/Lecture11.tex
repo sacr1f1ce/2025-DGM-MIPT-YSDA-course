@@ -324,7 +324,7 @@
 		\vspace{-0.2cm}
 	\end{block}
 	\begin{itemize}
-		\item The KFP theorem uniquely determines $p_t(\bx)$.
+		\item The KFP theorem is necessary and sufficient condition (it is uniquely defines $p_t(\bx)$).
 		\item This generalizes the continuity equation for continuous-time NF:
 		\[
 			\frac{d \log p_t(\bx(t))}{d t} = - \tr \left( \frac{\partial \bff(\bx, t)}{\partial \bx} \right).
@@ -332,27 +332,44 @@
 	\end{itemize}
 	\eqpause
 	\vspace{-0.3cm}
-	\begin{block}{Langevin SDE (Special Case)}
-		\vspace{-0.6cm}
-		\begin{align*}
-			d\bx &= {\color{violet}\bff(\bx, t)} dt + {\color{teal}g(t)} d \bw \\
-			d \bx &= {\color{violet}\frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx)} d t + {\color{teal} 1 } \cdot d \bw
-		\end{align*}
-		\vspace{-0.4cm}
+	\begin{block}{Special Case: constant density $p_t(\bx)$}
+		Let find the SDE for which $p_t(\bx) = \text{const}$ (i.e., if $\bx(0) \sim p_0(\bx)$, then $\bx(t) \sim p_0(\bx)$.).
+		\eqpause
+		\[
+			\frac{\partial p_t(\bx)}{\partial t} = 0 \quad \Leftrightarrow \quad \tr\left( - \frac{\partial}{\partial \bx} \bigl[ \bff(\bx, t) p_t(\bx)\bigr] + \frac{1}{2} g^2(t) \frac{\partial^2 p_t(\bx)}{\partial \bx^2}\right) = 0
+		\]
 	\end{block}
-	\eqpause
-	Let's now apply the KFP theorem to this SDE.
 \end{frame}
 %=======
 \begin{frame}{Langevin SDE (Special Case)}
 	\[
-		d \bx = \frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx) d t + 1 \cdot d \bw
+		\frac{\partial p_t(\bx)}{\partial t} = 0 \quad \Leftrightarrow \quad \tr\left( - \frac{\partial}{\partial \bx} \bigl[ \bff(\bx, t) p_t(\bx)\bigr] + \frac{1}{2} g^2(t) \frac{\partial^2 p_t(\bx)}{\partial \bx^2}\right) = 0
 	\]
-	\begin{multline*}
-		\frac{\partial p_t(\bx)}{\partial t} =  \tr \left(- \frac{\partial}{\partial \bx}\left[ {\color{olive}p_t(\bx) \frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx)} \right]  + \frac{1}{2} \frac{\partial^2 p_t(\bx)}{\partial \bx^2} \right) 
-		\nextonslide{= \\ = \tr \left(- \frac{\partial}{\partial \bx}\left[ {\color{olive}\frac{1}{2} \frac{\partial}{\partial \bx} p_t(\bx) } \right]  + \frac{1}{2} \frac{\partial^2 p_t(\bx)}{\partial \bx^2} \right)} \nextonslide{= 0}
-	\end{multline*}
-	The density $p_t(\bx)$ is constant in $t$; i.e., if $\bx(0) \sim p_0(\bx)$, then $\bx(t) \sim p_0(\bx)$.
+	\vspace{-0.3cm}
+	\eqpause
+	\[
+		\frac{\partial}{\partial \bx} \bigl[ \bff(\bx, t) p_t(\bx)\bigr] = \frac{1}{2} g^2(t) \frac{\partial^2 p_t(\bx)}{\partial \bx^2}
+	\]
+	\eqpause
+	\[
+		\bff(\bx, t) p_t(\bx) = \frac{1}{2} g^2(t) \frac{\partial p_t(\bx)}{\partial \bx}
+	\]
+	\eqpause
+	\[
+		\bff(\bx, t) = \frac{1}{2} g^2(t) \frac{1}{p_t(\bx)}\frac{\partial p_t(\bx)}{\partial \bx} = \frac{1}{2} g^2(t) \frac{\partial}{\partial \bx} \log p_t(\bx)
+	\]
+	\eqpause
+	Let ${\color{olive}g(t)=1}$, then ${\color{violet}\bff(\bx, t) = \frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx)}$.
+	\[
+		d \bx = {\color{violet}\frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx) d t} + {\color{olive}1} \cdot d \bw
+	\]
+\end{frame}
+%=======
+\begin{frame}{Langevin SDE (Special Case)}
+	Let find the SDE for which $p_t(\bx) = \text{const}$ (i.e., if $\bx(0) \sim p_0(\bx)$, then $\bx(t) \sim p_0(\bx)$.).
+	\[
+		d \bx = {\color{violet}\frac{1}{2} \frac{\partial}{\partial \bx} \log p_t(\bx) d t} + {\color{olive}1} \cdot d \bw
+	\]
 	\eqpause
 	\begin{block}{Discretized Langevin SDE}
 		\vspace{-0.3cm}
@@ -368,6 +385,7 @@
 		\]
 		\vspace{-0.3cm}
 	\end{block}
+	We (partially) explained, why Langevin dynamics is working.
 \end{frame}
 %=======
 \section{Probability Flow ODE}
