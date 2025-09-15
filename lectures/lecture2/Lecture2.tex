@@ -11,16 +11,14 @@
 \end{frame}
 %======
 \begin{frame}{Recap of Previous Lecture}
-	We're given i.i.d. samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from some unknown distribution $\pi(\bx)$.
-
+	We're given \textbf{finite} number of i.i.d.\ samples $\{\bx_i\}_{i=1}^n \subset \bbR^m$ drawn from an \textbf{unknown} distribution $\pd(\bx)$.
 	\begin{block}{Objective}
-		Our goal is to learn the distribution $\pi(\bx)$ so that we can:
+		Our aim is to learn a distribution $\pd(\bx)$ that allows us to: 
 		\begin{itemize}
-		    \item Evaluate $\pi(\bx)$ for new samples;
-		    \item Sample from $\pi(\bx)$ (i.e., generate novel samples $\bx \sim \pi(\bx)$).
+		    \item Generate new samples from $\pd(\bx)$ (sample $\bx \sim \pd(\bx)$) --- \textbf{generation}.		    
+		    \item Evaluate $\pd(\bx)$ on novel data (answering ``How likely is an object $\bx$?'') --- \textbf{density estimation}; 
 		\end{itemize}
 	\end{block}
-	Rather than considering all possible probability distributions, we approximate $\pi(\bx)$ by a parameterized family $p(\bx | \btheta) \approx \pi(\bx)$.
 
 	\begin{block}{Divergence Minimization Task}
 		\begin{itemize}
@@ -28,7 +26,7 @@
 			\item $D(\pi \| p) = 0$ if and only if $\pi \equiv p$.
 		\end{itemize}
 		\[
-		\min_{\btheta} D(\pi \| p)
+		\min_{\btheta} D(\pd \| \pt)
 		\]
 	\end{block}
 \end{frame}
@@ -37,20 +35,20 @@
 	\begin{block}{Forward KL Divergence}
 		\vspace{-0.2cm}
 		\[
-		\KL(\pi \| p) = \int \pi (\bx) \log \frac{\pi(\bx)}{p(\bx | \btheta)}\, d \bx \rightarrow \min_{\btheta}
+		\KL(\pd \| \pt) = \int \pi (\bx) \log \frac{\pd(\bx)}{\pt(\bx)}\, d \bx \rightarrow \min_{\btheta}
 		\]
 	\end{block}
 	\begin{block}{Reverse KL Divergence}
 		\vspace{-0.2cm}
 		\[
-		\KL(p \| \pi) = \int p (\bx| \btheta) \log \frac{p(\bx| \btheta)}{\pi(\bx)}\, d \bx \rightarrow \min_{\btheta}
+		\KL(\pt \| \pd) = \int \pt(\bx) \log \frac{\pt(\bx)}{\pd(\bx)}\, d \bx \rightarrow \min_{\btheta}
 		\]
 	\end{block}
 	
 	\begin{block}{Maximum Likelihood Estimation (MLE)}
 		\vspace{-0.3cm}
 		\[
-		\btheta^* = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta)
+		\btheta^* = \argmax_{\btheta} \prod_{i=1}^n \pt(\bx_i) = \argmax_{\btheta} \sum_{i=1}^n \log \pt(\bx_i)
 		\]
 		\vspace{-0.1cm}
 	\end{block}
@@ -61,22 +59,22 @@
 	\begin{block}{Likelihood as Product of Conditionals}
 		Let $\bx = (x_1, \dots, x_m)$, and define $\bx_{1:j} = (x_1, \dots, x_j)$. Then,
 		\[
-		p(\bx | \btheta) = \prod_{j=1}^m p(x_j | \bx_{1:j-1}, \btheta), \quad 
-		\log p(\bx | \btheta) = \sum_{j=1}^m \log p(x_j | \bx_{1:j-1}, \btheta)
+		\pt(\bx) = \prod_{j=1}^m \pt(x_j | \bx_{1:j-1}), \quad 
+		\log \pt(\bx) = \sum_{j=1}^m \log \pt(x_j | \bx_{1:j-1})
 		\]
 	\end{block}
 	\vspace{-0.3cm}
 	\begin{block}{MLE for Autoregressive Models}
 		\vspace{-0.3cm}
 		\[
-		\btheta^* = \argmax_{\btheta} \sum_{i=1}^n \sum_{j=1}^m \log p(x_{ij} | \bx_{i, 1:j-1}, \btheta)
+		\btheta^* = \argmax_{\btheta} \sum_{i=1}^n \sum_{j=1}^m \log \pt(x_{ij} | \bx_{i, 1:j-1})
 		\]
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{block}{Sampling}
 		\vspace{-0.5cm}
 		\[
-		{\color{teal} \hat{x}_1} \sim p(x_1 | \btheta), \quad \hat{x}_2 \sim p(x_2 | {\color{teal} \hat{x}_1}, \btheta), \quad \ldots, \quad \hat{x}_m \sim p(x_m | \hat{\bx}_{1:m-1}, \btheta)
+		{\color{teal} \hat{x}_1} \sim \pt(x_1), \quad \hat{x}_2 \sim \pt(x_2 | {\color{teal} \hat{x}_1}), \quad \ldots, \quad \hat{x}_m \sim \pt(x_m | \hat{\bx}_{1:m-1})
 		\]
 		The generated sample is $\hat{\bx} = (\hat{x}_1, \hat{x}_2, \dots, \hat{x}_m)$.
 	\end{block}
@@ -224,8 +222,8 @@
 	\begin{block}{MLE Problem}
 		\vspace{-0.5cm}
 		\begin{align*}
-			p(\bx|\btheta) &= p(\bz) \left|\det \left(  \frac{\partial \bz}{\partial \bx} \right) \right|  = p(\bff_{\btheta}(\bx)) \left|\det \left( \frac{\partial \bff_{\btheta}(\bx)}{\partial \bx} \right) \right| \\ 
-			\nextonslide{\log p(\bx|\btheta) &= \log p(\bff_{\btheta}(\bx)) + \log  |\det (\bJ_{\bff}) | \rightarrow \max_{\btheta}
+			\pt(\bx) &= p(\bz) \left|\det \left(  \frac{\partial \bz}{\partial \bx} \right) \right|  = p(\bff_{\btheta}(\bx)) \left|\det \left( \frac{\partial \bff_{\btheta}(\bx)}{\partial \bx} \right) \right| \\ 
+			\nextonslide{\log \pt(\bx) &= \log p(\bff_{\btheta}(\bx)) + \log  |\det (\bJ_{\bff}) | \rightarrow \max_{\btheta}
 			}
 		\end{align*}
 	\end{block}
@@ -250,7 +248,7 @@
 	\vspace{-0.3cm}
 	{\footnotesize
 		\begin{multline*}
-			p(\bx) = p(\bff(\bx)) \left|\det \left(\frac{\partial \bff(\bx)}{\partial \bx} \right) \right| 
+			\pt(\bx) = p(\bff(\bx)) \left|\det \left(\frac{\partial \bff(\bx)}{\partial \bx} \right) \right| 
 			\nextonslide{=p(\bff(\bx)) \left|\det \left(\frac{\partial \bff_K}{\partial \bff_{K-1}} \dots \frac{\partial \bff_1}{\partial \bx} \right) \right|}
 			\nextonslide{= \\ = p(\bff(\bx)) \prod_{k=1}^K \left|\det \left(\frac{\partial \bff_{k}}{\partial \bff_{k-1}} \right) \right|
 			= p(\bff(\bx)) \prod_{k=1}^K |\det ( \bJ_{\bff_k}) |}
@@ -261,7 +259,7 @@
 \begin{frame}{Normalizing Flows (NF)}
 	\vspace{-0.3cm}
 	\[
-		\log p(\bx|\btheta) = \log p(\bff_{\btheta}(\bx)) + \log |\det (\bJ_\bff)|
+		\log \pt(\bx) = \log p(\bff_{\btheta}(\bx)) + \log |\det (\bJ_\bff)|
 	\]
 	\vspace{-0.4cm}
 	\begin{block}{Definition}
@@ -269,7 +267,7 @@
 	\end{block}
     \eqpause
 	\begin{itemize}
-		\item \textbf{Normalizing} refers to mapping samples from $\pi(\bx)$ to a base distribution $p(\bz)$.
+		\item \textbf{Normalizing} refers to mapping samples from $\pd(\bx)$ to a base distribution $p(\bz)$.
 		\item \textbf{Flow} describes the sequence of transformations that maps samples from $p(\bz)$ to the target, more complex distribution.
 		\[
 			\bz = \bff_K \circ \ldots \circ \bff_1(\bx); \quad \bx = \bff_1^{-1} \circ \ldots \circ \bff_K^{-1} (\bz) = \bg_1 \circ \ldots \circ \bg_K(\bz)
@@ -279,7 +277,7 @@
 		\begin{block}{Log-Likelihood}
 			\vspace{-0.5cm}
 			\[
-				\log p(\bx|\btheta) = \log p(\bff_K \circ \ldots \circ \bff_1(\bx)) + \sum_{k=1}^K \log |\det (\bJ_{\bff_k})|
+				\log \pt(\bx) = \log p(\bff_K \circ \ldots \circ \bff_1(\bx)) + \sum_{k=1}^K \log |\det (\bJ_{\bff_k})|
 			\]
 			\vspace{-0.4cm} \\
 			where $\bJ_{\bff_k} = \frac{\partial \bff_k}{\partial \bff_{k-1}}$.
@@ -302,7 +300,7 @@
 	\begin{block}{NF Log-Likelihood}
 		\vspace{-0.3cm}
 		\[
-			\log p(\bx|\btheta) = \log p(\bff_{\btheta}(\bx)) + \log |\det ( \bJ_\bff)|
+			\log \pt(\bx) = \log p(\bff_{\btheta}(\bx)) + \log |\det ( \bJ_\bff)|
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -323,7 +321,7 @@
 \begin{frame}{Jacobian Structure}
 	\begin{block}{Normalizing Flows Log-Likelihood}
 		\[
-			\log p(\bx|\btheta) = \log p(\bff_{\btheta}(\bx)) + \log \left|\det \left( \frac{\partial \bff_{\btheta}(\bx)}{\partial \bx} \right) \right|
+			\log \pt(\bx) = \log p(\bff_{\btheta}(\bx)) + \log \left|\det \left( \frac{\partial \bff_{\btheta}(\bx)}{\partial \bx} \right) \right|
 		\]
 	\end{block}
 	The principal computational challenge is evaluating the Jacobian determinant.
@@ -409,8 +407,8 @@
 	\vspace{-0.3cm}
 	{\small
 		\[
-		p(\bx | \btheta) = \prod_{j=1}^m p(x_j | \bx_{1:j-1}, \btheta), \quad
-		p(x_j | \bx_{1:j-1}, \btheta) = \cN \left(\mu_{j, \btheta}(\bx_{1:j-1}), \sigma^2_{j, \btheta} (\bx_{1:j-1})\right)
+		\pt(\bx) = \prod_{j=1}^m \pt(x_j | \bx_{1:j-1}), \quad
+		\pt(x_j | \bx_{1:j-1}) = \cN \left(\mu_{j, \btheta}(\bx_{1:j-1}), \sigma^2_{j, \btheta} (\bx_{1:j-1})\right)
 		\]
 	}
 	\vspace{-0.5cm}
@@ -432,7 +430,7 @@
 	\end{block}
 	\eqpause
 	\begin{itemize}
-		\item This gives an \textbf{invertible} and \textbf{differentiable} transformation from $p(\bz)$ to $p(\bx | \btheta)$.
+		\item This gives an \textbf{invertible} and \textbf{differentiable} transformation from $p(\bz)$ to $\pt(\bx)$.
 		    \eqpause
 		\item This model is called an autoregressive (AR) NF with base distribution $p(\bz) = \cN(0, \bI)$.
 		    \eqpause
@@ -455,7 +453,7 @@
 	\begin{block}{Forward KL for NFs}
 		\vspace{-0.2cm}
 		\[
-			\KL(\pi \| p)  = -\bbE_{\pi(\bx)} \left[\log p(\bff_{\btheta}(\bx)) + \log  |\det (\bJ_\bff)|\right] + \text{const}
+			\KL(\pd \| \pt)  = -\bbE_{\pd(\bx)} \left[\log p(\bff_{\btheta}(\bx)) + \log  |\det (\bJ_\bff)|\right] + \text{const}
 		\]
 		\vspace{-0.5cm}
 		\eqpause

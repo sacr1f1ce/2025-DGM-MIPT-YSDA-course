@@ -48,7 +48,7 @@
 	\begin{block}{Log-Likelihood}
 		\vspace{-0.5cm}
 		\[
-			\log p(\bx | \btheta) = \log p(\bff_K \circ \cdots \circ \bff_1(\bx)) + \sum_{k=1}^K\log |\det (\bJ_{\bff_k})|
+			\log \pt(\bx) = \log p(\bff_K \circ \cdots \circ \bff_1(\bx)) + \sum_{k=1}^K\log |\det (\bJ_{\bff_k})|
 		\]
 	\end{block}
 \end{frame}
@@ -61,7 +61,7 @@
 	\begin{block}{Flow Log-Likelihood}
 		\vspace{-0.3cm}
 		\[
-			\log p(\bx|\btheta) = \log p(\bff_{\btheta}(\bx)) + \log |\det (\bJ_\bff)|
+			\log \pt(\bx) = \log p(\bff_{\btheta}(\bx)) + \log |\det (\bJ_\bff)|
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -92,8 +92,8 @@
 	\vspace{-0.3cm}
 	{\small
 		\[
-		p(\bx | \btheta) = \prod_{j=1}^m p(x_j | \bx_{1:j - 1}, \btheta), \quad
-		p(x_j | \bx_{1:j - 1}, \btheta) = \cN \left(\mu_{j, \btheta}(\bx_{1:j-1}), \sigma^2_{j, \btheta} (\bx_{1:j-1})\right).
+		\pt(\bx) = \prod_{j=1}^m \pt(x_j | \bx_{1:j - 1}), \quad
+		\pt(x_j | \bx_{1:j - 1}) = \cN \left(\mu_{j, \btheta}(\bx_{1:j-1}), \sigma^2_{j, \btheta} (\bx_{1:j-1})\right).
 		\]
 	}
 	\vspace{-0.5cm}
@@ -106,7 +106,7 @@
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{itemize}
-		\item This transformation is both \textbf{invertible} and \textbf{differentiable}, mapping $p(\bz)$ to $p(\bx | \btheta)$.
+		\item This transformation is both \textbf{invertible} and \textbf{differentiable}, mapping $p(\bz)$ to $\pt(\bx)$.
 		\item The Jacobian matrix for this transformation is triangular.
 	\end{itemize}
 	The generative function $\bg_{\btheta}(\bz)$ is \textbf{sequential}, while the inference function $\bff_{\btheta}(\bx)$ is \textbf{not sequential}.
@@ -157,7 +157,7 @@
 		\begin{itemize}
 			\item $\bx$: observed variables; 
 			\item $\btheta$: unknown latent variables/parameters;
-			\item $p(\bx | \btheta)$: likelihood;
+			\item $\pt(\bx) = p(\bx | \btheta)$: likelihood;
 			\item $p(\bx) = \int p(\bx | \btheta) p(\btheta) d\btheta$: evidence;
 			\item $p(\btheta)$: prior distribution;
 			\item $p(\btheta| \bx)$: posterior distribution.
@@ -200,34 +200,34 @@
 	\begin{block}{Maximum Likelihood Extimation (MLE) Problem}
 		\vspace{-0.7cm}
 		\[
-		\btheta^* = \argmax_{\btheta} p(\bX | \btheta) = \argmax_{\btheta} \prod_{i=1}^n p(\bx_i | \btheta) = \argmax_{\btheta} \sum_{i=1}^n \log p(\bx_i | \btheta).
+			\btheta^* = \argmax_{\btheta} \pt(\bX) = \argmax_{\btheta} \prod_{i=1}^n \pt(\bx_i) = \argmax_{\btheta} \sum_{i=1}^n \log \pt(\bx_i).
 		\]
 		\vspace{-0.5cm}
 	\end{block}
     \eqpause
-	The distribution $p(\bx | \btheta)$ can be highly complex and often intractable (just like the true data distribution $\pi(\bx)$).
+	The distribution $\pt(\bx)$ can be highly complex and often intractable (just like the true data distribution $\pd(\bx)$).
     \eqpause
 	\begin{block}{Extended Probabilistic Model}
 		Introduce a latent variable $\bz$ for each observed sample $\bx$:
 		\[
-			p(\bx, \bz | \btheta) = p(\bx | \bz, \btheta) p(\bz); \quad 
-		\log p(\bx, \bz | \btheta) = \log p(\bx | \bz, \btheta) + \log p(\bz).
+			\pt(\bx, \bz) = \pt(\bx | \bz) p(\bz); \quad 
+		\log \pt(\bx, \bz) = \log \pt(\bx | \bz) + \log p(\bz).
 		\]
 		\[
-			\nextonslide{p(\bx | \btheta) = \int p(\bx, \bz | \btheta) d\bz = \int p(\bx | \bz, \btheta) p(\bz) d\bz.}
+			\nextonslide{\pt(\bx) = \int \pt(\bx, \bz) d\bz = \int \pt(\bx | \bz) p(\bz) d\bz.}
 		\]
 	\end{block}
     \eqpause
 	\vspace{-0.3cm}
 	\begin{block}{Motivation}
-		Both $p(\bx | \bz, \btheta)$ and $p(\bz)$ are usually much simpler than $p(\bx | \btheta)$.
+		Both $\pt(\bx | \bz)$ and $p(\bz)$ are usually much simpler than $\pt(\bx)$.
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Latent Variable Models (LVM)}
     \myfootnote{Bishop\,C. Pattern Recognition and Machine Learning, 2006}
 	\[
-		\log p(\bx | \btheta) = \log \int p(\bx | \bz, \btheta) p(\bz) d\bz \rightarrow \max_{\btheta}
+		\log \pt(\bx) = \log \int \pt(\bx | \bz) p(\bz) d\bz \rightarrow \max_{\btheta}
 	\]
     \eqpause
 	\vspace{-0.6cm}
@@ -241,7 +241,7 @@
 			\end{figure}
 			\vspace{-0.5cm}
 			\begin{itemize}
-				\item $p(\bx | z, \btheta) = \cN(\bmu_z, \bSigma_z)$
+				\item $\pt(\bx | z) = \cN(\bmu_z, \bSigma_z)$
 				\item $p(z) = \Cat(\bpi)$
 			\end{itemize}
 		\end{minipage}%
@@ -255,7 +255,7 @@
 			\end{figure}
 			\vspace{-0.3cm}
 			\begin{itemize}
-				\item $p(\bx | \bz, \btheta) = \cN(\bW \bz + \bmu, \sigma^2 \bI)$
+				\item $\pt(\bx | \bz) = \cN(\bW \bz + \bmu, \sigma^2 \bI)$
 				\item $p(\bz) = \cN(0, \bI)$
 			\end{itemize}
 		\end{minipage}
@@ -265,7 +265,7 @@
 \begin{frame}{MLE for LVM}
     \myfootnotewithlink{https://jmtomczak.github.io/blog/4/4\_VAE.html}{image credit: https://jmtomczak.github.io/blog/4/4\_VAE.html}
 	\[
-		\sum_{i=1}^n \log p(\bx_i | \btheta) = \sum_{i=1}^n \log \int p(\bx_i| \bz_i, \btheta) p(\bz_i) d\bz_i \rightarrow \max_{\btheta}.
+		\sum_{i=1}^n \log \pt(\bx_i) = \sum_{i=1}^n \log \int \pt(\bx_i| \bz_i) p(\bz_i) d\bz_i \rightarrow \max_{\btheta}.
 	\]
     \eqpause
 	\vspace{-0.7cm}
@@ -277,7 +277,7 @@
 	\begin{block}{Naive Approach}
 		\vspace{-0.7cm}
 		\[
-			p(\bx | \btheta) = \int p(\bx | \bz, \btheta) p(\bz) d\bz = \bbE_{p(\bz)} p(\bx | \bz, \btheta) \approx \frac{1}{K} \sum_{k=1}^{K} p(\bx | \bz_k, \btheta),
+			\pt(\bx) = \int \pt(\bx | \bz) p(\bz) d\bz = \bbE_{p(\bz)} \pt(\bx | \bz) \approx \frac{1}{K} \sum_{k=1}^{K} \pt(\bx | \bz_k),
 		\]
 		\vspace{-0.5cm} \\
 		where $\bz_k \sim p(\bz)$. \\
@@ -292,11 +292,11 @@
 	\begin{block}{Inequality Derivation}
 		\vspace{-0.7cm}
 		\begin{multline*}
-			\log p(\bx| \btheta) 
-			= \log \int p(\bx, \bz | \btheta) d\bz 
-			\nextonslide{= \log \int \frac{q(\bz)}{q(\bz)} p(\bx, \bz | \btheta) d\bz}
-			\nextonslide{= \\ = \log \bbE_{q} \left[\frac{p(\bx, \bz| \btheta)}{q(\bz)} \right]}
-			\nextonslide{ \geq \bbE_{q} \log \frac{p(\bx, \bz| \btheta)}{q(\bz)} = \cL_{q, \btheta}(\bx)}
+			\log \pt(\bx) 
+			= \log \int \pt(\bx, \bz) d\bz 
+			\nextonslide{= \log \int \frac{q(\bz)}{q(\bz)} \pt(\bx, \bz) d\bz}
+			\nextonslide{= \\ = \log \bbE_{q} \left[\frac{\pt(\bx, \bz)}{q(\bz)} \right]}
+			\nextonslide{ \geq \bbE_{q} \log \frac{\pt(\bx, \bz)}{q(\bz)} = \cL_{q, \btheta}(\bx)}
 		\end{multline*}
 		\vspace{-0.3cm}
 	\end{block}
@@ -305,7 +305,7 @@
     \eqpause
 	\begin{block}{Variational Evidence Lower Bound (ELBO)}
 		\[
-			 \cL_{q, \btheta}(\bx) = \bbE_{q} \log \frac{p(\bx, \bz| \btheta)}{q(\bz)}  \leq \log p(\bx| \btheta) 
+			 \cL_{q, \btheta}(\bx) = \bbE_{q} \log \frac{\pt(\bx, \bz)}{q(\bz)}  \leq \log \pt(\bx) 
 		\]
     	\eqpause
 		This inequality holds for any choice of $q(\bz)$.
@@ -315,16 +315,16 @@
 \begin{frame}{ELBO Derivation II}
 	\vspace{-0.3cm}
 	\[
-		{\color{teal}p(\bz|\bx, \btheta) = \frac{p(\bx, \bz | \btheta)}{p(\bx| \btheta)}}
+		{\color{teal}\pt(\bz|\bx) = \frac{\pt(\bx, \bz)}{\pt(\bx)}}
 	\]
 	\vspace{-0.4cm}
 	\begin{block}{Equality Derivation}
 		\vspace{-0.7cm}
 		\begin{multline*}
-			\cL_{q, \btheta}(\bx) = \int q(\bz) \log \frac{\color{teal}p(\bx, \bz | \btheta)}{q(\bz)}d\bz 
-			\nextonslide{= \\ = \int q(\bz) \log \frac{\color{teal}p(\bz|\bx, \btheta)p(\bx| \btheta)}{q(\bz)}d\bz}
-			\nextonslide{ = \\ = \int q(\bz) \log p(\bx| \btheta) d\bz + \int q(\bz) \log \frac{p(\bz|\bx, \btheta)}{q(\bz)}d\bz}
-			\nextonslide{ = \\ = \log p(\bx| \btheta) - \KL(q(\bz) \| p(\bz|\bx, \btheta))}
+			\cL_{q, \btheta}(\bx) = \int q(\bz) \log \frac{\color{teal}\pt(\bx, \bz)}{q(\bz)}d\bz 
+			\nextonslide{= \\ = \int q(\bz) \log \frac{\color{teal}\pt(\bz|\bx)\pt(\bx)}{q(\bz)}d\bz}
+			\nextonslide{ = \\ = \int q(\bz) \log \pt(\bx) d\bz + \int q(\bz) \log \frac{\pt(\bz|\bx)}{q(\bz)}d\bz}
+			\nextonslide{ = \\ = \log \pt(\bx) - \KL(q(\bz) \| \pt(\bz|\bx))}
 		\end{multline*}
 	\end{block}
     \eqpause
@@ -332,27 +332,27 @@
 	\begin{block}{Variational Decomposition}
 		\vspace{-0.2cm}
 		\[
-			\log p(\bx| \btheta) = \cL_{q, \btheta}(\bx) + {\color{violet}\KL(q(\bz) \| p(\bz|\bx, \btheta))} \geq \cL_{q, \btheta}(\bx).
+			\log \pt(\bx) = \cL_{q, \btheta}(\bx) + {\color{violet}\KL(q(\bz) \| \pt(\bz|\bx))} \geq \cL_{q, \btheta}(\bx).
 		\]
 	\end{block}
     \eqpause
-	Here, ${\color{violet}\KL(q(\bz) \| p(\bz|\bx, \btheta)) \geq 0}$.
+	Here, ${\color{violet}\KL(q(\bz) \| \pt(\bz|\bx)) \geq 0}$.
 \end{frame}
 %=======
 \begin{frame}{Variational Evidence Lower Bound (ELBO)}
 	\vspace{-0.3cm}
 	\begin{align*}
-		\cL_{q, \btheta}(\bx) &= \int q(\bz) \log \frac{\color{violet}p(\bx, \bz | \btheta)}{\color{teal}q(\bz)}d\bz \\ 
-		\nextonslide{&= \int q(\bz) \log {\color{violet}p(\bx | \bz, \btheta)} d\bz + \int q(\bz) \log \frac{\color{violet}p(\bz)}{\color{teal}q(\bz)}d\bz} \\ 
-		\nextonslide{&= \bbE_{q} \log p(\bx | \bz, \btheta) - \KL (q(\bz) \| p(\bz))}
+		\cL_{q, \btheta}(\bx) &= \int q(\bz) \log \frac{\color{violet}\pt(\bx, \bz)}{\color{teal}q(\bz)}d\bz \\ 
+		\nextonslide{&= \int q(\bz) \log {\color{violet}\pt(\bx | \bz)} d\bz + \int q(\bz) \log \frac{\color{violet}p(\bz)}{\color{teal}q(\bz)}d\bz} \\ 
+		\nextonslide{&= \bbE_{q} \log \pt(\bx | \bz) - \KL (q(\bz) \| p(\bz))}
 	\end{align*}
     \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Log-Likelihood Decomposition}
 		\vspace{-0.8cm}
 		\begin{multline*}
-			\log p(\bx| \btheta) = {\color{olive}\cL_{q, \btheta}(\bx)} + \KL(q(\bz) \| p(\bz|\bx, \btheta)) 
-			\nextonslide{ = \\ = {\color{olive}\bbE_{q} \log p(\bx | \bz, \btheta) - \KL (q(\bz) \| p(\bz))} + \KL(q(\bz) \| p(\bz|\bx, \btheta)).}
+			\log \pt(\bx) = {\color{olive}\cL_{q, \btheta}(\bx)} + \KL(q(\bz) \| \pt(\bz|\bx)) 
+			\nextonslide{ = \\ = {\color{olive}\bbE_{q} \log \pt(\bx | \bz) - \KL (q(\bz) \| p(\bz))} + \KL(q(\bz) \| \pt(\bz|\bx)).}
 		\end{multline*}
 		\vspace{-0.7cm}
 	\end{block}
@@ -360,13 +360,13 @@
 	\begin{itemize}
 		\item Instead of maximizing the likelihood, maximize the ELBO:
 		\[
-		\max_{\btheta} p(\bx | \btheta) \quad \rightarrow \quad \max_{q, \btheta} \cL_{q, \btheta}(\bx)
+		\max_{\btheta} \pt(\bx) \quad \rightarrow \quad \max_{q, \btheta} \cL_{q, \btheta}(\bx)
 		\]
         \eqpause
 		\vspace{-0.3cm}
 		\item Maximizing the ELBO with respect to the \textbf{variational} distribution $q$ is equivalent to minimizing the KL divergence:
 		\[
-		\argmax_q \cL_{q, \btheta}(\bx) \equiv \argmin_q \KL(q(\bz) \| p(\bz|\bx, \btheta)).
+		\argmax_q \cL_{q, \btheta}(\bx) \equiv \argmin_q \KL(q(\bz) \| \pt(\bz|\bx)).
 		\]
 	\end{itemize}
 \end{frame}
@@ -376,7 +376,7 @@
 \begin{frame}{EM-Algorithm}
 	\vspace{-0.5cm}
 	\begin{multline*}
-		\cL_{q, \btheta}(\bx)  =  \bbE_{q} \log p(\bx | \bz, \btheta) - \KL (q(\bz) \| p(\bz)) = \\ = \bbE_q \Big[ \log p(\bx | \bz, \btheta) - \log \frac{q(\bz)}{p(\bz)} \Big]d\bz \rightarrow \max_{q, \btheta}.
+		\cL_{q, \btheta}(\bx)  =  \bbE_{q} \log \pt(\bx | \bz) - \KL (q(\bz) \| p(\bz)) = \\ = \bbE_q \Big[ \log \pt(\bx | \bz) - \log \frac{q(\bz)}{p(\bz)} \Big]d\bz \rightarrow \max_{q, \btheta}.
 	\end{multline*}
     \eqpause
 	\vspace{-0.5cm}
@@ -388,7 +388,7 @@
 			\vspace{-0.5cm}
 			\begin{multline*}
 				q^*(\bz) = \argmax_q \cL_{q, \btheta^*}(\bx) = \\
-				= \argmin_q \KL(q(\bz) \| p(\bz | \bx, \btheta^*)) = p(\bz| \bx, \btheta^*);
+				= \argmin_q \KL(q(\bz) \| p_{\btheta^*}(\bz | \bx)) = p_{\btheta^*}(\bz| \bx);
 			\end{multline*}
             \eqpause
 			\vspace{-0.3cm}
@@ -429,19 +429,19 @@
 		\vspace{-0.3cm}
 		\[
 			q(\bz) = \argmax_q \cL_{q, \btheta^*}(\bx) = \argmin_q \KL(q \| p) =
-		p(\bz| \bx, \btheta^*).
+		p_{\btheta^*}(\bz| \bx).
 		\]
 		\eqpause
-		$q(\bz)$ approximates the true posterior $p(\bz| \bx, \btheta^*)$, hence it is called \textbf{variational posterior}.				
+		$q(\bz)$ approximates the true posterior $p_{\btheta^*}(\bz| \bx)$, hence it is called \textbf{variational posterior}.				
 		\eqpause
 		\begin{itemize}
-			\item {\color{violet}$p(\bz| \bx, \btheta^*)$ may be \textbf{intractable}};
+			\item {\color{violet}$p_{\btheta^*}(\bz| \bx)$ may be \textbf{intractable}};
 			\item {\color{teal}$q(\bz)$ is individual for each data point $\bx$}.
 		\end{itemize}
 	\end{block}
 	\eqpause
 	\begin{block}{Variational Bayes}
-		We restrict the family of possible distributions $q(\bz)$ to a parametric class $q(\bz|\bx, \bphi)$, {\color{teal}conditioned on data $\bx$} and {\color{violet}parameterized by $\bphi$}.
+		We restrict the family of possible distributions $q(\bz)$ to a parametric class $q_{\bphi}(\bz| \bx)$, {\color{teal}conditioned on data $\bx$} and {\color{violet}parameterized by $\bphi$}.
 		\eqpause
 		\begin{itemize}
 			\item E-step
@@ -478,10 +478,10 @@
 	\begin{block}{ELBO}
 		\vspace{-0.5cm}
 		\[
-			\log p(\bx| \btheta) = \cL_{\bphi, \btheta}(\bx) + \KL(q(\bz | \bx, \bphi) \| p(\bz|\bx, \btheta)) \geq \cL_{\bphi, \btheta}(\bx).
+			\log \pt(\bx) = \cL_{\bphi, \btheta}(\bx) + \KL(q_{\bphi}(\bz| \bx) \| \pt(\bz|\bx)) \geq \cL_{\bphi, \btheta}(\bx).
 		\]
 		\[
-		 	\cL_{q, \btheta}(\bx) = \bbE_{q} \log p(\bx | \bz, \btheta) - \KL(q(\bz | \bx, \bphi) \| p(\bz))
+		 	\cL_{q, \btheta}(\bx) = \bbE_{q} \log \pt(\bx | \bz) - \KL(q_{\bphi}(\bz| \bx) \| p(\bz))
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -493,12 +493,12 @@
 			\bphi_k = \bphi_{k-1} + \left.\eta \cdot \nabla_{\bphi} \cL_{\bphi, \btheta_{k-1}}(\bx)\right|_{\bphi=\bphi_{k-1}},
 		\]
 		\vspace{-0.3cm} \\
-		where $\bphi$ denotes the parameters of the variational posterior $q(\bz | \bx, \bphi)$.
+		where $\bphi$ denotes the parameters of the variational posterior $q_{\bphi}(\bz| \bx)$.
 		\item \textbf{M-step:}
 		\[
 			\btheta_k = \btheta_{k-1} + \left.\eta \cdot \nabla_{\btheta} \cL_{\bphi_k, \btheta}(\bx)\right|_{\btheta=\btheta_{k-1}},
 		\]
-		where $\btheta$ represents the parameters of the generative model $p(\bx | \bz, \btheta)$.
+		where $\btheta$ represents the parameters of the generative model $\pt(\bx | \bz)$.
 	\end{itemize}
 	\eqpause
 	The remaining step is to obtain \textbf{unbiased} Monte Carlo estimates of the gradients: $\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx)$ and $\nabla_{\btheta} \cL_{\bphi, \btheta}(\bx)$. 
