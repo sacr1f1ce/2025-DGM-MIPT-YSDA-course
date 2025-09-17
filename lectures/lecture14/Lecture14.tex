@@ -20,7 +20,7 @@
 	\begin{block}{Constraints}
 		\vspace{-0.3cm}
 		\[
-			p(\bx) = \cN(0, \bI) = \bbE_{p(\bz)} p_0(\bx | \bz); \quad \pi(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz).
+			p(\bx) = \cN(0, \bI) = \bbE_{p(\bz)} p_0(\bx | \bz); \quad \pd(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz).
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -63,7 +63,7 @@
 	\[
 		\begin{cases}
 			p(\bx) = \bbE_{p(\bz)} p_0(\bx | \bz); {\color{gray}(= \cN(0, \bI))} \\
-			\pi(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz).
+			\pd(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz).
 		\end{cases}
 		\quad \Rightarrow \quad 
 		\begin{cases}
@@ -155,7 +155,7 @@
 	\vspace{0.5cm}	
     \eqpause
 	\[
-		\cL_{\bphi, \btheta}(\bx)  =  \log p(\bx | \bz_q, \btheta) - \log K
+		\cL_{\bphi, \btheta}(\bx)  =  \log \pt(\bx| \bz_q) - \log K
 	\]
 	\vspace{-0.3cm}
 	\begin{figure}

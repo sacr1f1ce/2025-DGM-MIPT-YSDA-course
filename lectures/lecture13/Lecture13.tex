@@ -41,14 +41,14 @@
 	\begin{block}{Discrete-Time Objective}
 		\vspace{-0.3cm}
 		\[
-			\bbE_{\pi(\bx_0)} \bbE_{t \sim U\{1, T\}} \bbE_{q(\bx_t | \bx_0)}\bigl\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \bigr\|^2_2 
+			\bbE_{\pd(\bx_0)} \bbE_{t \sim U\{1, T\}} \bbE_{q(\bx_t | \bx_0)}\bigl\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \bigr\|^2_2 
 		\]
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{block}{Continuous-Time Objective}
 		\vspace{-0.5cm}
 		\[
-			\bbE_{\pi(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
+			\bbE_{\pd(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -86,7 +86,7 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
-	Consider ODE dynamics $\bx(t)$ in the interval $t \in [0, 1]$ with $\bx_0 \sim p_0(\bx) = p(\bx)$, $\bx_1 \sim p_1(\bx) =  \pi(\bx)$.
+	Consider ODE dynamics $\bx(t)$ in the interval $t \in [0, 1]$ with $\bx_0 \sim p_0(\bx) = p(\bx)$, $\bx_1 \sim p_1(\bx) =  \pd(\bx)$.
 	\[
 		\frac{d \bx}{dt} = \bff (\bx, t),  \quad \text{with initial condition $\bx(0) = \bx_0$}.
 	\]
@@ -177,7 +177,7 @@
 	\]
 	\eqpause
 	\[
-		p(\bx) = \cN(0, \bI) = \bbE_{p(\bz)} p_0(\bx | \bz); \quad \pi(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz).
+		p(\bx) = \cN(0, \bI) = \bbE_{p(\bz)} p_0(\bx | \bz); \quad \pd(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz).
 	\]
 	\eqpause
 	\vspace{-0.3cm}
@@ -290,7 +290,7 @@
 	\[
 		\begin{cases}
 			p(\bx) = \bbE_{p(\bz)} p_0(\bx | \bz); {\color{gray}(= \cN(0, \bI))} \\
-			\pi(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz)
+			\pd(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz)
 		\end{cases}
 		\quad 
 		\nextonslide{
@@ -371,7 +371,7 @@
 		\end{figure}
 	\end{minipage}%
 	\begin{minipage}[t]{0.45\columnwidth}
-		The conditional vector field $\bff(\bx_t, \bx_1, t)$ defines straight lines between $\pi(\bx)$ and $\cN(0, \bI)$.
+		The conditional vector field $\bff(\bx_t, \bx_1, t)$ defines straight lines between $\pd(\bx)$ and $\cN(0, \bI)$.
 	\end{minipage}
 \end{frame}
 %=======
@@ -380,13 +380,13 @@
 	\vspace{-0.5cm}
 	\begin{multline*}
 		\bbE_{t \sim U[0, 1]} \bbE_{\bz \sim p(\bz)} \bbE_{\bx \sim p_t(\bx | \bz)}\left\| \bff(\bx, \bz, t) - \bff_{\btheta}(\bx, t) \right\|^2
-		= \\ = \bbE_{t \sim U[0, 1]} \bbE_{\bx_1 \sim \pi(\bx)} {\color{violet}\bbE_{\bx_t \sim p_t(\bx | \bx_1)}}\left\| \left(\frac{\bx_1 - \bx_t}{1-t}\right) - \bff_{\btheta}(\bx_t, t) \right\|^2
-		\nextonslide{ = \\ = \bbE_{t \sim U[0, 1]} \bbE_{\bx_1 \sim \pi(\bx)} {\color{violet}\bbE_{\bx_0 \sim \cN(0, \bI)}}\left\| (\bx_1 - \bx_0) - \bff_{\btheta}\left(t \bx_1 + (1 - t) \bx_0, t\right) \right\|^2}
+		= \\ = \bbE_{t \sim U[0, 1]} \bbE_{\bx_1 \sim \pd(\bx)} {\color{violet}\bbE_{\bx_t \sim p_t(\bx | \bx_1)}}\left\| \left(\frac{\bx_1 - \bx_t}{1-t}\right) - \bff_{\btheta}(\bx_t, t) \right\|^2
+		\nextonslide{ = \\ = \bbE_{t \sim U[0, 1]} \bbE_{\bx_1 \sim \pd(\bx)} {\color{violet}\bbE_{\bx_0 \sim \cN(0, \bI)}}\left\| (\bx_1 - \bx_0) - \bff_{\btheta}\left(t \bx_1 + (1 - t) \bx_0, t\right) \right\|^2}
 	\end{multline*}
 	\eqpause
 	\vspace{-0.5cm}
 	\begin{itemize}
-		\item We fit straight lines between the noise distribution $p(\bx)$ and the data distribution $\pi(\bx)$.
+		\item We fit straight lines between the noise distribution $p(\bx)$ and the data distribution $\pd(\bx)$.
 		\item The \textbf{marginal} path $p_t(\bx)$ does not give straight lines.
 	\end{itemize}
 	\eqpause
@@ -417,11 +417,11 @@
 	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
 	\vspace{-0.3cm}
 	\[
-	 \bbE_{t \sim U[0, 1]} \bbE_{\bx_1 \sim \pi(\bx)} \bbE_{\bx_0 \sim \cN(0, \bI)}\left\| (\bx_1 - \bx_0) - \bff_{\btheta}(\bx_t, t) \right\|^2  \rightarrow \min_{\btheta}
+	 \bbE_{t \sim U[0, 1]} \bbE_{\bx_1 \sim \pd(\bx)} \bbE_{\bx_0 \sim \cN(0, \bI)}\left\| (\bx_1 - \bx_0) - \bff_{\btheta}(\bx_t, t) \right\|^2  \rightarrow \min_{\btheta}
 	\]
 	\begin{block}{Training}
 		\begin{enumerate}
-			\item Sample $\bx_1 \sim \pi(\bx)$.
+			\item Sample $\bx_1 \sim \pd(\bx)$.
 			\item Sample time $t \sim U[0, 1]$ and $\bx_0 \sim \cN(0, \bI)$.
 			\item Obtain the noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
 			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bff_{\btheta}(\bx, t) \right\|^2 $.
@@ -462,7 +462,7 @@
 	\[
 		\begin{cases}
 			p(\bx) = \bbE_{p(\bz)} p_0(\bx | \bz); {\color{gray}(= \cN(0, \bI))} \\
-			\pi(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz)
+			\pd(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz)
 		\end{cases}
 		\, 
 		\nextonslide{
@@ -617,7 +617,7 @@
 	\begin{block}{Training}
 		\vspace{-0.7cm}
 		\[
-			\bbE_{\pi(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
+			\bbE_{\pd(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
 		\]
 		\vspace{-0.5cm}
 	\end{block}

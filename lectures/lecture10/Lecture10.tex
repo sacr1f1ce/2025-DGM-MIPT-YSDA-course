@@ -13,7 +13,7 @@
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 
-	\textbf{Forward Process}: Converts an arbitrary distribution $\pi(\bx)$ into the standard normal $\cN(0, \bI)$ by incrementally adding noise.
+	\textbf{Forward Process}: Converts an arbitrary distribution $\pd(\bx)$ into the standard normal $\cN(0, \bI)$ by incrementally adding noise.
 	\begin{align*}
 		q(\bx_t | \bx_{t-1}) &= \cN(\sqrt{1 - \beta_t}\, \bx_{t-1}, \beta_t\, \bI); \\
 		q(\bx_t | \bx_0) &= \cN(\sqrt{\bar{\alpha}_t}\, \bx_0, (1 - \bar{\alpha}_t)\, \bI).
@@ -41,20 +41,20 @@
 		\item Generative model and prior:
 		\vspace{-0.2cm}
 		\[
-			p(\bx | \bz, \btheta) = p(\bx_0 | \bx_1, \btheta); \quad 
-			p(\bz | \btheta) = \prod_{t=2}^T p(\bx_{t - 1} | \bx_t, \btheta) \cdot p(\bx_T)
+			\pt(\bx | \bz) = \pt(\bx_0 | \bx_1); \quad 
+			\pt(\bz) = \prod_{t=2}^T \pt(\bx_{t - 1} | \bx_t) \cdot p(\bx_T)
 		\]
 	\end{itemize}
 	\vspace{-0.2cm}
 	\begin{block}{ELBO}
 		\vspace{-0.2cm}
 		\[
-			\log p(\bx | \btheta) \geq \bbE_{q({\color{teal}\bz} | \bx)} \log \frac{p(\bx, {\color{teal}\bz} | \btheta)}{q({\color{teal}\bz} | \bx)} = \cL_{\bphi, \btheta}(\bx) \rightarrow \max_{q, \btheta}
+			\log \pt(\bx) \geq \bbE_{q({\color{teal}\bz} | \bx)} \log \frac{\pt(\bx, {\color{teal}\bz})}{q({\color{teal}\bz} | \bx)} = \cL_{\bphi, \btheta}(\bx) \rightarrow \max_{q, \btheta}
 		\]
 		\vspace{-0.5cm}
 		\begin{multline*}
-			\cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log p(\bx_0 | \bx_1, \btheta)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-			- \sum_{t=2}^T  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)}_{\cL_t}
+			\cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
+			- \sum_{t=2}^T  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
 		\end{multline*}
 	\end{block}
 \end{frame}
@@ -64,14 +64,14 @@
 	\begin{block}{ELBO of the Gaussian Diffusion Model}
 		\vspace{-0.7cm}
 		\begin{multline*}
-			\cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log p(\bx_0 | \bx_1, \btheta)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-			- \sum_{t=2}^T  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)}_{\cL_t}
+			\cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
+			- \sum_{t=2}^T  \underbrace{ \bbE_{q(\bx_t | \bx_0)}\KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
 		\end{multline*}
 		\vspace{-1.0cm}
 	\end{block}
 	\begin{align*}
 		q(\bx_{t-1} | \bx_t, \bx_0) &= \cN(\tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t \bI), \\
-		p(\bx_{t - 1} | \bx_t, \btheta) &= \cN \bigl(\bmu_{\btheta, t}(\bx_t), {\color{violet}\bsigma_{\btheta, t}^2(\bx_t)}\bigr)
+		\pt(\bx_{t - 1} | \bx_t) &= \cN \bigl(\bmu_{\btheta, t}(\bx_t), {\color{violet}\bsigma_{\btheta, t}^2(\bx_t)}\bigr)
 	\end{align*}
 	It is assumed that ${\color{violet}\bsigma_{\btheta, t}^2(\bx_t) = \tilde{\beta}_t \bI}$.
 	\[
@@ -110,7 +110,7 @@
 	\myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 	\begin{block}{Training DDPM}
 		\begin{enumerate}
-			\item Draw a sample $\bx_0 \sim \pi(\bx)$.
+			\item Draw a sample $\bx_0 \sim \pd(\bx)$.
 			\item Sample a timestep $t \sim U\{1, T\}$ and noise $\bepsilon \sim \cN(0, \bI)$.
 			\item Obtain the noisy image: $\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon$.
 			\item Compute the loss: $ \cL_{\text{simple}} = \| \bepsilon - \bepsilon_{\btheta, t}(\bx_t) \|^2 $.
@@ -119,7 +119,7 @@
 	\begin{block}{Sampling with DDPM}
 		\begin{enumerate}
 			\item Sample $\bx_T \sim \cN(0, \bI)$.
-			\item Compute the mean of $p(\bx_{t-1} | \bx_t, \btheta) = \cN(\bmu_{\btheta, t}(\bx_t), \sigma_t^2 \cdot \bI)$:
+			\item Compute the mean of $\pt(\bx_{t-1} | \bx_t) = \cN(\bmu_{\btheta, t}(\bx_t), \sigma_t^2 \cdot \bI)$:
 			\[
 				\bmu_{\btheta, t}(\bx_t) = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon_{\btheta, t}(\bx_t)
 			\]
@@ -157,7 +157,7 @@
 	We can reparameterize the model as: 
 		\vspace{-0.2cm}
 		\[
-			\bs_{\btheta, t}(\bx_t) = {\color{violet}- \frac{\bepsilon_{\btheta, t}(\bx_t)}{\sqrt{1 - \bar{\alpha}_t}}} = \nabla_{\bx_t} \log p(\bx_t | \btheta).
+			\bs_{\btheta, t}(\bx_t) = {\color{violet}- \frac{\bepsilon_{\btheta, t}(\bx_t)}{\sqrt{1 - \bar{\alpha}_t}}} = \nabla_{\bx_t} \log \pt(\bx_t).
 		\]
 		\vspace{-0.3cm}
 		\eqpause
@@ -171,7 +171,7 @@
 	\begin{block}{DDPM Objective}
 		\vspace{-0.5cm}
 		\[
-			\bbE_{\pi(\bx_0)} \bbE_{t \sim U\{1, T\}}\bbE_{q(\bx_t | \bx_0)} \left[ {\color{olive}\frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t}} \Bigl\|  \bs_{\btheta, t} (\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \Bigr\|_2^2  \right]
+			\bbE_{\pd(\bx_0)} \bbE_{t \sim U\{1, T\}}\bbE_{q(\bx_t | \bx_0)} \left[ {\color{olive}\frac{(1 - \alpha_t)^2}{2\tilde{\beta}_t \alpha_t}} \Bigl\|  \bs_{\btheta, t} (\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \Bigr\|_2^2  \right]
 		\]
 		\[
 			\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon
@@ -183,7 +183,7 @@
 	\begin{block}{NCSN Objective}
 		\vspace{-0.3cm}
 		\[
-			\bbE_{\pi(\bx_0)} \bbE_{t \sim U\{1, T\}} \bbE_{q(\bx_t | \bx_0)}\bigl\| \bs_{\btheta, \sigma_t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \bigr\|^2_2 
+			\bbE_{\pd(\bx_0)} \bbE_{t \sim U\{1, T\}} \bbE_{q(\bx_t | \bx_0)}\bigl\| \bs_{\btheta, \sigma_t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \bigr\|^2_2 
 		\]
 		\[
 			\bx_t = \bx_0 + \sigma_t \cdot \bepsilon
@@ -252,7 +252,7 @@
 %=======
 \begin{frame}{Guidance}
 	\begin{itemize}
-	\item Up to now, we have focused on \textbf{unconditional} generative models $p(\bx | \btheta)$.
+	\item Up to now, we have focused on \textbf{unconditional} generative models $\pt(\bx)$.
 	\item In practice, most generative models are \textbf{conditional}: $p(\bx | \by, \btheta)$.
 	\item Here, $\by$ might denote a class label or \textbf{text} (as in text-to-image tasks).
 	\end{itemize}
@@ -270,7 +270,7 @@
 \end{frame}
 %=======
 \begin{frame}{Taxonomy of Conditional Tasks}
-	In practice, an important task is to construct a conditional model~$\pi(\bx | \by)$. 
+	In practice, an important task is to construct a conditional model~$\pd(\bx | \by)$. 
 		\begin{itemize}
 			\item $\by = \emptyset$, $\bx$ -- image $\Rightarrow$ unconditional image model.
 			\item $\by$ -- class label, $\bx$ -- image $\Rightarrow$ class-conditional image model.
@@ -304,13 +304,13 @@
 	\begin{itemize}
 	\item Given \textbf{supervised} data $\{(\bx_i, \by_i)\}_{i=1}^n$, we can treat $\by$ as an additional input:
 	\begin{itemize}
-		\item $p(x_j | \bx_{1:j-1}, {\color{olive}\by}, \btheta)$ for AR models;
-				\item Encoder $q(\bz | \bx, {\color{olive}\by}, \bphi)$ and decoder $p(\bx | \bz, {\color{olive}\by}, \btheta)$ for VAEs;
+		\item $\pt(x_j | \bx_{1:j-1}, {\color{olive}\by})$ for AR models;
+		\item Encoder $q_{\bphi}(\bz | \bx, {\color{olive}\by})$ and decoder $\pt(\bx | \bz, {\color{olive}\by})$ for VAEs;
 		\item $G_{\btheta}(\bz, {\color{olive}\by})$ for NFs and GANs;
-		\item $p(\bx_{t-1} | \bx_t, {\color{olive}\by}, \btheta)$ for DDPMs.
+		\item $\pt(\bx_{t-1} | \bx_t, {\color{olive}\by})$ for DDPMs.
 	\end{itemize}
 	\eqpause
-	\item For \textbf{unsupervised} data $\{\bx_i\}_{i=1}^n$, it becomes necessary to devise a way to transform the unconditional model $p(\bx | \btheta)$ into a conditional version.
+	\item For \textbf{unsupervised} data $\{\bx_i\}_{i=1}^n$, it becomes necessary to devise a way to transform the unconditional model $\pt(\bx)$ into a conditional version.
 	\eqpause
 	\item Being able to control the strength of guidance is especially valuable.
 	\end{itemize}
@@ -345,7 +345,7 @@
 			\begin{align*}
 				\bx_{t - 1} &= \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot {\color{teal}\bs_{\btheta, t} (\bx_t)} +  \sigma_t \cdot \bepsilon \\
 				\nextonslide{
-				& = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot {\color{teal} \nabla_{\bx_t} \log p(\bx_t | \btheta)} +  \sigma_t \cdot \bepsilon
+				& = \frac{1}{\sqrt{1 - \beta_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot {\color{teal} \nabla_{\bx_t} \log \pt(\bx_t)} +  \sigma_t \cdot \bepsilon
 				}
 			\end{align*}
 			\vspace{-0.5cm}
@@ -355,7 +355,7 @@
 	\begin{block}{Conditional Generation}
 		\vspace{-0.5cm}
 		\[
-			\bx_{t - 1} = \frac{1}{\sqrt{1 - \beta_t}}\cdot \bx_t +  \frac{\beta_t}{\sqrt{1 - \beta_t}}  \cdot  \nabla_{\bx_t} \log p(\bx_t | {\color{olive}\by}, \btheta) +  \sigma_t \cdot \bepsilon
+			\bx_{t - 1} = \frac{1}{\sqrt{1 - \beta_t}}\cdot \bx_t +  \frac{\beta_t}{\sqrt{1 - \beta_t}}  \cdot  \nabla_{\bx_t} \log \pt(\bx_t | {\color{olive}\by}) +  \sigma_t \cdot \bepsilon
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -370,7 +370,7 @@
 	\begin{block}{Conditional Generation}
 		\vspace{-0.5cm}
 		\[
-			\bx_{t - 1} = \frac{1}{\sqrt{1 - \beta_t}}\cdot \bx_t +  \frac{\beta_t}{\sqrt{1 - \beta_t}}  \cdot  \nabla_{\bx_t} \log p(\bx_t | {\color{olive}\by}, \btheta) +  \sigma_t \cdot \bepsilon
+			\bx_{t - 1} = \frac{1}{\sqrt{1 - \beta_t}}\cdot \bx_t +  \frac{\beta_t}{\sqrt{1 - \beta_t}}  \cdot  \nabla_{\bx_t} \log \pt(\bx_t | {\color{olive}\by}) +  \sigma_t \cdot \bepsilon
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -378,9 +378,9 @@
 	\begin{block}{Conditional Distribution}
 		\vspace{-0.7cm}
 		\begin{align*}
-			{\color{olive}\nabla_{\bx_t} \log p(\bx_t | \by, \btheta)} &= \nabla_{\bx_t} \log \left(\frac{p(\by | \bx_t)p(\bx_t | \btheta)}{p(\by)} \right)\\
+			{\color{olive}\nabla_{\bx_t} \log \pt(\bx_t | \by)} &= \nabla_{\bx_t} \log \left(\frac{p(\by | \bx_t)\pt(\bx_t)}{p(\by)} \right)\\
 			\nextonslide{
-			&= \nabla_{\bx_t} \log p(\by | \bx_t) + {\color{violet}\nabla_{\bx_t} \log p(\bx_t | \btheta)}\\
+			&= \nabla_{\bx_t} \log p(\by | \bx_t) + {\color{violet}\nabla_{\bx_t} \log \pt(\bx_t)}\\
 			}
 			\nextonslide{
 			&= {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)} {\color{violet}- \frac{\bepsilon_{\btheta, t}(\bx_t)}{\sqrt{1 - \bar{\alpha}_t}}}
@@ -389,7 +389,7 @@
 		\vspace{-0.5cm}
 	\end{block}
 	\eqpause
-	Let's reparameterize: $\nabla_{\bx_t} \log p(\bx_t | \by, \btheta) = - \frac{\bepsilon_{\btheta, t}(\bx_t, \by)}{\sqrt{1 - \bar{\alpha}_t}}$.
+	Let's reparameterize: $\nabla_{\bx_t} \log \pt(\bx_t | \by) = - \frac{\bepsilon_{\btheta, t}(\bx_t, \by)}{\sqrt{1 - \bar{\alpha}_t}}$.
 	\eqpause
 	\begin{block}{Classifier-Corrected Noise Prediction}
 		\vspace{-0.3cm}
@@ -450,12 +450,12 @@
 		\eqpause
 		\vspace{-0.5cm}
 		\begin{align*}
-			\nabla_{\bx_t}^{\gamma} \log p(\bx_t | \by, \btheta) &= \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot \nabla_{\bx_t} \log p(\by | \bx_t) \\
+			\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) &= \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot \nabla_{\bx_t} \log p(\by | \bx_t) \\
 			\nextonslide{
-			&= \nabla_{\bx_t} \log p(\bx_t | \btheta) + \nabla_{\bx_t} \log p(\by | \bx_t)^{\gamma} \\
+			&= \nabla_{\bx_t} \log \pt(\bx_t) + \nabla_{\bx_t} \log p(\by | \bx_t)^{\gamma} \\
 			}
 			\nextonslide{
-			&= \nabla_{\bx_t} \log \left( \frac{p(\by | \bx_t)^{\gamma} p(\bx_t | \btheta)}{Z} \right)
+			&= \nabla_{\bx_t} \log \left( \frac{p(\by | \bx_t)^{\gamma} \pt(\bx_t)}{Z} \right)
 			}
 		\end{align*}
 		\vspace{-0.5cm}
@@ -474,22 +474,22 @@
 	\end{itemize}
 	\eqpause
 	\[
-		\nabla_{\bx_t}^{\gamma} \log p(\bx_t | \by, \btheta) = \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)}
+		\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) = \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)}
 	\]
 	\eqpause
 	\vspace{-0.7cm}
 	\begin{align*}
-		{\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)} &= \nabla_{\bx_t} \log \left( \frac{p(\bx_t| \by, \btheta) p(\by)}{p(\bx_t | \btheta)} \right) \\
+		{\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)} &= \nabla_{\bx_t} \log \left( \frac{\pt(\bx_t| \by) p(\by)}{\pt(\bx_t)} \right) \\
 		\nextonslide{
-		&=  \nabla_{\bx_t} \log p(\bx_t| \by, \btheta) -\nabla_{\bx_t} \log  p(\bx_t | \btheta)
+		&=  \nabla_{\bx_t} \log \pt(\bx_t| \by) -\nabla_{\bx_t} \log  \pt(\bx_t)
 		}
 	\end{align*}
 	\eqpause
 	\vspace{-0.8cm}
 	\begin{multline*}
-		\nabla_{\bx_t}^{\gamma} \log p(\bx_t | \by, \btheta) = \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot \nabla_{\bx_t} {\color{violet}\log p(\by | \bx_t)}
-		\nextonslide{ = \\ = \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot \bigl( {\color{violet}\nabla_{\bx_t} \log p(\bx_t| \by, \btheta) - \nabla_{\bx_t} \log  p(\bx_t | \btheta)} \bigr)}
-		\nextonslide{ = \\ =  (1 - \gamma) \cdot  \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot  \nabla_{\bx_t} \log p(\bx_t| \by, \btheta)}
+		\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) = \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot \nabla_{\bx_t} {\color{violet}\log p(\by | \bx_t)}
+		\nextonslide{ = \\ = \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot \bigl( {\color{violet}\nabla_{\bx_t} \log \pt(\bx_t| \by) - \nabla_{\bx_t} \log  \pt(\bx_t)} \bigr)}
+		\nextonslide{ = \\ =  (1 - \gamma) \cdot  \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot  \nabla_{\bx_t} \log \pt(\bx_t| \by)}
 	\end{multline*}
 	\eqpause
 	\textbf{Note:} When $\gamma = 1$, the original identity is restored.
@@ -498,7 +498,7 @@
 \begin{frame}{Classifier-Free Guidance: Formulation}
 	\myfootnotewithlink{https://arxiv.org/abs/2207.12598}{Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022}
 	\[
-		\nabla_{\bx_t}^{\gamma} \log p(\bx_t | \by, \btheta) =  (1 - \gamma) \cdot  \nabla_{\bx_t} \log p(\bx_t | \btheta) + \gamma \cdot  \nabla_{\bx_t} \log p(\bx_t| \by, \btheta)
+		\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) =  (1 - \gamma) \cdot  \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot  \nabla_{\bx_t} \log \pt(\bx_t| \by)
 	\]
 	\eqpause
 	\[
@@ -548,7 +548,7 @@
 	\end{figure}
 	\vspace{-0.4cm}
 	\[
-		\log p(\bx | \btheta) = \log p(\bff_K \circ \dots \circ \bff_1(\bx)) + \sum_{k=1}^K\log \left|\det \left(\frac{\partial \bff_k}{\partial \bff_{k-1}}\right)\right|.
+		\log \pt(\bx) = \log p(\bff_K \circ \dots \circ \bff_1(\bx)) + \sum_{k=1}^K\log \left|\det \left(\frac{\partial \bff_k}{\partial \bff_{k-1}}\right)\right|.
 	\]
 	\vspace{-0.4cm}
 \end{frame}

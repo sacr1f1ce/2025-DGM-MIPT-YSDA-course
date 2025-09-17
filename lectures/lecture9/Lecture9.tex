@@ -15,7 +15,7 @@
     Let us perturb the original data with Gaussian noise $q(\bx_{\sigma} | \bx) = \cN(\bx, \sigma^2 \cdot \bI)$.
     \vspace{-0.3cm}
     \[
-        q(\bx_{\sigma}) = \int q(\bx_{\sigma} | \bx) \pi(\bx) d\bx.
+        q(\bx_{\sigma}) = \int q(\bx_{\sigma} | \bx) \pd(\bx) d\bx.
     \]
     \vspace{-0.6cm} \\
     Then the solution of 
@@ -28,7 +28,7 @@
     \begin{block}{Theorem (Denoising Score Matching)}
         \vspace{-0.8cm}
         \begin{multline*}
-            \bbE_{q(\bx_{\sigma})}\bigl\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \bigr\|^2_2 = \\ = \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\bigl\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \bigr\|^2_2 + \text{const}(\btheta)
+            \bbE_{q(\bx_{\sigma})}\bigl\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \bigr\|^2_2 = \\ = \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\bigl\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \bigr\|^2_2 + \text{const}(\btheta)
         \end{multline*}
         \vspace{-0.7cm}
     \end{block}
@@ -47,7 +47,7 @@
             \item Train a denoised score function $\bs_{\btheta, \sigma_t}(\bx_t)$ for each noise level:
             \vspace{-0.3cm}
             \[
-                \sum_{t=1}^T {\color{violet}\sigma_t^2} \cdot \bbE_{\pi(\bx)} \bbE_{q(\bx_t | \bx)}\bigl\| \bs_{\btheta, \sigma_t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \bigr\|^2_2 \rightarrow \min_{\btheta}
+                \sum_{t=1}^T {\color{violet}\sigma_t^2} \cdot \bbE_{\pd(\bx)} \bbE_{q(\bx_t | \bx)}\bigl\| \bs_{\btheta, \sigma_t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \bigr\|^2_2 \rightarrow \min_{\btheta}
             \]
             \vspace{-0.5cm}
             \item Sample using \textbf{annealed} Langevin dynamics (for $t=1, \dots, T$).
@@ -67,7 +67,7 @@
     \myfootnotewithlink{https://arxiv.org/abs/2006.09011}{Song Y. et al. Improved Techniques for Training Score-Based Generative Models, 2020}
     \begin{block}{NCSN Training}
         \begin{enumerate}
-            \item Obtain a sample $\bx_0 \sim \pi(\bx)$.
+            \item Obtain a sample $\bx_0 \sim \pd(\bx)$.
             \item Sample noise level $t \sim U\{1, T\}$ and noise $\bepsilon \sim \cN(0, \bI)$.
             \item Construct noisy image $\bx_t = \bx_0 + \sigma_t \cdot \bepsilon$.
             \item Compute the loss $ \cL = \sigma_t^2 \cdot \| \bs_{\btheta, \sigma_t}(\bx_t) + \frac{\bepsilon}{\sigma_t} \|^2 $.
@@ -90,7 +90,7 @@
 \begin{frame}{Recap of Previous Lecture}
     \myfootnotewithlink{https://arxiv.org/abs/2403.18103}{Chan S. Tutorial on Diffusion Models for Imaging and Vision, 2024}
     \begin{block}{Forward Gaussian Diffusion Process}
-        Let $\bx_0 = \bx \sim \pi(\bx)$, $\beta_t \ll 1$, $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}_t = \prod_{s=1}^t \alpha_s$. 
+        Let $\bx_0 = \bx \sim \pd(\bx)$, $\beta_t \ll 1$, $\alpha_t = 1 - \beta_t$ and $\bar{\alpha}_t = \prod_{s=1}^t \alpha_s$. 
         \begin{align*}
             \bx_t &= \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon, \quad \text{where }\bepsilon \sim \cN(0, \bI); \\
             \bx_t &= \sqrt{\bar{\alpha}_t} \cdot \bx_{0} + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon, \quad \text{where } \bepsilon \sim \cN(0, \bI).
@@ -116,11 +116,11 @@
     \end{figure}
     \vspace{-0.6cm}
     \begin{enumerate}
-        \item $\bx_0 = \bx \sim \pi(\bx)$;
+        \item $\bx_0 = \bx \sim \pd(\bx)$;
         \item $\bx_t = \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon$, with $\bepsilon \sim \cN(0, \bI)$, $t \geq 1$;
         \item $\bx_T \sim p_{\infty}(\bx) = \cN(0, \bI)$, for $T \gg 1$.
     \end{enumerate}
-    If we can invert this process, we would have a way to sample $\bx \sim \pi(\bx)$ using noise samples, i.e. $p_{\infty}(\bx) = \cN(0, \bI)$. \\ 
+    If we can invert this process, we would have a way to sample $\bx \sim \pd(\bx)$ using noise samples, i.e. $p_{\infty}(\bx) = \cN(0, \bI)$. \\ 
     Hence, our objective becomes to reverse this process.
 \end{frame}
 %=======
@@ -135,14 +135,14 @@
         \vspace{-0.5cm}
         {\small
         \[
-            q(\bx_{t-1}|\bx_{t}) = \frac{q(\bx_{t}|\bx_{t-1}) {\color{violet}q(\bx_{t-1})}}{{\color{violet}q(\bx_{t})}} \approx p(\bx_{t - 1} | \bx_t, \btheta) = \cN \left(\bmu_{\btheta, t}(\bx_t), \bsigma_{\btheta, t}^2(\bx_t)\right)
+            q(\bx_{t-1}|\bx_{t}) = \frac{q(\bx_{t}|\bx_{t-1}) {\color{violet}q(\bx_{t-1})}}{{\color{violet}q(\bx_{t})}} \approx \pt(\bx_{t - 1} | \bx_t) = \cN \left(\bmu_{\btheta, t}(\bx_t), \bsigma_{\btheta, t}^2(\bx_t)\right)
         \]}
         {\color{gray}The Feller theorem guarantees this approximation is valid.}
     \end{block}
     \begin{minipage}{0.5\linewidth}
         \begin{block}{Forward Process}
             \begin{enumerate}
-                \item $\bx_0 = \bx \sim \pi(\bx)$;
+                \item $\bx_0 = \bx \sim \pd(\bx)$;
                 \item $\bx_t = \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon$;
                 \item $\bx_T \sim p_{\infty}(\bx) = \cN(0, \bI)$.
             \end{enumerate}
@@ -153,7 +153,7 @@
             \begin{enumerate}
                 \item $\bx_T \sim p_{\infty}(\bx) = \cN(0, \bI)$;
                 \item $\bx_{t - 1} = \bsigma_{\btheta, t}(\bx_t) \cdot \bepsilon + \bmu_{\btheta, t}(\bx_t)$;
-                \item $\bx_0 = \bx \sim \pi(\bx)$;
+                \item $\bx_0 = \bx \sim \pd(\bx)$;
             \end{enumerate}
         \end{block}
     \end{minipage}
@@ -194,7 +194,7 @@
 \begin{frame}{Distribution Summary}
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
 
-    \textbf{Forward process} maps any distribution $\pi(\bx)$ to $\cN(0, \bI)$ by injection of noise:
+    \textbf{Forward process} maps any distribution $\pd(\bx)$ to $\cN(0, \bI)$ by injection of noise:
     \begin{align*}
         q(\bx_t | \bx_{t-1}) &= \cN(\sqrt{1 - \beta_t} \cdot \bx_{t-1}, \beta_t \cdot \bI); \\
         q(\bx_t | \bx_0) &= \cN(\sqrt{\bar{\alpha}_t} \cdot \bx_0, (1 - \bar{\alpha}_t) \cdot \bI).
@@ -219,7 +219,7 @@
     \begin{block}{Latent Variable Model}
         \vspace{-0.3cm}
         \[
-            p(\bx, \bz | \btheta) = p(\bx | \bz, \btheta) p(\bz | \btheta)
+            \pt(\bx, \bz) = \pt(\bx | \bz) \pt(\bz)
         \]    
         \vspace{-0.7cm}
     \end{block}
@@ -245,7 +245,7 @@
 \begin{frame}{Gaussian Diffusion Model as VAE}
     \myfootnotewithlink{https://ayandas.me/blog-tut/2021/12/04/diffusion-prob-models.html}{Das A. An Introduction to Diffusion Probabilistic Models, blog post, 2021}
     \[
-        p(\bx, \bz | \btheta) = p(\bx | \bz, \btheta) p(\bz | \btheta)
+        \pt(\bx, \bz) = \pt(\bx | \bz) \pt(\bz)
     \]    
     \eqpause
     \vspace{-0.5cm}
@@ -258,19 +258,19 @@
         \begin{itemize}
             \item Generative distribution (decoder)
             \[
-                p(\bx | \bz, \btheta) = p(\bx_0 | \bx_1, \btheta).
+                \pt(\bx | \bz) = \pt(\bx_0 | \bx_1).
             \]
             \vspace{-0.7cm}
             \eqpause
             \item Prior distribution
             \vspace{-0.3cm}
             \[
-                p(\bz | \btheta) = p(\bx_1, \dots, \bx_T | \btheta) = \prod_{t=2}^T p(\bx_{t - 1} | \bx_t, \btheta)  \cdot p(\bx_T).
+                \pt(\bz) = \pt(\bx_1, \dots, \bx_T) = \prod_{t=2}^T \pt(\bx_{t - 1} | \bx_t)  \cdot p(\bx_T).
             \]
             \vspace{-0.3cm}
         \end{itemize}
         \eqpause
-        \textbf{Note:} This differs from the vanilla VAE due to the complex decoder $p(\bx | \bz, \btheta)$ and the standard normal prior $p(\bz)$.
+        \textbf{Note:} This differs from the vanilla VAE due to the complex decoder $\pt(\bx | \bz)$ and the standard normal prior $p(\bz)$.
     \end{block}
 \end{frame}
 %=======
@@ -281,7 +281,7 @@
     \begin{block}{Standard ELBO}
         \vspace{-0.3cm}
         \[
-            \log p(\bx | \btheta) \geq \bbE_{q({\color{teal}\bz} | \bx)} \log \frac{p(\bx, {\color{teal}\bz} | \btheta)}{q({\color{teal}\bz} | \bx)} = \cL_{\bphi, \btheta}(\bx) \rightarrow \max_{q, \btheta}
+            \log \pt(\bx) \geq \bbE_{q({\color{teal}\bz} | \bx)} \log \frac{\pt(\bx, {\color{teal}\bz})}{q({\color{teal}\bz} | \bx)} = \cL_{\bphi, \btheta}(\bx) \rightarrow \max_{q, \btheta}
         \]
         \vspace{-0.5cm}
     \end{block}
@@ -289,8 +289,8 @@
     \begin{block}{Derivation}
         \vspace{-0.5cm}
         \begin{align*}
-            \cL_{\bphi, \btheta}(\bx) &= \bbE_{q({\color{teal}\bx_{1:T}} | \bx_0)} \log \frac{p(\bx_0, {\color{teal}\bx_{1:T}} | \btheta)}{q({\color{teal}\bx_{1:T}} | \bx_0)} \\
-            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \prod_{t=1}^T p(\bx_{t-1} | \bx_t, \btheta) }{\prod_{t=1}^T {\color{violet}q(\bx_t | \bx_{t-1})}}}
+            \cL_{\bphi, \btheta}(\bx) &= \bbE_{q({\color{teal}\bx_{1:T}} | \bx_0)} \log \frac{\pt(\bx_0, {\color{teal}\bx_{1:T}})}{q({\color{teal}\bx_{1:T}} | \bx_0)} \\
+            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \prod_{t=1}^T \pt(\bx_{t-1} | \bx_t) }{\prod_{t=1}^T {\color{violet}q(\bx_t | \bx_{t-1})}}}
         \end{align*}
         \vspace{-0.3cm}
         \eqpause
@@ -313,11 +313,11 @@
         \vspace{-0.6cm}
         {\small
         \begin{align*}
-            \cL_{\bphi, \btheta}(\bx) & = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \prod_{t=1}^T p(\bx_{t-1} | \bx_t, \btheta) }{\prod_{t=1}^T {\color{violet}q(\bx_t | \bx_{t-1})}}  \\ 
-            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \prod_{t=1}^T p(\bx_{t-1} | \bx_t, \btheta) }{\prod_{t=1}^T q(\bx_t | \bx_{t-1}, {\color{olive}\bx_0})}  }\\ 
-            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) p(\bx_0 | \bx_1, \btheta) \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{q(\bx_1 | \bx_0)\prod_{t=2}^T {\color{teal}q(\bx_t | \bx_{t-1}, \bx_0)}} }\\
-            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) p(\bx_0 | \bx_1, \btheta) \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{{\color{violet}q(\bx_1 | \bx_0)}\prod_{t=2}^T \frac{q(\bx_{t-1}|\bx_t, \bx_0) {\color{violet}q(\bx_{t} | \bx_0)}}{{\color{violet}q(\bx_{t-1}| \bx_0)}}} }\\
-            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{{\color{violet}p(\bx_T)} {\color{olive}p(\bx_0 | \bx_1, \btheta)} \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{{\color{violet}q(\bx_T | \bx_0)}\prod_{t=2}^T q(\bx_{t-1}|\bx_t, \bx_0)} }
+            \cL_{\bphi, \btheta}(\bx) & = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \prod_{t=1}^T \pt(\bx_{t-1} | \bx_t) }{\prod_{t=1}^T {\color{violet}q(\bx_t | \bx_{t-1})}}  \\ 
+            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \prod_{t=1}^T \pt(\bx_{t-1} | \bx_t) }{\prod_{t=1}^T q(\bx_t | \bx_{t-1}, {\color{olive}\bx_0})}  }\\ 
+            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \pt(\bx_0 | \bx_1) \prod_{t=2}^T \pt(\bx_{t-1} | \bx_t) }{q(\bx_1 | \bx_0)\prod_{t=2}^T {\color{teal}q(\bx_t | \bx_{t-1}, \bx_0)}} }\\
+            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{p(\bx_T) \pt(\bx_0 | \bx_1) \prod_{t=2}^T \pt(\bx_{t-1} | \bx_t) }{{\color{violet}q(\bx_1 | \bx_0)}\prod_{t=2}^T \frac{q(\bx_{t-1}|\bx_t, \bx_0) {\color{violet}q(\bx_{t} | \bx_0)}}{{\color{violet}q(\bx_{t-1}| \bx_0)}}} }\\
+            \nextonslide{& = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{{\color{violet}p(\bx_T)} {\color{olive}\pt(\bx_0 | \bx_1)} \prod_{t=2}^T \pt(\bx_{t-1} | \bx_t) }{{\color{violet}q(\bx_T | \bx_0)}\prod_{t=2}^T q(\bx_{t-1}|\bx_t, \bx_0)} }
         \end{align*}}
     \end{block}
 \end{frame}
@@ -328,12 +328,12 @@
         \vspace{-0.7cm}
         {\small
         \begin{multline*}
-            \cL_{\bphi, \btheta}(\bx) = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{{\color{violet}p(\bx_T)} {\color{olive}p(\bx_0 | \bx_1, \btheta)} \prod_{t=2}^T p(\bx_{t-1} | \bx_t, \btheta) }{{\color{violet}q(\bx_T | \bx_0)}\prod_{t=2}^T q(\bx_{t-1}|\bx_t, \bx_0)} 
-            \nextonslide{ = \\ = \bbE_{{\color{teal}q(\bx_{1:T} | \bx_0)}} \biggl[ \log {\color{olive}p(\bx_0 | \bx_1, \btheta)} + \log {\color{violet}\frac{p(\bx_T)}{q(\bx_T | \bx_0)}} + \sum_{t=2}^T \log \left( \frac{p(\bx_{t-1} | \bx_t, \btheta)}{q(\bx_{t-1}|\bx_{t}, \bx_0)}\right) \biggr] }
-            \nextonslide{= \\ = \bbE_{{\color{teal}q(\bx_1 | \bx_0)}} \log p(\bx_0 | \bx_1, \btheta) + \bbE_{{\color{teal}q(\bx_T | \bx_0)}} \log \frac{p(\bx_T)}{q(\bx_T | \bx_0)} + \\
-             + \sum_{t=2}^T \bbE_{{\color{teal}q(\bx_{t-1}, \bx_t | \bx_0)}} \log \left( \frac{p(\bx_{t-1} | \bx_t, \btheta)}{q(\bx_{t-1}|\bx_{t}, \bx_0)}\right) \biggr] }
-            \nextonslide{= \\ = \bbE_{q(\bx_1 | \bx_0)} \log p(\bx_0 | \bx_1, \btheta) - \KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr) - \\
-            - \sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)}_{\cL_t}}
+            \cL_{\bphi, \btheta}(\bx) = \bbE_{q(\bx_{1:T} | \bx_0)} \log \frac{{\color{violet}p(\bx_T)} {\color{olive}\pt(\bx_0 | \bx_1)} \prod_{t=2}^T \pt(\bx_{t-1} | \bx_t) }{{\color{violet}q(\bx_T | \bx_0)}\prod_{t=2}^T q(\bx_{t-1}|\bx_t, \bx_0)} 
+            \nextonslide{ = \\ = \bbE_{{\color{teal}q(\bx_{1:T} | \bx_0)}} \biggl[ \log {\color{olive}\pt(\bx_0 | \bx_1)} + \log {\color{violet}\frac{p(\bx_T)}{q(\bx_T | \bx_0)}} + \sum_{t=2}^T \log \left( \frac{\pt(\bx_{t-1} | \bx_t)}{q(\bx_{t-1}|\bx_{t}, \bx_0)}\right) \biggr] }
+            \nextonslide{= \\ = \bbE_{{\color{teal}q(\bx_1 | \bx_0)}} \log \pt(\bx_0 | \bx_1) + \bbE_{{\color{teal}q(\bx_T | \bx_0)}} \log \frac{p(\bx_T)}{q(\bx_T | \bx_0)} + \\
+             + \sum_{t=2}^T \bbE_{{\color{teal}q(\bx_{t-1}, \bx_t | \bx_0)}} \log \left( \frac{\pt(\bx_{t-1} | \bx_t)}{q(\bx_{t-1}|\bx_{t}, \bx_0)}\right) \biggr] }
+            \nextonslide{= \\ = \bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1) - \KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr) - \\
+            - \sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}}
         \end{multline*}
         }
         \vspace{-0.3cm}
@@ -344,15 +344,15 @@
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
         \vspace{-0.5cm}
         \begin{multline*}
-            \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log p(\bx_0 | \bx_1, \btheta)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-            - {\color{teal}\sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)}_{\cL_t}}
+            \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
+            - {\color{teal}\sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}}
         \end{multline*}
         \vspace{-0.5cm}
     \eqpause
     \begin{itemize}
         \item {\color{olive}First term} is the decoder distribution
         \[
-            \log p(\bx_0 | \bx_1, \btheta) = \log \cN \bigl(\bx_0 | \bmu_{\btheta, t}(\bx_1), \bsigma_{\btheta, t}^2(\bx_1)\bigr),
+            \log \pt(\bx_0 | \bx_1) = \log \cN \bigl(\bx_0 | \bmu_{\btheta, t}(\bx_1), \bsigma_{\btheta, t}^2(\bx_1)\bigr),
         \] 
         with $\bx_1 \sim q(\bx_1 | \bx_0)$.
         \eqpause
@@ -372,28 +372,28 @@
         \includegraphics[width=\linewidth]{figs/diffusion_objective}
     \end{figure}
     \[
-        \cL_t = \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)
+        \cL_t = \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)
     \]
     \begin{align*}
         q(\bx_{t-1} | \bx_t, \bx_0) &= \cN(\bx_{t-1} | \tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t \bI), \\
-        p(\bx_{t - 1} | \bx_t, \btheta) &= \cN \bigl(\bx_{t - 1} | \bmu_{\btheta, t}(\bx_t), \bsigma_{\btheta, t}^2(\bx_t)\bigr)
+        \pt(\bx_{t - 1} | \bx_t) &= \cN \bigl(\bx_{t - 1} | \bmu_{\btheta, t}(\bx_t), \bsigma_{\btheta, t}^2(\bx_t)\bigr)
     \end{align*}
 \end{frame}
 %=======
 \begin{frame}{ELBO for Gaussian Diffusion Model}
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
     \[
-        \cL_t = \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t - 1} | \bx_t, \btheta )\bigr)
+        \cL_t = \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)
     \]
     \vspace{-0.7cm}
     \begin{align*}
         q(\bx_{t-1} | \bx_t, \bx_0) &= \cN(\bx_{t-1} | \tilde{\bmu}_t(\bx_t, \bx_0), \tilde{\beta}_t \bI), \\
-        p(\bx_{t - 1} | \bx_t, \btheta) &= \cN \bigl(\bx_{t - 1} | \bmu_{\btheta, t}(\bx_t), {\color{violet}\bsigma_{\btheta, t}^2(\bx_t)}\bigr)
+        \pt(\bx_{t - 1} | \bx_t) &= \cN \bigl(\bx_{t - 1} | \bmu_{\btheta, t}(\bx_t), {\color{violet}\bsigma_{\btheta, t}^2(\bx_t)}\bigr)
     \end{align*}
     \eqpause
     Let's assume that
     \[
-        {\color{violet}\bsigma_{\btheta, t}^2(\bx_t) = \tilde{\beta}_t \bI} \quad \Rightarrow \quad p(\bx_{t - 1} | \bx_t, \btheta) = \cN \bigl(\bx_{t - 1} | \bmu_{\btheta, t}(\bx_t), {\color{violet}\tilde{\beta}_t \bI} \bigr).
+        {\color{violet}\bsigma_{\btheta, t}^2(\bx_t) = \tilde{\beta}_t \bI} \quad \Rightarrow \quad \pt(\bx_{t - 1} | \bx_t) = \cN \bigl(\bx_{t - 1} | \bmu_{\btheta, t}(\bx_t), {\color{violet}\tilde{\beta}_t \bI} \bigr).
     \]
     \eqpause
     Theoretically, the optimal $\bsigma_{\btheta, t}^2(\bx_t)$ lies in $[\tilde{\beta}_t, \beta_t]$:
@@ -412,12 +412,12 @@
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
     \begin{block}{Training}
         \begin{enumerate}
-            \item Obtain a sample $\bx_0 \sim \pi(\bx)$.
+            \item Obtain a sample $\bx_0 \sim \pd(\bx)$.
             \item Generate a noisy image $\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon$, with $\bepsilon \sim \cN(0, \bI)$.
             \item Compute the ELBO
             \vspace{-0.3cm}
             \begin{multline*}
-                \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log p(\bx_0 | \bx_1, \btheta)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
+                \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
                 - {\color{teal}\sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \left[\frac{1}{2\tilde{\beta}_t} \bigl\| \tilde{\bmu}_t(\bx_t, \bx_0) - \bmu_{\btheta, t}(\bx_t) \bigr\|^2  \right]}_{\cL_t}}
             \end{multline*}
             \vspace{-0.7cm}
@@ -488,8 +488,8 @@
 \begin{frame}{Reparametrization of DDPM}
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
     \begin{multline*}
-        \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log p(\bx_0 | \bx_1, \btheta)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
-        - \sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| p(\bx_{t-1} | \bx_t, \btheta )\bigr)}_{\cL_t}
+        \cL_{\bphi, \btheta}(\bx) =  {\color{olive}\bbE_{q(\bx_1 | \bx_0)} \log \pt(\bx_0 | \bx_1)} - {\color{violet}\KL\bigl(q(\bx_T | \bx_0) \| p(\bx_T)\bigr)} - \\
+        - \sum_{t=2}^T \underbrace{ \bbE_{q(\bx_t | \bx_0)} \KL \bigl(q(\bx_{t-1} | \bx_t, \bx_0) \| \pt(\bx_{t-1} | \bx_t)\bigr)}_{\cL_t}
     \end{multline*}
     \eqpause
     \vspace{-0.3cm}
@@ -561,15 +561,15 @@
         \begin{itemize}
             \item The encoder is a fixed Gaussian Markov chain $q(\bx_1, \dots, \bx_T | \bx_0)$.
             \item The latent variable is hierarchical (at each step, its dimension equals the input's).
-            \item The decoder is a simple Gaussian model $p(\bx_0 | \bx_1, \btheta)$.
-            \item The prior distribution is given by a parametric Gaussian Markov chain $p(\bx_{t-1} | \bx_t, \btheta)$.
+            \item The decoder is a simple Gaussian model $\pt(\bx_0 | \bx_1)$.
+            \item The prior distribution is given by a parametric Gaussian Markov chain $\pt(\bx_{t-1} | \bx_t)$.
         \end{itemize}
     \end{block}
     \eqpause
     \begin{minipage}{0.5\linewidth}
         \begin{block}{Forward Process}
             \begin{enumerate}
-                \item $\bx_0 = \bx \sim \pi(\bx)$;
+                \item $\bx_0 = \bx \sim \pd(\bx)$;
                 \item $\bx_t = \sqrt{1 - \beta_t} \cdot \bx_{t - 1} + \sqrt{\beta_t} \cdot \bepsilon$;
                 \item $\bx_T \sim p_{\infty}(\bx) = \cN(0, \bI)$.
             \end{enumerate}
@@ -581,7 +581,7 @@
             \begin{enumerate}
                 \item $\bx_T \sim p_{\infty}(\bx) = \cN(0, \bI)$;
                 \item $\bx_{t - 1} = \bsigma_{\btheta, t}(\bx_t) \cdot \bepsilon + \bmu_{\btheta, t}(\bx_t)$;
-                \item $\bx_0 = \bx \sim \pi(\bx)$;
+                \item $\bx_0 = \bx \sim \pd(\bx)$;
             \end{enumerate}
         \end{block}
     \end{minipage}
@@ -591,7 +591,7 @@
     \myfootnotewithlink{https://arxiv.org/abs/2006.11239}{Ho J. Denoising Diffusion Probabilistic Models, 2020}
     \begin{block}{Training}
         \begin{enumerate}
-            \item Obtain a sample $\bx_0 \sim \pi(\bx)$.
+            \item Obtain a sample $\bx_0 \sim \pd(\bx)$.
             \item Sample time index $t \sim U\{1, T\}$ and noise $\bepsilon \sim \cN(0, \bI)$.
             \item Generate noisy image $\bx_t = \sqrt{\bar{\alpha}_t} \cdot \bx_0 + \sqrt{1 - \bar{\alpha}_t} \cdot \bepsilon$.
             \item Compute the loss $ \cL_{\text{simple}} = \| \bepsilon - \bepsilon_{\btheta, t}(\bx_t) \|^2 $.
@@ -601,7 +601,7 @@
     \begin{block}{Sampling (Ancestral Sampling)}
         \begin{enumerate}
             \item Sample $\bx_T \sim \cN(0, \bI)$.
-            \item Compute the mean of $p(\bx_{t-1} | \bx_t, \btheta) = \cN(\bmu_{\btheta, t}(\bx_t), \tilde{\beta}_t \cdot \bI)$:
+            \item Compute the mean of $\pt(\bx_{t-1} | \bx_t) = \cN(\bmu_{\btheta, t}(\bx_t), \tilde{\beta}_t \cdot \bI)$:
             \[
                 \bmu_{\btheta, t}(\bx_t) = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot \bepsilon_{\btheta, t}(\bx_t)
             \]

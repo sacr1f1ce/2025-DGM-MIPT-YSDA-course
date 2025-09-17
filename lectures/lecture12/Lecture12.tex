@@ -79,12 +79,12 @@
  		\]
  		\vspace{-0.3cm}
  	\end{block}
- 	The density $p(\bx | \btheta)$ is a \textbf{stationary} distribution for the SDE.
+ 	The density $\pt(\bx)$ is a \textbf{stationary} distribution for the SDE.
 	\begin{block}{Langevin Dynamics}
-		Samples from the following dynamics will come from $p(\bx | \btheta)$ under mild regularity conditions for a small enough $\eta$:
+		Samples from the following dynamics will come from $\pt(\bx)$ under mild regularity conditions for a small enough $\eta$:
 		\vspace{-0.2cm}
 		\[
-			\bx_{t + 1} = \bx_t + \frac{\eta}{2} \nabla_{\bx_t} \log p(\bx_t | \btheta) + \sqrt{\eta} \cdot \bepsilon, \quad \bepsilon \sim \cN(0, \bI).
+			\bx_{t + 1} = \bx_t + \frac{\eta}{2} \nabla_{\bx_t} \log \pt(\bx_t) + \sqrt{\eta} \cdot \bepsilon, \quad \bepsilon \sim \cN(0, \bI).
 		\]
 	\end{block}
 \end{frame}
@@ -298,7 +298,7 @@
 	\begin{block}{Discrete-Time Objective}
 		\vspace{-0.3cm}
 		\[
-			\bbE_{\pi(\bx_0)} \bbE_{t \sim U\{1, T\}} \bbE_{q(\bx_t | \bx_0)}\bigl\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \bigr\|^2_2 
+			\bbE_{\pd(\bx_0)} \bbE_{t \sim U\{1, T\}} \bbE_{q(\bx_t | \bx_0)}\bigl\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx_0) \bigr\|^2_2 
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -307,7 +307,7 @@
 	\begin{block}{Continuous-Time Objective}
 		\vspace{-0.7cm}
 		\[
-			\bbE_{\pi(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
+			\bbE_{\pd(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
 		\]
 		\vspace{-0.7cm}
 	\end{block}
@@ -324,7 +324,7 @@
 	\begin{block}{Continuous-Time Objective}
 		\vspace{-0.5cm}
 		\[
-			\bbE_{\pi(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
+			\bbE_{\pd(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
 		\]
 		\vspace{-0.7cm}
 	\end{block}
@@ -418,7 +418,7 @@
 	\begin{block}{Training}
 		\vspace{-0.5cm}
 		\[
-			\bbE_{\pi(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
+			\bbE_{\pd(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
 		\]
 		\vspace{-0.7cm}
 	\end{block}
@@ -470,8 +470,8 @@
 
 	Let's return to ODE dynamics $\bx(t)$ in the interval $t \in [0, 1]$:
 	\begin{itemize}
-		\item $\bx_0 \sim p_0(\bx) = p(\bx)$, $\bx_1 \sim p_1(\bx) =  \pi(\bx)$;
-		\item $p(\bx)$ is a base distribution (e.g., $\cN(0, \bI)$), and $\pi(\bx)$ is the true data distribution.
+		\item $\bx_0 \sim p_0(\bx) = p(\bx)$, $\bx_1 \sim p_1(\bx) =  \pd(\bx)$;
+		\item $p(\bx)$ is a base distribution (e.g., $\cN(0, \bI)$), and $\pd(\bx)$ is the true data distribution.
 	\end{itemize}
 	\[
 		\frac{d \bx}{dt} = \bff (\bx, t),  \quad \text{with initial condition } \bx(0) = \bx_0.
@@ -527,7 +527,7 @@
 	\]
 	\vspace{-0.5cm}
 	\begin{itemize}
-		\item There are infinitely many possible $\bff(\bx, t)$ between $\pi(\bx)$ and $p(\bx)$.
+		\item There are infinitely many possible $\bff(\bx, t)$ between $\pd(\bx)$ and $p(\bx)$.
 		\item The true vector field  $\bff(\bx, t)$ is \textbf{unknown}.
 		\item We need to select the "best" $\bff(\bx, t)$ and make the objective tractable.
 	\end{itemize}
@@ -661,7 +661,7 @@
 		\item Let's choose a convenient conditioning latent variable $\bz$.
 		\item We'll parametrize $p_t(\bx | \bz)$ instead of $p_t(\bx)$. It should satisfy the following constraints:
 		\[
-			p(\bx) = \cN(0, \bI) = \bbE_{p(\bz)} p_0(\bx | \bz); \quad \pi(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz).
+			p(\bx) = \cN(0, \bI) = \bbE_{p(\bz)} p_0(\bx | \bz); \quad \pd(\bx) = \bbE_{p(\bz)} p_1(\bx | \bz).
 		\]
 	\end{itemize}
 \end{frame}

@@ -12,11 +12,11 @@
     \myfootnotewithlink{https://arxiv.org/abs/1706.08500}{Heusel M. et al. GANs Trained by a Two Time-Scale Update Rule Converge to a Local Nash Equilibrium, 2017}
 	\vspace{-0.3cm}
 	\begin{block}{Frechet Inception Distance (FID)}
-		For normal distributions $\pi(\bx) = \cN(\bmu_\pi, \bSigma_\pi)$, $p(\by) = \cN(\bmu_p, \bSigma_p)$:
+		For normal distributions $\pd(\bx_1) = \cN(\bmu_{\text{data}}, \bSigma_{\text{data}})$, $p(\bx_2) = \cN(\bmu_{\boldsymbol{\theta}}, \bSigma_{\boldsymbol{\theta}})$:
 		\vspace{-0.3cm}
 		\begin{multline*}
-			\FID (\pi, p) =  W_2^2(\pi, p) = \inf_{\gamma \in \Gamma(\pi, p)} \bbE_{(\bx, \by) \sim \gamma} \| \bx - \by \|^2 \\
-			= \| \bmu_{\pi} - \bmu_{p}\|^2 + \text{tr} \left[ \bSigma_{\pi} + \bSigma_p - 2 \left(\bSigma_{\pi}^{1/2} \bSigma_p \bSigma_{\pi}^{1/2} \right)^{1/2} \right]
+			\FID (\pd, \pt) =  W_2^2(\pd, \pt) = \inf_{\gamma \in \Gamma(\pd, \pt)} \bbE_{(\bx_1, \bx_2) \sim \gamma} \| \bx_1 - \bx_2 \|^2 \\
+			= \| \bmu_{\text{data}} - \bmu_{\boldsymbol{\theta}}\|^2 + \text{tr} \left[ \bSigma_{\text{data}} + \bSigma_{\boldsymbol{\theta}} - 2 \left(\bSigma_{\text{data}}^{1/2} \bSigma_{\boldsymbol{\theta}} \bSigma_{\text{data}}^{1/2} \right)^{1/2} \right]
 		\end{multline*}
 		\vspace{-0.4cm}
 	\end{block}
@@ -32,8 +32,8 @@
     \myfootnotewithlink{https://arxiv.org/abs/1904.06991}{Kynkäänniemi T. et al. Improved precision and recall metric for assessing generative models, 2019}
 	\vspace{-0.2cm}
 	\begin{itemize}
-		\item $\cS_{\pi} = \{\bx_i\}_{i=1}^{n} \sim \pi(\bx)$: real samples
-		\item $\cS_{p} = \{\bx_i\}_{i=1}^{n} \sim p(\bx | \btheta)$: generated samples
+		\item $\cS_{\pi} = \{\bx_i\}_{i=1}^{n} \sim \pd(\bx)$: real samples
+		\item $\cS_{p} = \{\bx_i\}_{i=1}^{n} \sim \pt(\bx)$: generated samples
 	\end{itemize}
 	Define a binary indicator function:
 	\vspace{-0.2cm}
@@ -104,21 +104,21 @@
 	\begin{block}{Langevin Dynamics}
 		\vspace{-0.3cm}
 		\[
-			\bx_{l + 1} = \bx_l + \frac{\eta}{2} \cdot \nabla_{\bx_l} \log p(\bx_l | \btheta) + \sqrt{\eta} \cdot \bepsilon_l, \quad \bepsilon_l \sim \cN(0, \bI)
+			\bx_{l + 1} = \bx_l + \frac{\eta}{2} \cdot \nabla_{\bx_l} \log \pt(\bx_l) + \sqrt{\eta} \cdot \bepsilon_l, \quad \bepsilon_l \sim \cN(0, \bI)
 		\]
 		\vspace{-0.7cm}
 	\end{block}
 	\begin{block}{Fisher Divergence}
 		\vspace{-0.3cm}
 		\[
-			D_F(\pi, p) = \frac{1}{2}\bbE_{\pi}\left\| \nabla_{\bx}\log p(\bx| \btheta) - \nabla_\bx \log \pi(\bx) \right\|_2^2 \rightarrow \min_{\btheta}
+			D_F(\pi, p) = \frac{1}{2}\bbE_{\pi}\left\| \nabla_{\bx}\log \pt(\bx) - \nabla_\bx \log \pd(\bx) \right\|_2^2 \rightarrow \min_{\btheta}
 		\]
 		\vspace{-0.7cm}
 	\end{block}
 	\begin{block}{Score Function}
 		\vspace{-0.5cm}
 		 \[
-			 \bs_{\btheta}(\bx) = \nabla_{\bx}\log p(\bx| \btheta)
+			 \bs_{\btheta}(\bx) = \nabla_{\bx}\log \pt(\bx)
 		 \]
 	 \vspace{-0.8cm}
 	\end{block}
@@ -139,13 +139,14 @@
 \begin{frame}{Denoising Score Matching}
     \myfootnotewithlink{http://www.iro.umontreal.ca/~vincentp/Publications/smdae_techreport.pdf}{Vincent P. A Connection Between Score Matching and Denoising Autoencoders, 2010}
 
-	Let us perturb the original data $\bx \sim \pi(\bx)$ by adding Gaussian noise:
+	Let us perturb the original data $\bx \sim \pd(\bx)$ by adding Gaussian noise:
+	\vspace{-0.3cm}
 	\[
 		\bx_{\sigma} = \bx + \sigma \bepsilon, \quad \bepsilon \sim \cN(0, \bI), \quad q(\bx_{\sigma} | \bx) = \cN(\bx, \sigma^2 \bI)
 	\]
-	\vspace{-0.4cm}
+	\vspace{-0.5cm}
 	\[
-		q(\bx_{\sigma}) = \int q(\bx_{\sigma} | \bx) \pi(\bx) d\bx
+		q(\bx_{\sigma}) = \int q(\bx_{\sigma} | \bx) \pd(\bx) d\bx
 	\]
     \eqpause
 	\vspace{-0.5cm} 
@@ -161,7 +162,7 @@
 	\begin{itemize}
 		\item The score function of the corrupted data closely approximates that of the original data
 		\item The score function $\bs_{\btheta, \sigma}(\bx_{\sigma})$ is parameterized by $\sigma$
-		\item \textbf{Note:} Neither $q(\bx_{\sigma})$ nor $\pi(\bx)$ are tractable
+		\item \textbf{Note:} Neither $q(\bx_{\sigma})$ nor $\pd(\bx)$ are tractable
 	\end{itemize}
 \end{frame}
 %=======
@@ -171,7 +172,7 @@
 		If $\text{supp}(q(\bx_{\sigma})) = \bbR^m$, then
 		\begin{multline*}
 			\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\
-			= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
+			= \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
 		\end{multline*}
 		\vspace{-0.5cm}
 	\end{block}
@@ -189,7 +190,7 @@
 	\end{block}
     \eqpause
 	\begin{itemize}
-		\item The right-hand side does not require evaluating $\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})$ or $\nabla_{\bx_{\sigma}} \log \pi(\bx_{\sigma})$
+		\item The right-hand side does not require evaluating $\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})$ or $\nabla_{\bx_{\sigma}} \log \pd(\bx_{\sigma})$
 		\item The neural network $\bs_{\btheta, \sigma}(\bx_{\sigma})$ is trained to \textbf{denoise} the corrupted samples $\bx_{\sigma}$
 	\end{itemize}
 \end{frame}
@@ -200,7 +201,7 @@
 	\vspace{-0.5cm}
 	\begin{multline*}
 		\bbE_{q(\bx_{\sigma})}\underbrace{\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2}_{h(\bx_{\sigma})} = \\
-		= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
+		= \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
 	\end{multline*}
 	\vspace{-0.5cm}
 	\end{block}
@@ -209,7 +210,7 @@
 		\vspace{-0.7cm}
 		\begin{multline*}
 			\bbE_{q(\bx_{\sigma})} h(\bx_{\sigma}) = \int {\color{violet}q(\bx_{\sigma})} h(\bx_{\sigma}) d\bx_{\sigma} 
-			\nextonslide{= \\ = \int \left({\color{violet}\int q(\bx_{\sigma} | \bx) \pi(\bx) d\bx}\right) h(\bx_{\sigma}) d\bx_{\sigma} =  \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}  h(\bx_{\sigma})}
+			\nextonslide{= \\ = \int \left({\color{violet}\int q(\bx_{\sigma} | \bx) \pd(\bx) d\bx}\right) h(\bx_{\sigma}) d\bx_{\sigma} =  \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}  h(\bx_{\sigma})}
 		\end{multline*}
         \eqpause
 		\vspace{-0.7cm}
@@ -228,7 +229,7 @@
 		\vspace{-0.5cm}
 		\begin{multline*}
 			\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\
-			= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
+			= \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
 		\end{multline*}
 		\vspace{-0.5cm}
 	\end{block}
@@ -238,10 +239,10 @@
 		{\small
 		\begin{multline*}
 			\bbE_{q(\bx_{\sigma})} \left[{\color{teal}\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma})} \right] = \int q(\bx_{\sigma}) \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \frac{\nabla_{\bx_{\sigma}} {\color{violet}q(\bx_{\sigma})}}{q(\bx_{\sigma})} \right] d\bx_{\sigma} 
-			\nextonslide{= \\ = \int \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}}\left({\color{violet}\int q(\bx_{\sigma} | \bx) \pi(\bx) d\bx}\right) \right] d\bx_{\sigma}}
-			\nextonslide{ = \\ =  \int \int \pi(\bx) \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}}q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx}
-			\nextonslide{ = \\ = \int \int \pi(\bx) {\color{olive} q(\bx_{\sigma} | \bx)} \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx}
-			\nextonslide{ = \\ = \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)} \left[{\color{teal}\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right]}
+			\nextonslide{= \\ = \int \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}}\left({\color{violet}\int q(\bx_{\sigma} | \bx) \pd(\bx) d\bx}\right) \right] d\bx_{\sigma}}
+			\nextonslide{ = \\ =  \int \int \pd(\bx) \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}}q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx}
+			\nextonslide{ = \\ = \int \int \pd(\bx) {\color{olive} q(\bx_{\sigma} | \bx)} \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{olive}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right] d\bx_{\sigma} d\bx}
+			\nextonslide{ = \\ = \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)} \left[{\color{teal}\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right]}
 		\end{multline*}
 		}
 	\end{block}
@@ -254,7 +255,7 @@
 		\vspace{-0.7cm}
 		\begin{multline*}
 			\bbE_{q(\bx_{\sigma})}\underbrace{\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2}_{h(\bx_{\sigma})} = \\
-			= \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
+			= \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 + \text{const}(\btheta)
 		\end{multline*}
 		\vspace{-0.9cm}
 	\end{block}
@@ -262,19 +263,19 @@
 	\begin{block}{Proof (Continued)}
 		\vspace{-0.3cm}
 		\[
-			\bbE_{q(\bx_{\sigma})} h(\bx_{\sigma})=  \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}  h(\bx_{\sigma})
+			\bbE_{q(\bx_{\sigma})} h(\bx_{\sigma})=  \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}  h(\bx_{\sigma})
 		\]
         \eqpause
+		{\small
 		\[
-			\bbE_{q(\bx_{\sigma})} \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right] = \bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)} \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right]
+			\bbE_{q(\bx_{\sigma})} \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right] = \bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)} \left[\bs_{\btheta, \sigma}^T(\bx_{\sigma}) \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right]
 		\]
         \eqpause
 		\vspace{-0.5cm}
-		{\small
 		\begin{multline*}
 			\bbE_{q(\bx_{\sigma})}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma}) \right\|_2^2 = \\ 
-			= {\color{olive}\bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}}\left[\| \bs_{\btheta, \sigma}(\bx_{\sigma}) \|^2 - 2 \bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{teal}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right] + \text{const}(\btheta)
-			\nextonslide{= \\ = {\color{olive}\bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}} \left\|\bs_{\btheta, \sigma}(\bx_{\sigma}) - {\color{teal}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right\|_2^2 + \text{const}(\btheta)}
+			= {\color{olive}\bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}}\left[\| \bs_{\btheta, \sigma}(\bx_{\sigma}) \|^2 - 2 \bs_{\btheta, \sigma}^T(\bx_{\sigma}) {\color{teal}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right] + \text{const}(\btheta)
+			\nextonslide{= \\ = {\color{olive}\bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}} \left\|\bs_{\btheta, \sigma}(\bx_{\sigma}) - {\color{teal}\nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx)} \right\|_2^2 + \text{const}(\btheta)}
 		\end{multline*}
 		}
 		\vspace{-0.8cm}
@@ -286,7 +287,7 @@
 	Original objective:
 	\vspace{-0.2cm}
 	\[
-		\bbE_{\pi(\bx)}\left\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pi(\bx) \right\|_2^2 \rightarrow \min_{\btheta}
+		\bbE_{\pd(\bx)}\left\| \bs_{\btheta}(\bx) - \nabla_\bx \log \pd(\bx) \right\|_2^2 \rightarrow \min_{\btheta}
 	\]
     \eqpause
 	\vspace{-0.5cm} \\
@@ -300,12 +301,12 @@
 	This is equivalent to a denoising task:
 	\vspace{-0.2cm}
 	\[
-		\bbE_{\pi(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 \rightarrow \min_{\btheta}
+		\bbE_{\pd(\bx)} \bbE_{q(\bx_{\sigma} | \bx)}\left\| \bs_{\btheta, \sigma}(\bx_{\sigma}) - \nabla_{\bx_{\sigma}} \log q(\bx_{\sigma} | \bx) \right\|_2^2 \rightarrow \min_{\btheta}
 	\]
     \eqpause
 	\vspace{-0.3cm}
 	\[
-		\bbE_{\pi(\bx)} \bbE_{\cN(0, \bI)}\left\| \bs_{\btheta, \sigma}(\bx + \sigma \bepsilon) + \frac{\bepsilon}{\sigma} \right\|_2^2 \rightarrow \min_{\btheta}
+		\bbE_{\pd(\bx)} \bbE_{\cN(0, \bI)}\left\| \bs_{\btheta, \sigma}(\bx + \sigma \bepsilon) + \frac{\bepsilon}{\sigma} \right\|_2^2 \rightarrow \min_{\btheta}
 	\]
     \eqpause
 	\vspace{-0.5cm}
@@ -324,7 +325,7 @@
     \myfootnotewithlink{https://yang-song.github.io/blog/2021/score/}{Song Y. Generative Modeling by Estimating Gradients of the Data Distribution, blog post, 2021}
 	\vspace{-0.5cm}
 	\[
-		\bbE_{\pi(\bx)} \bbE_{\cN(0, \bI)}\left\| \bs_{\btheta, \sigma}(\bx + \sigma \bepsilon) + \frac{\bepsilon}{\sigma} \right\|_2^2 \rightarrow \min_{\btheta}
+		\bbE_{\pd(\bx)} \bbE_{\cN(0, \bI)}\left\| \bs_{\btheta, \sigma}(\bx + \sigma \bepsilon) + \frac{\bepsilon}{\sigma} \right\|_2^2 \rightarrow \min_{\btheta}
 	\]
 	\begin{minipage}{0.5\linewidth}
 		\[
@@ -354,7 +355,7 @@
 		\item Perturb each data point with different noise levels: $\bx_t = \bx + \sigma_t \bepsilon$, so $\bx_t \sim q(\bx_t)$
 		\item Choose $\sigma_1, \sigma_T$ such that:
 		\[
-			q(\bx_1) \approx \pi(\bx), \;\; q(\bx_T) \approx \cN(0, \sigma_T^2 \bI)
+			q(\bx_1) \approx \pd(\bx), \;\; q(\bx_T) \approx \cN(0, \sigma_T^2 \bI)
 		\]
 	\end{itemize}
     \eqpause
@@ -372,14 +373,14 @@
 	Train the denoising score function $\bs_{\btheta, \sigma_t}(\bx_t)$ for each noise level $\sigma_t$ using a unified weighted objective:
 	\vspace{-0.2cm}
 	\[
-		\sum_{t=1}^T {\color{violet}\sigma_t^2} \bbE_{\pi(\bx)} \bbE_{q(\bx_t | \bx)}\left\| \bs_{\btheta, \sigma_t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \right\|_2^2 \rightarrow \min_{\btheta}
+		\sum_{t=1}^T {\color{violet}\sigma_t^2} \bbE_{\pd(\bx)} \bbE_{q(\bx_t | \bx)}\left\| \bs_{\btheta, \sigma_t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \right\|_2^2 \rightarrow \min_{\btheta}
 	\]
     \eqpause
 	Here, $\nabla_{\bx_t} \log q(\bx_t | \bx) = - \frac{\bx_t - \bx}{\sigma_t^2} = - \frac{\bepsilon}{\sigma_t}$
     \eqpause
 	\begin{block}{Training Procedure}
 		\begin{enumerate}
-			\item Sample $\bx_0 \sim \pi(\bx)$
+			\item Sample $\bx_0 \sim \pd(\bx)$
 			\item Sample $t \sim U\{1, T\}$ and $\bepsilon \sim \cN(0, \bI)$
 			\item Construct noisy image $\bx_t = \bx_0 + \sigma_t \bepsilon$
 			\item Evaluate loss $ \cL = \sigma_t^2 \left\| \bs_{\btheta, \sigma_t}(\bx_t) + \frac{\bepsilon}{\sigma_t} \right\|^2 $
@@ -415,7 +416,7 @@
 \begin{frame}{Forward Gaussian Diffusion Process}
     \myfootnotewithlink{http://proceedings.mlr.press/v37/sohl-dickstein15.pdf}{Sohl-Dickstein J. Deep Unsupervised Learning using Nonequilibrium Thermodynamics, 2015}
 
-	Let $\bx_0 = \bx \sim \pi(\bx)$, $\beta_t \ll 1$. Define a Markov chain:
+	Let $\bx_0 = \bx \sim \pd(\bx)$, $\beta_t \ll 1$. Define a Markov chain:
 	\[
 		\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon_t, \;\; \bepsilon_t \sim \cN(0, \bI)
 	\]
@@ -429,7 +430,7 @@
 	\begin{block}{Langevin Dynamics}
 		\vspace{-0.3cm}
 		\[
-			\bx_{l + 1} = \bx_l + \frac{ \color{violet} \eta}{2} \cdot {\color{teal}\nabla_{\bx_l} \log p(\bx_l | \btheta)} + \sqrt{ \color{violet} \eta} \bepsilon_l, \quad \bepsilon_l \sim \cN(0, \bI)
+			\bx_{l + 1} = \bx_l + \frac{ \color{violet} \eta}{2} \cdot {\color{teal}\nabla_{\bx_l} \log \pt(\bx_l)} + \sqrt{ \color{violet} \eta} \bepsilon_l, \quad \bepsilon_l \sim \cN(0, \bI)
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -492,7 +493,7 @@
     \eqpause
 	\vspace{-0.5cm}
 	\begin{block}{Statement 2}
-		Applying the Markov chain to any distribution $\pi(\bx)$ yields $\bx_\infty \sim p_\infty(\bx) = \cN(0, \bI)$, the \textbf{stationary} (limiting) distribution:
+		Applying the Markov chain to any distribution $\pd(\bx)$ yields $\bx_\infty \sim p_\infty(\bx) = \cN(0, \bI)$, the \textbf{stationary} (limiting) distribution:
 		\[
 			p_\infty(\bx) = \int q(\bx | \bx') p_\infty(\bx') d\bx' 
 		\]
@@ -500,7 +501,7 @@
 		\vspace{-0.5cm}
         \eqpause
 		\[
-			p_\infty(\bx) = \int q(\bx_\infty | \bx_0) \pi(\bx_0) d\bx_0 \approx \cN(0, \bI) \int \pi(\bx_0) d\bx_0 = \cN(0, \bI)
+			p_\infty(\bx) = \int q(\bx_\infty | \bx_0) \pd(\bx_0) d\bx_0 \approx \cN(0, \bI) \int \pd(\bx_0) d\bx_0 = \cN(0, \bI)
 		\]
 	\end{block}
  \end{frame}
@@ -515,12 +516,12 @@
     \eqpause
 	\vspace{-0.5cm}
 	\begin{enumerate}
-		\item $\bx_0 = \bx \sim \pi(\bx)$
+		\item $\bx_0 = \bx \sim \pd(\bx)$
 		\item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon$, $\bepsilon \sim \cN(0, \bI)$, $t \geq 1$
 		\item After $T \gg 1$ steps: $\bx_T \sim p_\infty(\bx) = \cN(0, \bI)$
 	\end{enumerate}
     \eqpause
-	If this process can be reversed, we can sample from $\pi(\bx)$ by starting from noise $p_\infty(\bx) = \cN(0, \bI)$. \\
+	If this process can be reversed, we can sample from $\pd(\bx)$ by starting from noise $p_\infty(\bx) = \cN(0, \bI)$. \\
 	Our goal now becomes inverting this diffusion.
 \end{frame}
 %=======
@@ -530,7 +531,7 @@
 	\begin{block}{NCSN} 
 		\vspace{-0.7cm} 
 		\[
-			q(\bx_t | \bx_0) = \cN(\bx_0, \sigma_t^2 \bI), \quad q(\bx_1) \approx \pi(\bx), \quad q(\bx_T) \approx \cN(0, \sigma_T^2 \bI)
+			q(\bx_t | \bx_0) = \cN(\bx_0, \sigma_t^2 \bI), \quad q(\bx_1) \approx \pd(\bx), \quad q(\bx_T) \approx \cN(0, \sigma_T^2 \bI)
 		\]
 		\[
 			\nabla_{\bx_t} \log q(\bx_t | \bx) = - \frac{\bx_t - \bx}{\sigma_t^2}
@@ -541,7 +542,7 @@
 	\begin{block}{Gaussian Diffusion}
 		\vspace{-0.7cm} 
 		\[
-			q(\bx_t | \bx_0) = \cN(\sqrt{\bar{\alpha}_t} \bx_0, (1 - \bar{\alpha}_t) \bI), \quad q(\bx_1) \approx \pi(\bx), \quad q(\bx_T) \approx \cN(0, \bI)
+			q(\bx_t | \bx_0) = \cN(\sqrt{\bar{\alpha}_t} \bx_0, (1 - \bar{\alpha}_t) \bI), \quad q(\bx_1) \approx \pd(\bx), \quad q(\bx_T) \approx \cN(0, \bI)
 		\]
 		\[
 			\nabla_{\bx_t} \log q(\bx_t | \bx_0) = - \frac{\bx_t - \sqrt{\bar{\alpha}_t} \bx_0}{1 - \bar{\alpha}_t}
@@ -553,7 +554,7 @@
 		\vspace{-0.7cm}
 		\begin{multline*}
 			\bbE_{q(\bx_t)}\left\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t) \right\|_2^2 = \\
-			= \bbE_{\pi(\bx)} \bbE_{q(\bx_t | \bx)}\left\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \right\|_2^2 + \text{const}(\btheta)
+			= \bbE_{\pd(\bx)} \bbE_{q(\bx_t | \bx)}\left\| \bs_{\btheta, t}(\bx_t) - \nabla_{\bx_t} \log q(\bx_t | \bx) \right\|_2^2 + \text{const}(\btheta)
 		\end{multline*}
 		\vspace{-0.5cm}
 	\end{block}
@@ -581,13 +582,14 @@
 	\begin{block}{Reverse Process}
 		\vspace{-0.3cm}
 		\[
-			q(\bx_{t-1}\mid\bx_{t}) = \frac{q(\bx_{t}\mid\bx_{t-1}) {\color{violet}q(\bx_{t-1})}}{{\color{violet}q(\bx_{t})}} \approx p(\bx_{t - 1} | \bx_t, \btheta)
+			q(\bx_{t-1}\mid\bx_{t}) = \frac{q(\bx_{t}\mid\bx_{t-1}) {\color{violet}q(\bx_{t-1})}}{{\color{violet}q(\bx_{t})}} 
+			\approx \pt(\bx_{t - 1} | \bx_t)
 		\]
         \eqpause
 		\vspace{-0.3cm}
 		${\color{violet}q(\bx_{t-1})}$ and ${\color{violet}q(\bx_{t})}$ are intractable:
 		\[
-			q(\bx_{t}) = \int q(\bx_{t} | \bx_0) \pi(\bx_0) d\bx_0
+			q(\bx_{t}) = \int q(\bx_{t} | \bx_0) \pd(\bx_0) d\bx_0
 		\]
 	\end{block}
 \end{frame}
@@ -620,14 +622,14 @@
 	Define the reverse process as: 
 	\vspace{-0.2cm}
 	\[
-		q(\bx_{t-1}|\bx_{t}) \approx p(\bx_{t - 1} | \bx_t, \btheta) = \cN\bigl(\bmu_{\btheta, t}(\bx_t), \bsigma^2_{\btheta, t}(\bx_t)\bigr)
+		q(\bx_{t-1}|\bx_{t}) \approx \pt(\bx_{t - 1} | \bx_t) = \cN\bigl(\bmu_{\btheta, t}(\bx_t), \bsigma^2_{\btheta, t}(\bx_t)\bigr)
 	\]
 	{\color{gray}Feller's theorem justifies this Gaussian assumption.}
 	\eqpause
 	\begin{minipage}{0.5\linewidth}
 		\begin{block}{Forward Process}
 			\begin{enumerate}
-				\item $\bx_0 = \bx \sim \pi(\bx)$
+				\item $\bx_0 = \bx \sim \pd(\bx)$
 				\item $\bx_t = \sqrt{1 - \beta_t} \bx_{t-1} + \sqrt{\beta_t} \bepsilon$
 				\item $\bx_T \sim p_\infty(\bx) = \cN(0, \bI)$
 			\end{enumerate}
@@ -639,7 +641,7 @@
 			\begin{enumerate}
 				\item $\bx_T \sim p_\infty(\bx) = \cN(0, \bI)$
 				\item $\bx_{t-1} = \bsigma_{\btheta, t}(\bx_t) \bepsilon + \bmu_{\btheta, t}(\bx_t)$
-				\item $\bx_0 = \bx \sim \pi(\bx)$
+				\item $\bx_0 = \bx \sim \pd(\bx)$
 			\end{enumerate}
 		\end{block}
 	\end{minipage}
