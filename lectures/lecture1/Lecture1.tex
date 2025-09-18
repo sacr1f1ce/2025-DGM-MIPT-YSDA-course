@@ -177,10 +177,14 @@
 %=======
 \begin{frame}{Course Tricks II}
 	\begin{block}{Change of Variables Theorem (CoV)}
-		Suppose $\bx$ is a continuous random variable with density $p(\bx)$, and $\bff: \bbR^m \to \bbR^m$ is differentiable and \textbf{invertible}. If $\by = \bff(\bx)$, then
-		\[
-			p(\by) = p(\bx) \left|\det \left(  \frac{\partial \bx}{\partial \by} \right) \right| = p(\bff^{-1}(\by)) \left|\det \left(  \frac{\partial \bff^{-1}(\by)}{\partial \by} \right) \right|.
-		\]
+		Let $\bx\in \bbR^m$ be a random vector with density $p(\bx)$, and let $\bff: \bbR^m \rightarrow \bbR^m$ be a $C^1$-diffeomorphism ($\bff$ and $\bff^{-1}$ are continuously differentiable mappings). 
+		If $\bz = \bff(\bx)$, then
+		\begin{align*}
+			p(\bx) &= p(\bz) |\det(\bJ_{\bff})| = p(\bz) \left|\det \left( \frac{\partial \bz}{\partial \bx} \right) \right| 
+			\nextonslide{= p(\bff(\bx)) \left|\det \left(  \frac{\partial \bff(\bx)}{\partial \bx} \right) \right|} \\
+			\nextonslide{p(\bz) &= p(\bx) |\det(\bJ_{\bff^{-1}})| = p(\bx) \left|\det \left(  \frac{\partial \bx}{\partial \bz} \right) \right| 
+			= p(\bff^{-1}(\bz)) \left|\det \left(  \frac{\partial \bff^{-1}(\bz)}{\partial \bz} \right) \right| }
+		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
     \eqpause
@@ -190,6 +194,7 @@
 			F_Y(y) = P(Y \leq y) = P(x \leq f^{-1}(y)) = F_X(f^{-1}(y))
 		\]
         \eqpause
+		\vspace{-0.3cm}
 		$$
 			p(y) = \frac{dF_Y(y)}{dy} = \frac{dF_X(f^{-1}(y))}{dy} = \frac{dF_X(x)}{dx} \frac{df^{-1}(y)}{dy} =  p(x) \frac{df^{-1}(y)}{dy}
 		$$

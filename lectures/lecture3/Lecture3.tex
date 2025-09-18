@@ -23,15 +23,18 @@
 			\frac{\partial z_m}{\partial x_1} & \dots & \frac{\partial z_m}{\partial x_m}
 		\end{pmatrix} \in \bbR^{m \times m}
 		\]
-		\vspace{-0.3cm}
+		\vspace{-0.5cm}
 	\end{block}
 	\begin{block}{Change of Variables Theorem (CoV)}
-		Let $\bx$ be a random variable with density $p(\bx)$, and $\bff: \bbR^m \rightarrow \bbR^m$ a differentiable invertible mapping. If $\bz = \bff(\bx)$ and $\bx = \bff^{-1}(\bz) = \bg(\bz)$, then
-		\vspace{-0.3cm}
+		Let $\bx\in \bbR^m$ be a random vector with density $p(\bx)$, and let $\bff: \bbR^m \rightarrow \bbR^m$ be a $C^1$-diffeomorphism ($\bff$ and $\bff^{-1}$ are continuously differentiable mappings). 
+		If $\bz = \bff(\bx)$, then
 		\begin{align*}
-			p(\bx) &= p(\bz) |\det(\bJ_\bff)| = p(\bz) \left|\det \left(  \frac{\partial \bz}{\partial \bx} \right) \right| = p(\bff(\bx)) \left|\det \left(  \frac{\partial \bff(\bx)}{\partial \bx} \right) \right| \\
-			p(\bz) &= p(\bx) |\det(\bJ_\bg)|= p(\bx) \left|\det \left(  \frac{\partial \bx}{\partial \bz} \right) \right| = p(\bg(\bz)) \left|\det \left(  \frac{\partial \bg(\bz)}{\partial \bz} \right) \right|.
+			p(\bx) &= p(\bz) |\det(\bJ_{\bff})| = p(\bz) \left|\det \left( \frac{\partial \bz}{\partial \bx} \right) \right| 
+			= p(\bff(\bx)) \left|\det \left(  \frac{\partial \bff(\bx)}{\partial \bx} \right) \right| \\
+			p(\bz) &= p(\bx) |\det(\bJ_{\bff^{-1}})| = p(\bx) \left|\det \left(  \frac{\partial \bx}{\partial \bz} \right) \right| 
+			= p(\bff^{-1}(\bz)) \left|\det \left(  \frac{\partial \bff^{-1}(\bz)}{\partial \bz} \right) \right| 
 		\end{align*}
+		\vspace{-0.5cm}
 	\end{block}
 \end{frame}
 %=======
@@ -100,7 +103,7 @@
 	\begin{block}{Gaussian Autoregressive Normalizing Flow}
 		\vspace{-0.5cm}
 		\begin{align*}
-			\bx &= \bg_{\btheta}(\bz) \quad \Rightarrow \quad {\color{violet} x_j} = \sigma_{j, \btheta} ({\color{violet} \bx_{1:j-1}}) \cdot {\color{teal} z_j} + \mu_{j, \btheta}({\color{violet} \bx_{1:j-1}}). \\
+			\bx &= \bff^{-1}_{\btheta}(\bz) \quad \Rightarrow \quad {\color{violet} x_j} = \sigma_{j, \btheta} ({\color{violet} \bx_{1:j-1}}) \cdot {\color{teal} z_j} + \mu_{j, \btheta}({\color{violet} \bx_{1:j-1}}). \\
 			\bz &= \bff_{\btheta}(\bx) \quad \Rightarrow \quad {\color{teal} z_j} = \left({\color{violet}x_j} - \mu_{j, \btheta}({\color{violet}\bx_{1:j-1}}) \right) \cdot \frac{1}{ \sigma_{j, \btheta} ({\color{violet}\bx_{1:j-1}})}.
 		\end{align*}
 		\vspace{-0.5cm}
@@ -109,7 +112,7 @@
 		\item This transformation is both \textbf{invertible} and \textbf{differentiable}, mapping $p(\bz)$ to $\pt(\bx)$.
 		\item The Jacobian matrix for this transformation is triangular.
 	\end{itemize}
-	The generative function $\bg_{\btheta}(\bz)$ is \textbf{sequential}, while the inference function $\bff_{\btheta}(\bx)$ is \textbf{not sequential}.
+	The generative function $\bff^{-1}_{\btheta}(\bz)$ is \textbf{sequential}, while the inference function $\bff_{\btheta}(\bx)$ is \textbf{not sequential}.
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
