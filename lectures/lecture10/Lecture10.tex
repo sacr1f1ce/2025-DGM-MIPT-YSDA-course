@@ -253,7 +253,7 @@
 \begin{frame}{Guidance}
 	\begin{itemize}
 	\item Up to now, we have focused on \textbf{unconditional} generative models $\pt(\bx)$.
-	\item In practice, most generative models are \textbf{conditional}: $p(\bx | \by, \btheta)$.
+	\item In practice, most generative models are \textbf{conditional} (in diffusion era it is called guided): $\pt(\bx | \by)$.
 	\item Here, $\by$ might denote a class label or \textbf{text} (as in text-to-image tasks).
 	\end{itemize}
 	\vspace{-0.3cm}
@@ -269,18 +269,18 @@
 	\end{minipage}
 \end{frame}
 %=======
-\begin{frame}{Taxonomy of Conditional Tasks}
-	In practice, an important task is to construct a conditional model~$\pd(\bx | \by)$. 
-		\begin{itemize}
-			\item $\by = \emptyset$, $\bx$ -- image $\Rightarrow$ unconditional image model.
-			\item $\by$ -- class label, $\bx$ -- image $\Rightarrow$ class-conditional image model.
-			\item $\by$ -- text prompt, $\bx$ -- image $\Rightarrow$ text-to-image model.
-			\item $\by$ -- image, $\bx$ -- image $\Rightarrow$ image-to-image model.
-			\item $\by$ -- image, $\bx$ -- text $\Rightarrow$ image-to-text model (image captioning).
-			\item $\by$ -- English text, $\bx$ -- Russian text $\Rightarrow$ sequence-to-sequence model (machine translation).
-			\item $\by$ -- sound, $\bx$ -- text $\Rightarrow$ speech-to-text model (automatic speech recognition).
-			\item $\by$ -- text, $\bx$ -- sound $\Rightarrow$ text-to-speech model.
-		\end{itemize}
+\begin{frame}{Conditional Models}
+	In practice, we're typically interested in learning conditional models (sampling from conditional distribution~$\pd(\bx | \by)$). 
+	\begin{itemize}
+		\item $\by = \emptyset$, $\bx$ = image $\quad\Rightarrow\quad$ unconditional image model
+		\item $\by$ = class label, $\bx$ = image $\quad\Rightarrow\quad$ class-conditional image model
+		\item $\by$ = text prompt, $\bx$ = image $\quad\Rightarrow\quad$ text-to-image model
+		\item $\by$ = image, $\bx$ = image $\quad\Rightarrow\quad$ image-to-image model
+		\item $\by$ = image, $\bx$ = text $\quad\Rightarrow\quad$ image-to-text (image captioning) model
+		\item $\by$ = English text, $\bx$ = Russian text $\quad\Rightarrow\quad$ sequence-to-sequence model (machine translation) model
+		\item $\by$ = sound, $\bx$ = text $\quad\Rightarrow\quad$ speech-to-text (automatic speech recognition) model
+		\item $\by$ = text, $\bx$ = sound $\quad\Rightarrow\quad$ text-to-speech model
+	\end{itemize}
 \end{frame}
 %=======
 \begin{frame}{Label Guidance}
@@ -301,36 +301,28 @@
 \end{frame}
 %=======
 \begin{frame}{Guidance in Generative Models}
-	\begin{itemize}
-	\item Given \textbf{supervised} data $\{(\bx_i, \by_i)\}_{i=1}^n$, we can treat $\by$ as an additional input:
+	\begin{block}{How to make guided model?}
+		Instead of sampling from $\pt(\bx)$, we sample from $\pt(\bx | \by)$.
+	\end{block}
+	\eqpause
+	Given \textbf{supervised} data $\{(\bx_i, \by_i)\}_{i=1}^n$, we can treat $\by$ as an additional model input:
+	\eqpause
 	\begin{itemize}
 		\item $\pt(x_j | \bx_{1:j-1}, {\color{olive}\by})$ for AR models;
+		\eqpause
 		\item Encoder $q_{\bphi}(\bz | \bx, {\color{olive}\by})$ and decoder $\pt(\bx | \bz, {\color{olive}\by})$ for VAEs;
+		\eqpause
 		\item $G_{\btheta}(\bz, {\color{olive}\by})$ for NFs and GANs;
+		\eqpause
 		\item $\pt(\bx_{t-1} | \bx_t, {\color{olive}\by})$ for DDPMs.
 	\end{itemize}
 	\eqpause
-	\item For \textbf{unsupervised} data $\{\bx_i\}_{i=1}^n$, it becomes necessary to devise a way to transform the unconditional model $\pt(\bx)$ into a conditional version.
-	\eqpause
-	\item Being able to control the strength of guidance is especially valuable.
-	\end{itemize}
-\end{frame}
-%=======
-
-\begin{frame}{Types of Guidance}
-	\begin{itemize}
-		\item \textbf{Classifier Guidance:} 
-			\begin{itemize}
-				\item Suitable for unsupervised data;
-				\item Utilizes an auxiliary classifier (which still requires supervision for classifier training).
-			\end{itemize}
-		\eqpause
-		\item \textbf{Classifier-Free Guidance:} 
-			\begin{itemize}
-				\item Best suited for supervised data;
-				\item Does not rely on an additional classifier.
-			\end{itemize}
-	\end{itemize}
+	\begin{block}{Challenge}
+		\begin{itemize}
+			\item Empirically, images sampled with this procedure do not fit well enough to the desired label $\by$.
+			\item Being able to control the strength of guidance is especially valuable.
+		\end{itemize}
+	\end{block}
 \end{frame}
 %=======
 \subsection{Classifier Guidance}
@@ -357,8 +349,15 @@
 		\[
 			\bx_{t - 1} = \frac{1}{\sqrt{1 - \beta_t}}\cdot \bx_t +  \frac{\beta_t}{\sqrt{1 - \beta_t}}  \cdot  \nabla_{\bx_t} \log \pt(\bx_t | {\color{olive}\by}) +  \sigma_t \cdot \bepsilon
 		\]
-		\vspace{-0.5cm}
+		\vspace{-0.3cm}
 	\end{block}
+	\eqpause
+	What is the link between $\nabla_{\bx_t} \log \pt(\bx_t)$ and $\nabla_{\bx_t} \log \pt(\bx_t | {\color{olive}\by})$?
+\end{frame}
+%=======
+\begin{frame}{Classifier Guidance}
+	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
+
 	\begin{itemize}
 		\item Let us assume $\by$ is a class label.
 		\item Suppose $p(\by | \bx_t)$ (a classifier for noisy inputs) is available.
@@ -378,23 +377,23 @@
 	\begin{block}{Conditional Distribution}
 		\vspace{-0.7cm}
 		\begin{align*}
-			{\color{olive}\nabla_{\bx_t} \log \pt(\bx_t | \by)} &= \nabla_{\bx_t} \log \left(\frac{p(\by | \bx_t)\pt(\bx_t)}{p(\by)} \right)\\
+			{\color{olive}\nabla_{\bx_t} \log \pt(\bx_t | \by)} &= \nabla_{\bx_t} \log \left(\frac{\pt(\bx_t)p(\by | \bx_t)}{p(\by)} \right)\\
 			\nextonslide{
-			&= \nabla_{\bx_t} \log p(\by | \bx_t) + {\color{violet}\nabla_{\bx_t} \log \pt(\bx_t)}\\
+			&= {\color{violet}\nabla_{\bx_t} \log \pt(\bx_t)} + \nabla_{\bx_t} \log p(\by | \bx_t) \\
 			}
 			\nextonslide{
-			&= {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)} {\color{violet}- \frac{\bepsilon_{\btheta, t}(\bx_t)}{\sqrt{1 - \bar{\alpha}_t}}}
+			&= {\color{violet} \bs_{\btheta, t}(\bx_t)} + {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)}
 			}
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
 	\eqpause
-	Let's reparameterize: $\nabla_{\bx_t} \log \pt(\bx_t | \by) = - \frac{\bepsilon_{\btheta, t}(\bx_t, \by)}{\sqrt{1 - \bar{\alpha}_t}}$.
+	Let's reparameterize: $\nabla_{\bx_t} \log \pt(\bx_t | \by) = \bs_{\btheta, t}(\bx_t, \by)$.
 	\eqpause
 	\begin{block}{Classifier-Corrected Noise Prediction}
 		\vspace{-0.3cm}
 		\[
-			{\color{olive}\bepsilon_{\btheta, t}(\bx_t, \by)} = {\color{violet}\bepsilon_{\btheta, t}(\bx_t)} - \sqrt{1 - \bar{\alpha}_t} \cdot {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)}
+			{\color{olive}\bs_{\btheta, t}(\bx_t, \by)} = {\color{violet}\bs_{\btheta, t}(\bx_t)} + {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)}
 		\]
 	\end{block}
 \end{frame}
@@ -404,7 +403,7 @@
 	\begin{block}{Classifier-Corrected Noise Prediction}
 		\vspace{-0.3cm}
 		\[
-			\bepsilon_{\btheta, t}(\bx_t, \by) = \bepsilon_{\btheta, t}(\bx_t) - \sqrt{1 - \bar{\alpha}_t} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
+			\bs_{\btheta, t}(\bx_t, \by) = \bs_{\btheta, t}(\bx_t) + \nabla_{\bx_t} \log p(\by | \bx_t)
 		\]
 		\vspace{-0.5cm}
 	\end{block}
@@ -412,7 +411,7 @@
 	\begin{block}{Guidance Scale}
 		\vspace{-0.3cm}
 		\[
-			{\color{olive}\bepsilon_{\btheta, t}(\bx_t, \by)} = \bepsilon_{\btheta, t}(\bx_t) - {\color{teal}\gamma} \cdot \sqrt{1 - \bar{\alpha}_t} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
+			{\color{olive}\bs_{\btheta, t}(\bx_t, \by)} = \bs_{\btheta, t}(\bx_t) + {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
 		\]
 		Here, the {\color{teal}guidance scale $\gamma$} adjusts the strength of classifier guidance.
 	\end{block}
@@ -428,7 +427,7 @@
 	\begin{block}{Guided Sampling}
 		\vspace{-0.3cm}
 		\[
-			\bx_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot  {\color{olive}\bepsilon_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
+			\bx_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
 		\]
 	\end{block}
 \end{frame}
@@ -438,14 +437,14 @@
 	\begin{block}{Classifier-Corrected Noise Prediction, with Scaling}
 		\vspace{-0.3cm}
 		\[
-			\bepsilon_{\btheta, t}(\bx_t, \by) = \bepsilon_{\btheta, t}(\bx_t) - {\color{teal}\gamma} \cdot \sqrt{1 - \bar{\alpha}_t} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
+			\bs_{\btheta, t}(\bx_t, \by) = \bs_{\btheta, t}(\bx_t) + {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
 		\]
 		\vspace{-0.7cm}
 	\end{block}
 	\eqpause
 	\begin{block}{Guidance-Scaled Conditional Distribution}
 		\[
-			\frac{\bepsilon_{\btheta, t}(\bx_t, \by)}{\sqrt{1 - \bar{\alpha}_t}} = \frac{\bepsilon_{\btheta, t}(\bx_t)}{\sqrt{1 - \bar{\alpha}_t}} - {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
+			\bs_{\btheta, t}(\bx_t, \by) = \bs_{\btheta, t}(\bx_t) + {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
 		\]
 		\eqpause
 		\vspace{-0.5cm}
