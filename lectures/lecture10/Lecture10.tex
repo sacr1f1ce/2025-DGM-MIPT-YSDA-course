@@ -344,7 +344,7 @@
 		\end{enumerate}
 	\end{block}
 	\eqpause
-	\begin{block}{Conditional Generation}
+	\begin{block}{Guided Generation}
 		\vspace{-0.5cm}
 		\[
 			\bx_{t - 1} = \frac{1}{\sqrt{1 - \beta_t}}\cdot \bx_t +  \frac{\beta_t}{\sqrt{1 - \beta_t}}  \cdot  \nabla_{\bx_t} \log \pt(\bx_t | {\color{olive}\by}) +  \sigma_t \cdot \bepsilon
@@ -355,26 +355,17 @@
 	What is the link between $\nabla_{\bx_t} \log \pt(\bx_t)$ and $\nabla_{\bx_t} \log \pt(\bx_t | {\color{olive}\by})$?
 \end{frame}
 %=======
-\begin{frame}{Classifier Guidance}
+\begin{frame}{Classifier Guidance: Guided Score Function}
 	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
-
-	\begin{itemize}
-		\item Let us assume $\by$ is a class label.
-		\item Suppose $p(\by | \bx_t)$ (a classifier for noisy inputs) is available.
-	\end{itemize}
-\end{frame}
-%=======
-\begin{frame}{Classifier Guidance: Conditional Update}
-	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
-	\begin{block}{Conditional Generation}
+	\begin{block}{Guided Generation}
 		\vspace{-0.5cm}
 		\[
-			\bx_{t - 1} = \frac{1}{\sqrt{1 - \beta_t}}\cdot \bx_t +  \frac{\beta_t}{\sqrt{1 - \beta_t}}  \cdot  \nabla_{\bx_t} \log \pt(\bx_t | {\color{olive}\by}) +  \sigma_t \cdot \bepsilon
+			\bx_{t - 1} = \frac{1}{\sqrt{1 - \beta_t}}\cdot \bx_t +  \frac{\beta_t}{\sqrt{1 - \beta_t}}  \cdot {\color{olive} \nabla_{\bx_t} \log \pt(\bx_t | \by)} +  \sigma_t \cdot \bepsilon
 		\]
 		\vspace{-0.5cm}
 	\end{block}
 	\eqpause
-	\begin{block}{Conditional Distribution}
+	\begin{block}{Guided Generation}
 		\vspace{-0.7cm}
 		\begin{align*}
 			{\color{olive}\nabla_{\bx_t} \log \pt(\bx_t | \by)} &= \nabla_{\bx_t} \log \left(\frac{\pt(\bx_t)p(\by | \bx_t)}{p(\by)} \right)\\
@@ -385,12 +376,15 @@
 			&= {\color{violet} \bs_{\btheta, t}(\bx_t)} + {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)}
 			}
 		\end{align*}
-		\vspace{-0.5cm}
 	\end{block}
+	\vspace{-0.5cm}
 	\eqpause
-	Let's reparameterize: $\nabla_{\bx_t} \log \pt(\bx_t | \by) = \bs_{\btheta, t}(\bx_t, \by)$.
-	\eqpause
-	\begin{block}{Classifier-Corrected Noise Prediction}
+	\begin{block}{Guided Score Function}
+		\vspace{-0.3cm}
+		\[
+			\bs_{\btheta, t}(\bx_t, \by) = \nabla_{\bx_t} \log \pt(\bx_t | \by).
+		\]
+		\eqpause
 		\vspace{-0.3cm}
 		\[
 			{\color{olive}\bs_{\btheta, t}(\bx_t, \by)} = {\color{violet}\bs_{\btheta, t}(\bx_t)} + {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)}
@@ -398,69 +392,86 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Classifier Guidance: Practical Implementation}
+\begin{frame}{Classifier Guidance: Guidance Scale}
 	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
-	\begin{block}{Classifier-Corrected Noise Prediction}
+	\begin{block}{Guided Score Function}
 		\vspace{-0.3cm}
 		\[
-			\bs_{\btheta, t}(\bx_t, \by) = \bs_{\btheta, t}(\bx_t) + \nabla_{\bx_t} \log p(\by | \bx_t)
+			{\color{olive}\bs_{\btheta, t}(\bx_t, \by)} = \bs_{\btheta, t}(\bx_t) + \nabla_{\bx_t} \log p(\by | \bx_t)
 		\]
 		\vspace{-0.5cm}
 	\end{block}
 	\eqpause
+	\begin{itemize}
+		\item Let us assume $\by$ is a class label.
+		\item $p(\by | \bx_t)$ is a classifier for noisy inputs.
+		\item $p(\by | \bx_t)$ is responsible for model guidance.
+	\end{itemize}
+	\eqpause
 	\begin{block}{Guidance Scale}
-		\vspace{-0.3cm}
+		It is a natural idea to scale up the contribution of the guidance
 		\[
-			{\color{olive}\bs_{\btheta, t}(\bx_t, \by)} = \bs_{\btheta, t}(\bx_t) + {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
+			{\color{violet}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} = \bs_{\btheta, t}(\bx_t) + {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
 		\]
-		Here, the {\color{teal}guidance scale $\gamma$} adjusts the strength of classifier guidance.
-	\end{block}
-	\eqpause
-	\begin{block}{Training}
+		\eqpause
+		\vspace{-0.5cm}
 		\begin{itemize}
-			\item Train the DDPM as before.
-			\item Train an additional classifier $p(\by | \bx_t)$ on noisy data.
+			\item The {\color{teal}guidance scale $\gamma$} adjusts the strength of classifier guidance.
+			\item ${\color{violet}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)}$ is not the true guided score function ${\color{olive}\bs_{\btheta, t}(\bx_t, \by)}$.
 		\end{itemize}
-		\vspace{-0.2cm}
-	\end{block}
-	\eqpause
-	\begin{block}{Guided Sampling}
-		\vspace{-0.3cm}
-		\[
-			\bx_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
-		\]
 	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Classifier Guidance: Distribution Sharpening}
 	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
-	\begin{block}{Classifier-Corrected Noise Prediction, with Scaling}
-		\vspace{-0.3cm}
+	\begin{block}{Scaled Guided Score Function}
 		\[
-			\bs_{\btheta, t}(\bx_t, \by) = \bs_{\btheta, t}(\bx_t) + {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
+			{\color{violet}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} = \bs_{\btheta, t}(\bx_t)+ {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
 		\]
-		\vspace{-0.7cm}
+		\vspace{-0.5cm}
 	\end{block}
 	\eqpause
-	\begin{block}{Guidance-Scaled Conditional Distribution}
-		\[
-			\bs_{\btheta, t}(\bx_t, \by) = \bs_{\btheta, t}(\bx_t) + {\color{teal}\gamma} \cdot \nabla_{\bx_t} \log p(\by | \bx_t)
-		\]
-		\eqpause
+	\begin{block}{Scaled Conditional Distribution}
 		\vspace{-0.5cm}
 		\begin{align*}
-			\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) &= \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot \nabla_{\bx_t} \log p(\by | \bx_t) \\
+			{\color{violet}\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by)} 
+			&= \nabla_{\bx_t} \log \pt(\bx_t) + {\color{teal}\gamma}  \cdot \nabla_{\bx_t} \log p(\by | \bx_t) \\
 			\nextonslide{
-			&= \nabla_{\bx_t} \log \pt(\bx_t) + \nabla_{\bx_t} \log p(\by | \bx_t)^{\gamma} \\
+			&= \nabla_{\bx_t} \log \pt(\bx_t) + \nabla_{\bx_t} \log p(\by | \bx_t)^{\color{teal}\gamma} \\
 			}
 			\nextonslide{
-			&= \nabla_{\bx_t} \log \left( \frac{p(\by | \bx_t)^{\gamma} \pt(\bx_t)}{Z} \right)
+			&= \nabla_{\bx_t} \log \left( \frac{\pt(\bx_t) p(\by | \bx_t)^{\gamma}}{Z} \right)
 			}
 		\end{align*}
-		\vspace{-0.5cm}
+		\vspace{-0.3cm}
 	\end{block}
 	\eqpause
-	\textbf{Note:} Increasing $\gamma$ sharpens $p(\by | \bx_t)$ (with $Z$ independent of $\bx_t$).
+	\textbf{Note:} Increasing $\gamma$ sharpens $p(\by | \bx_t)$, making it more contrast
+	\[
+		\hat{p}(\by | \bx_t) \propto p(\by | \bx_t)^{\gamma}.
+	\]
+\end{frame}
+%=======
+\begin{frame}{Classifier Guidance: Overview}
+	\myfootnotewithlink{https://arxiv.org/abs/2105.05233}{Dhariwal P., Nichol A. Diffusion Models Beat GANs on Image Synthesis, 2021}
+
+	\begin{block}{Training}
+		\begin{itemize}
+			\item Train the DDPM as before.
+			\item Train an additional classifier $p(\by | \bx_t)$ on noisy data (note that it is dependent on time $t$).
+		\end{itemize}
+		\vspace{-0.2cm}
+	\end{block}
+	\eqpause
+	\begin{block}{Guided DDPM Sampling}
+		\begin{enumerate}
+			\item Sample $\bx_T \sim \cN(0, \bI)$.
+			\item Generate the denoised image (using scaled guided score function):
+			\[
+				\bx_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
+			\]
+		\end{enumerate}
+	\end{block}
 \end{frame}
 %=======
 \subsection{Classifier-Free Guidance}
