@@ -11,19 +11,18 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-    \myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density Estimation Using Real NVP, 2016} 
-	\begin{block}{Jacobian Matrix}
-		Given a differentiable function $\bff: \bbR^m \rightarrow \bbR^m$,
+    \begin{block}{Jacobian Matrix}
+		Let $\bff: \bbR^m \rightarrow \bbR^m$ be a differentiable function.
 		\[
-		\bz = \bff(\bx), \quad 
-		\bJ =  \frac{\partial \bz}{\partial \bx} =
-		\begin{pmatrix}
-			\frac{\partial z_1}{\partial x_1} & \dots & \frac{\partial z_1}{\partial x_m} \\
-			\vdots & \ddots & \vdots \\ 
-			\frac{\partial z_m}{\partial x_1} & \dots & \frac{\partial z_m}{\partial x_m}
-		\end{pmatrix} \in \bbR^{m \times m}
+			\bz = \bff(\bx), \quad 
+			\bJ =  \frac{\partial \bz}{\partial \bx} =
+			\begin{pmatrix}
+				\frac{\partial z_1}{\partial x_1} & \dots & \frac{\partial z_1}{\partial x_m} \\
+				\vdots & \ddots & \vdots \\ 
+				\frac{\partial z_m}{\partial x_1} & \dots & \frac{\partial z_m}{\partial x_m}
+			\end{pmatrix} \in \bbR^{m \times m}
 		\]
-		\vspace{-0.5cm}
+		\vspace{-0.3cm}
 	\end{block}
 	\begin{block}{Change of Variables Theorem (CoV)}
 		Let $\bx\in \bbR^m$ be a random vector with density $p(\bx)$, and let $\bff: \bbR^m \rightarrow \bbR^m$ be a $C^1$-diffeomorphism ($\bff$ and $\bff^{-1}$ are continuously differentiable mappings). 
@@ -32,7 +31,7 @@
 			p(\bx) &= p(\bz) |\det(\bJ_{\bff})| = p(\bz) \left|\det \left( \frac{\partial \bz}{\partial \bx} \right) \right| 
 			= p(\bff(\bx)) \left|\det \left(  \frac{\partial \bff(\bx)}{\partial \bx} \right) \right| \\
 			p(\bz) &= p(\bx) |\det(\bJ_{\bff^{-1}})| = p(\bx) \left|\det \left(  \frac{\partial \bx}{\partial \bz} \right) \right| 
-			= p(\bff^{-1}(\bz)) \left|\det \left(  \frac{\partial \bff^{-1}(\bz)}{\partial \bz} \right) \right| 
+			= p(\bff^{-1}(\bz)) \left|\det \left(  \frac{\partial \bff^{-1}(\bz)}{\partial \bz} \right) \right|
 		\end{align*}
 		\vspace{-0.5cm}
 	\end{block}
@@ -41,7 +40,7 @@
 \begin{frame}{Recap of Previous Lecture}
     \myfootnotewithlink{https://arxiv.org/abs/1605.08803}{Dinh L., Sohl-Dickstein J., Bengio S. Density Estimation Using Real NVP, 2016} 
 	\begin{block}{Definition}
-		A normalizing flow is a \textit{differentiable, invertible} transformation that maps data $\bx$ to noise $\bz$. 
+		A normalizing flow is a $C^1$-diffeomorphism that transforms data $\bx$ to noise $\bz$.
 	\end{block}
 	\vspace{-0.1cm}
 	\begin{figure}
@@ -109,7 +108,7 @@
 		\vspace{-0.5cm}
 	\end{block}
 	\begin{itemize}
-		\item This transformation is both \textbf{invertible} and \textbf{differentiable}, mapping $p(\bz)$ to $\pt(\bx)$.
+		\item This transformation is both \textbf{$C^1$-diffeomorphism}, mapping $p(\bz)$ to $\pt(\bx)$.
 		\item The Jacobian matrix for this transformation is triangular.
 	\end{itemize}
 	The generative function $\bff^{-1}_{\btheta}(\bz)$ is \textbf{sequential}, while the inference function $\bff_{\btheta}(\bx)$ is \textbf{not sequential}.
@@ -144,60 +143,27 @@
 	A coupling layer is a special instance of an gaussian autoregressive normalizing flow.
 \end{frame}
 %=======
+\begin{frame}{Recap of Previous Lecture}
+	\begin{block}{Posterior Distribution (Bayes' Theorem)}
+		\[
+			p(\btheta | \bx) = \frac{p(\bx | \btheta) p(\btheta)}{p(\bx)} = \frac{p(\bx | \btheta) p(\btheta)}{\int p(\bx | \btheta) p(\btheta) d \btheta} 
+		\]
+		\begin{itemize}
+			\item $\bx$ -- observed variables;
+			\item $\btheta$ -- unobserved variables (latent parameters);
+			\item $\pt(\bx) = p(\bx | \btheta)$ -- likelihood;
+			\item $p(\bx) = \int p(\bx | \btheta) p(\btheta) d \btheta$ -- evidence;
+			\item $p(\btheta)$ -- prior distribution;
+			\item $p(\btheta | \bx)$ -- posterior distribution.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
 \begin{frame}{Outline}
     \tableofcontents
 \end{frame}
 %=======
-\section{Latent Variable Models (LVM)}
-%=======
-\begin{frame}{Bayesian Framework}
-	\begin{block}{Bayes' Theorem}
-		\vspace{-0.3cm}
-		\[
-			p(\btheta| \bx) = \frac{p(\bx | \btheta) p(\btheta)}{p(\bx)} = \frac{p(\bx | \btheta) p(\btheta)}{\int p(\bx | \btheta) p(\btheta) d \btheta} 
-		\]
-		\vspace{-0.3cm}
-		\begin{itemize}
-			\item $\bx$: observed variables; 
-			\item $\btheta$: unknown latent variables/parameters;
-			\item $\pt(\bx) = p(\bx | \btheta)$: likelihood;
-			\item $p(\bx) = \int p(\bx | \btheta) p(\btheta) d\btheta$: evidence;
-			\item $p(\btheta)$: prior distribution;
-			\item $p(\btheta| \bx)$: posterior distribution.
-		\end{itemize}
-	\end{block}
-    \eqpause
-	\begin{block}{Interpretation}
-		\begin{itemize}
-			\item We begin with unknown variables $\btheta$ and a prior belief $p(\btheta)$.
-			\item Once data $\bx$ is observed, the posterior $p(\btheta| \bx)$ incorporates both prior beliefs and evidence from the data.
-		\end{itemize} 
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Bayesian Framework}
-	Consider the case where the unobserved variables $\btheta$ are model parameters (i.e., $\btheta$ are random variables).
-	\begin{itemize}
-		\item $\bX = \{\bx_i\}_{i=1}^n$: observed samples;
-		\item $p(\btheta)$: prior distribution.
-	\end{itemize}
-    \eqpause
-	\begin{block}{Posterior Distribution}
-		\[
-			p(\btheta | \bX) = \frac{p(\bX | \btheta) p(\btheta)}{p(\bX)} = \frac{p(\bX | \btheta) p(\btheta)}{\int p(\bX | \btheta) p(\btheta) d \btheta} 
-		\]
-		\vspace{-0.2cm}
-	\end{block}
-    \eqpause
-	If the evidence $p(\bX)$ is intractable (due to high-dimensional integration), the posterior cannot be computed exactly.
-    \eqpause
-    \begin{block}{Maximum a Posteriori (MAP) Estimation}
-	    \vspace{-0.2cm}
-	    \[
-	        \btheta^* = \argmax_{\btheta} p(\btheta | \bX) = \argmax_{\btheta} (\log p(\bX | \btheta) + \log p(\btheta))
-	    \]
-    \end{block}
-\end{frame}
+\section{Latent Variable Models (LVM) (continued)}
 %=======
 \begin{frame}{Latent Variable Models (LVM)}
 	\begin{block}{Maximum Likelihood Extimation (MLE) Problem}
@@ -509,8 +475,6 @@
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item The Bayesian framework generalizes nearly all standard machine learning methods.
-		\vfill
 		\item LVMs introduce latent representations for observed data, enabling more interpretable models.
 		\vfill
 		\item LVMs maximize the variational evidence lower bound (ELBO) to obtain maximum likelihood estimates for the parameters.

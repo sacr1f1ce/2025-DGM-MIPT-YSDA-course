@@ -10,22 +10,6 @@
 \end{frame}
 %=======
 \begin{frame}{Recap of Previous Lecture}
-	\begin{block}{Posterior Distribution (Bayes' Theorem)}
-		\[
-			p(\btheta | \bx) = \frac{p(\bx | \btheta) p(\btheta)}{p(\bx)} = \frac{p(\bx | \btheta) p(\btheta)}{\int p(\bx | \btheta) p(\btheta) d \btheta} 
-		\]
-		\begin{itemize}
-			\item $\bx$ -- observed variables;
-			\item $\btheta$ -- unobserved variables (latent parameters);
-			\item $\pt(\bx) = p(\bx | \btheta)$ -- likelihood;
-			\item $p(\bx) = \int p(\bx | \btheta) p(\btheta) d \btheta$ -- evidence;
-			\item $p(\btheta)$ -- prior distribution;
-			\item $p(\btheta | \bx)$ -- posterior distribution.
-		\end{itemize}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Recap of Previous Lecture}
 	\begin{block}{Latent Variable Models (LVM)}
 		\vspace{-0.3cm}
 		\[

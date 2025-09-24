@@ -266,7 +266,7 @@
 	\]
 	\vspace{-0.4cm}
 	\begin{block}{Definition}
-		A normalizing flow is a \textit{differentiable, invertible} mapping that transforms data $\bx$ to latent noise $\bz$.
+		A normalizing flow is a $C^1$-diffeomorphism that transforms data $\bx$ to noise $\bz$.
 	\end{block}
     \eqpause
 	\begin{itemize}
@@ -339,6 +339,7 @@
 			\[
 				\nextonslide{\log \left|\det \left( \frac{\partial \bff_{\btheta}(\bx)}{\partial \bx} \right) \right| = \log \left| \prod_{j=1}^m \frac{\partial f_{j, \btheta}(x_j)}{\partial x_j} \right| = \sum_{j=1}^m \log \left|  \frac{\partial f_{j, \btheta}(x_j)}{\partial x_j} \right|}
 			\]
+			\vspace{-0.3cm}
 			\eqpause
 			\item $z_j$ depends only on $\bx_{1:j}$ (autoregressive dependency).
 		\end{enumerate}
@@ -346,7 +347,7 @@
 \end{frame}
 %=======
 \begin{frame}{Linear Normalizing Flows}
-	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018} 
+	\myfootnotewithlink{https://arxiv.org/abs/1912.02762}{Papamakarios G. et al. Normalizing Flows for Probabilistic Modeling and Inference, 2019} 
 	\[
 		\bz = \bff_{\btheta}(\bx) = \bW \bx, \quad \bW \in \bbR^{m \times m}, \quad \btheta = \bW, \quad \bJ_\bff = \bW^T
 	\]
@@ -356,16 +357,9 @@
 		\begin{itemize}
 			\item Diagonal matrix: $O(m)$.
 			\item Triangular matrix: $O(m^2)$.
-			\item Directly parameterizing the full group of invertible matrices is infeasible.
+			\item Directly parameterizing all invertible matrices in a continuous way is infeasible \\ (there is not surjective function from $\bbR^{m^2}$ to the set of all invertible matrices of size $m \times m$).
 		\end{itemize}
 	\end{block}
-    \eqpause
-	\begin{block}{Invertible $1 \times 1$ Convolution}
-		$\bW \in \bbR^{c \times c}$ acts as the kernel of a $1 \times 1$ convolution with $c$ input and $c$ output channels. 
-		Calculating or differentiating $\det (\bW)$ incurs a cost of $O(c^3)$.
-		It is critical that $\bW$ is invertible.
-	\end{block}
-	
 \end{frame}
 %=======
 \begin{frame}{Linear Normalizing Flows}
@@ -433,7 +427,7 @@
 	\end{block}
 	\eqpause
 	\begin{itemize}
-		\item This gives an \textbf{invertible} and \textbf{differentiable} transformation from $p(\bz)$ to $\pt(\bx)$.
+		\item This gives an \textbf{$C^1$-diffeomorphism} from $p(\bz)$ to $\pt(\bx)$ (assume that $\sigma_j \neq 0$).
 		    \eqpause
 		\item This model is called an autoregressive (AR) NF with base distribution $p(\bz) = \cN(0, \bI)$.
 		    \eqpause
@@ -444,53 +438,15 @@
 \begin{frame}{Gaussian Autoregressive NF}
 	\myfootnotewithlink{https://arxiv.org/abs/1705.07057}{Papamakarios G., Pavlakou T., Murray I. Masked Autoregressive Flow for Density Estimation, 2017}
 	\vspace{-0.5cm}
-	\begin{align*}
-		\bx &= \bff^{-1}_{\btheta}(\bz) \quad \Rightarrow \quad {\color{violet} x_j} = 
-		\sigma_{j, \btheta} ({\color{violet} \bx_{1:j-1}}) \cdot {\color{teal} z_j} + \mu_{j, \btheta}({\color{violet} \bx_{1:j-1}}) \\
-		\bz &= \bff_{\btheta}(\bx) \quad \Rightarrow \quad {\color{teal} z_j} = 
-		\frac{{\color{violet}x_j} - \mu_{j, \btheta}({\color{violet}\bx_{1:j-1}})}{ \sigma_{j, \btheta} ({\color{violet}\bx_{1:j-1}})}
-	\end{align*}
-	\eqpause
-	To generate samples, apply $\bff^{-1}_{\btheta}(\bz)$ sequentially;\\
-	inference via $\bff_{\btheta}(\bx)$ is parallelizable.
-	\eqpause
 
-	\begin{block}{Forward KL for NFs}
-		\vspace{-0.2cm}
-		\[
-			\KL(\pd \| \pt)  = -\bbE_{\pd(\bx)} \left[\log p(\bff_{\btheta}(\bx)) + \log  |\det (\bJ_\bff)|\right] + \text{const}
-		\]
-		\vspace{-0.5cm}
-		\eqpause
-		\begin{itemize}
-			\item Computing $\bff_{\btheta}(\bx)$ and its Jacobian is necessary.
-			\item One must be able to evaluate the density $p(\bz)$.
-			\item The inverse $\bff_{\btheta}^{-1}(\bz)$ is only needed for sampling.
-		\end{itemize}
-	\end{block}
-\end{frame}
-%=======
-\begin{frame}{Gaussian Autoregressive NF}
-	\myfootnotewithlink{https://blog.evjang.com/2018/01/nf2.html}{Image credit: https://blog.evjang.com/2018/01/nf2.html}
-	\vspace{-0.5cm}
-	\begin{align*}
-		\bx &= \bff^{-1}_{\btheta}(\bz) \quad \Rightarrow \quad {\color{violet} x_j} = \sigma_{j, \btheta} ({\color{violet} \bx_{1:j-1}}) \cdot {\color{teal} z_j} + \mu_{j, \btheta}({\color{violet} \bx_{1:j-1}}) \\
-		\bz &= \bff_{\btheta}(\bx) \quad \Rightarrow \quad {\color{teal} z_j} = \frac{{\color{violet}x_j} - \mu_{j, \btheta}({\color{violet}\bx_{1:j-1}})}{\sigma_{j, \btheta} ({\color{violet}\bx_{1:j-1}})}
-	\end{align*}
-	\vspace{-0.5cm}
-	\eqpause
-	\begin{itemize}
-		\item Sampling must be done sequentially, but density estimation can be parallelized.
-		\item The forward KL divergence is a natural objective for training.
-	\end{itemize}
-	\vspace{-0.3cm}
-	\eqpause
 	\begin{minipage}[t]{0.65\columnwidth}
 		\begin{block}{Forward Transformation: $\bff_{\btheta}(\bx)$}
-			\[
-				z_j = \frac{x_j - \mu_{j, \btheta}(\bx_{1:j-1})}{\sigma_{j, \btheta} (\bx_{1:j-1}) }
-			\]
-			\vspace{-0.4cm}
+			\vspace{-0.5cm}
+			\begin{align*}
+				\bz &= \bff_{\btheta}(\bx) \\ 
+				{\color{teal} z_j} &= \frac{{\color{violet}x_j} - \mu_{j, \btheta}({\color{violet}\bx_{1:j-1}})}{ \sigma_{j, \btheta} ({\color{violet}\bx_{1:j-1}})}
+			\end{align*}
+			\vspace{-0.3cm}
 		\end{block}
 	\end{minipage}% 
 	\begin{minipage}[t]{0.35\columnwidth}
@@ -503,9 +459,11 @@
 	\begin{minipage}[t]{0.65\columnwidth}
 		\begin{block}{Inverse Transformation: $\bff^{-1}_{\btheta}(\bz)$}
 			\vspace{-0.5cm}
-			\[
-				x_j = \sigma_{j, \btheta} (\bx_{1:j-1}) \cdot z_j + \mu_{j, \btheta}(\bx_{1:j-1})
-			\]
+			\begin{align*}
+				\bx &= \bff^{-1}_{\btheta}(\bz) \\
+				{\color{violet} x_j} &= \sigma_{j, \btheta} ({\color{violet} \bx_{1:j-1}}) \cdot {\color{teal} z_j} + \mu_{j, \btheta}({\color{violet} \bx_{1:j-1}}) \\
+			\end{align*}
+			\vspace{-0.3cm}
 		\end{block}
 	\end{minipage}%
 	\begin{minipage}[t]{0.35\columnwidth}
@@ -513,7 +471,13 @@
 			\centering
 			\includegraphics[width=.9\linewidth]{figs/af_iaf_explained_1.png}
 		\end{figure}
-	\end{minipage}
+	\end{minipage}	
+	\vspace{-0.7cm}
+	\eqpause
+	\begin{itemize}
+		\item Sampling must be done sequentially, but density estimation can be parallelized.
+		\item The forward KL divergence is a natural objective for training.
+	\end{itemize}
 \end{frame}
 %=======
 \subsection{Coupling Layer (RealNVP)}
@@ -595,27 +559,98 @@
 	
 \end{frame}
 %=======
-\begin{frame}{Glow: Coupling Layers + Linear Flows ($1 \times 1$ Convolutions)}
-	\myfootnotewithlink{https://arxiv.org/abs/1807.03039}{Kingma D. P., Dhariwal P. Glow: Generative Flow with Invertible 1x1 Convolutions, 2018}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.9\linewidth]{figs/glow_faces.png}
-	\end{figure}
+\section{Latent Variable Models (LVM)}
+%=======
+\begin{frame}{Bayesian Framework}
+	\begin{block}{Bayes' Theorem}
+		\vspace{-0.3cm}
+		\[
+			p(\btheta| \bx) = \frac{p(\bx | \btheta) p(\btheta)}{p(\bx)} = \frac{p(\bx | \btheta) p(\btheta)}{\int p(\bx | \btheta) p(\btheta) d \btheta} 
+		\]
+		\vspace{-0.3cm}
+		\begin{itemize}
+			\item $\bx$: observed variables; 
+			\item $\btheta$: unknown latent variables/parameters;
+			\item $\pt(\bx) = p(\bx | \btheta)$: likelihood;
+			\item $p(\bx) = \int p(\bx | \btheta) p(\btheta) d\btheta$: evidence;
+			\item $p(\btheta)$: prior distribution;
+			\item $p(\btheta| \bx)$: posterior distribution.
+		\end{itemize}
+	\end{block}
+    \eqpause
+	\begin{block}{Interpretation}
+		\begin{itemize}
+			\item We begin with unknown variables $\btheta$ and a prior belief $p(\btheta)$.
+			\item Once data $\bx$ is observed, the posterior $p(\btheta| \bx)$ incorporates both prior beliefs and evidence from the data.
+		\end{itemize} 
+	\end{block}
+\end{frame}
+%=======
+\begin{frame}{Bayesian Framework}
+	Consider the case where the unobserved variables $\btheta$ are model parameters (i.e., $\btheta$ are random variables).
+	\begin{itemize}
+		\item $\bX = \{\bx_i\}_{i=1}^n$: observed samples;
+		\item $p(\btheta)$: prior distribution.
+	\end{itemize}
+    \eqpause
+	\begin{block}{Posterior Distribution}
+		\[
+			p(\btheta | \bX) = \frac{p(\bX | \btheta) p(\btheta)}{p(\bX)} = \frac{p(\bX | \btheta) p(\btheta)}{\int p(\bX | \btheta) p(\btheta) d \btheta} 
+		\]
+		\vspace{-0.2cm}
+	\end{block}
+    \eqpause
+	If the evidence $p(\bX)$ is intractable (due to high-dimensional integration), the posterior cannot be computed exactly.
+    \eqpause
+    \begin{block}{Maximum a Posteriori (MAP) Estimation}
+	    \vspace{-0.2cm}
+	    \[
+	        \btheta^* = \argmax_{\btheta} p(\btheta | \bX) = \argmax_{\btheta} (\log p(\bX | \btheta) + \log p(\btheta))
+	    \]
+    \end{block}
+\end{frame}
+%=======
+\begin{frame}{Latent Variable Models (LVM)}
+	\begin{block}{Maximum Likelihood Extimation (MLE) Problem}
+		\vspace{-0.7cm}
+		\[
+			\btheta^* = \argmax_{\btheta} \pt(\bX) = \argmax_{\btheta} \prod_{i=1}^n \pt(\bx_i) = \argmax_{\btheta} \sum_{i=1}^n \log \pt(\bx_i).
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+    \eqpause
+	The distribution $\pt(\bx)$ can be highly complex and often intractable (just like the true data distribution $\pd(\bx)$).
+    \eqpause
+	\begin{block}{Extended Probabilistic Model}
+		Introduce a latent variable $\bz$ for each observed sample $\bx$:
+		\[
+			\pt(\bx, \bz) = \pt(\bx | \bz) p(\bz); \quad 
+		\log \pt(\bx, \bz) = \log \pt(\bx | \bz) + \log p(\bz).
+		\]
+		\[
+			\nextonslide{\pt(\bx) = \int \pt(\bx, \bz) d\bz = \int \pt(\bx | \bz) p(\bz) d\bz.}
+		\]
+	\end{block}
+    \eqpause
+	\vspace{-0.3cm}
+	\begin{block}{Motivation}
+		Both $\pt(\bx | \bz)$ and $p(\bz)$ are usually much simpler than $\pt(\bx)$.
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item The change-of-variables theorem provides a method for computing a random variable's density under an invertible transformation.
+		\item The CoV theorem provides a method for computing a random variable's density under an invertible transformation.
 		\vfill
 		\item Normalizing flows transform a simple base distribution into a complex one via a sequence of invertible mappings, each with efficient Jacobian determinants.
-		\vfill
-		\item This enables exact likelihood computation, thanks to the change-of-variables formula.
 		\vfill
 		\item Linear NFs capture invertible matrices by using matrix decompositions.
 		\vfill
 		\item Gaussian autoregressive NFs are AR models with triangular Jacobians.
 		\vfill
 		\item The RealNVP coupling layer provides an efficient normalizing flow (a special case of AR NF), supporting fast inference and sampling.
+		\vfill
+		\item The Bayesian framework generalizes nearly all standard machine learning methods.
 	\end{itemize}
 \end{frame}
 \end{document}
