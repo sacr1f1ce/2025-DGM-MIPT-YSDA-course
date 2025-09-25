@@ -487,53 +487,87 @@
 		\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) = \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot {\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)}
 	\]
 	\eqpause
-	\vspace{-0.7cm}
-	\begin{align*}
-		{\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)} &= \nabla_{\bx_t} \log \left( \frac{\pt(\bx_t| \by) p(\by)}{\pt(\bx_t)} \right) \\
-		\nextonslide{
-		&=  \nabla_{\bx_t} \log \pt(\bx_t| \by) -\nabla_{\bx_t} \log  \pt(\bx_t)
-		}
-	\end{align*}
+	\vspace{-0.5cm}
+	\begin{block}{Bayes theorem}
+		\vspace{-0.7cm}
+		\begin{align*}
+			{\color{teal}\nabla_{\bx_t} \log p(\by | \bx_t)} &= \nabla_{\bx_t} \log \left( \frac{\pt(\bx_t| \by) p(\by)}{\pt(\bx_t)} \right) \\
+			\nextonslide{
+			&=  \nabla_{\bx_t} \log \pt(\bx_t| \by) -\nabla_{\bx_t} \log  \pt(\bx_t)
+			}
+		\end{align*}
+	\end{block}
 	\eqpause
-	\vspace{-0.8cm}
-	\begin{multline*}
-		\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) = \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot \nabla_{\bx_t} {\color{violet}\log p(\by | \bx_t)}
-		\nextonslide{ = \\ = \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot \bigl( {\color{violet}\nabla_{\bx_t} \log \pt(\bx_t| \by) - \nabla_{\bx_t} \log  \pt(\bx_t)} \bigr)}
-		\nextonslide{ = \\ =  (1 - \gamma) \cdot  \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot  \nabla_{\bx_t} \log \pt(\bx_t| \by)}
-	\end{multline*}
-	\eqpause
-	\textbf{Note:} When $\gamma = 1$, the original identity is restored.
+	\vspace{-0.5cm}
+	\begin{block}{Scaled Guided Score Function}
+		\vspace{-0.7cm}
+		\begin{multline*}
+			\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) = \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot {\color{teal} \nabla_{\bx_t} \log p(\by | \bx_t)}
+			\nextonslide{ = \\ = \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot \bigl( {\color{teal}\nabla_{\bx_t} \log \pt(\bx_t| \by) - \nabla_{\bx_t} \log  \pt(\bx_t)} \bigr)}
+			\nextonslide{ = \\ =  (1 - \gamma) \cdot  \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot  \nabla_{\bx_t} \log \pt(\bx_t| \by)}
+		\end{multline*}
+	\end{block}
 \end{frame}
 %=======
 \begin{frame}{Classifier-Free Guidance: Formulation}
 	\myfootnotewithlink{https://arxiv.org/abs/2207.12598}{Ho J., Salimans T. Classifier-Free Diffusion Guidance, 2022}
-	\[
-		\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) =  (1 - \gamma) \cdot  \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot  \nabla_{\bx_t} \log \pt(\bx_t| \by)
-	\]
-	\eqpause
-	\[
-		\frac{\hat{\bepsilon}_{\btheta, t}(\bx_t, \by)}{\sqrt{1 - \bar{\alpha}_t}} = (1 - \gamma) \cdot  \frac{\bepsilon_{\btheta, t}(\bx_t)}{\sqrt{1 - \bar{\alpha}_t}} +  \gamma \cdot \frac{\bepsilon_{\btheta, t}(\bx_t, \by)}{\sqrt{1 - \bar{\alpha}_t}} 
-	\]
-	\eqpause
-	\begin{block}{Classifier-Free Corrected Noise Prediction}
-		\vspace{-0.3cm}
+	\begin{block}{Scaled Guided Score Function}
+		\vspace{-0.5cm}
 		\[
-			\hat{\bepsilon}_{\btheta, t}(\bx_t, \by) = \gamma \cdot \bepsilon_{\btheta, t}(\bx_t, \by) + (1 - \gamma) \cdot \bepsilon_{\btheta, t}(\bx_t)
+			\nabla_{\bx_t}^{\gamma} \log \pt(\bx_t | \by) =  (1 - \gamma) \cdot  \nabla_{\bx_t} \log \pt(\bx_t) + \gamma \cdot  \nabla_{\bx_t} \log \pt(\bx_t| \by)
+		\]
+		\vspace{-0.5cm}
+		\eqpause
+		\[
+			\bs^{\gamma}_{\btheta, t}(\bx_t, \by) = (1 - \gamma) \cdot \bs_{\btheta, t}(\bx_t) +  \gamma \cdot \bs_{\btheta, t}(\bx_t, \by)
 		\]
 		\vspace{-0.5cm}
 	\end{block}
 	\eqpause
-	\begin{itemize}
-		\item Train a single model $\bepsilon_{\btheta, t}(\bx_t, \by)$ using \textbf{supervised} data, alternating between conditioning and unconditional training (i.e., using $\by = \emptyset$).
-		\eqpause
-		\item Apply the model for both conditioning modes during inference.
-	\end{itemize}
+	\begin{block}{Naive training approach}
+		\begin{itemize}
+			\item Train an unguided score function model $\bs_{\btheta, t}(\bx_t)$.
+			\item Train a guided score function model $\bs_{\btheta, t}(\bx_t, \by)$.
+			\eqpause
+			\item Use their convex combination at inference.
+		\end{itemize}
+	\end{block}
+	\begin{block}{Guided Sampling}
+		\vspace{-0.3cm}
+		\[
+			\bx_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
+		\]
+		\vspace{-0.3cm}
+	\end{block}
+	\eqpause
+	How to avoid training two separate score function models?
+\end{frame}
+%=======
+\begin{frame}{Classifier-Free Guidance}
+	\myfootnotewithlink{https://arxiv.org/abs/2506.02070}{Holderrieth P., Erives E. An Introduction to Flow Matching and Diffusion Models, 2025}
+	\[
+		\bs^{\gamma}_{\btheta, t}(\bx_t, \by) = (1 - \gamma) \cdot \bs_{\btheta, t}(\bx_t) +  \gamma \cdot \bs_{\btheta, t}(\bx_t, \by)
+	\]
+	\vspace{-0.5cm}
+	\begin{block}{CFG algorithm}
+		\begin{itemize}
+			\item Introduce "the absence of conditioning" label $\by = \varnothing$.		
+			\eqpause
+			\item Use it to get unguided score function $\bs_{\btheta, t}(\bx_t) = \bs_{\btheta, t}(\bx_t, \varnothing)$.		
+			\eqpause
+			\item Train a single model $\bs_{\btheta, t}(\bx_t, \by)$ using \textbf{supervised} data, but artificially drop the labels $\by$ with some fixed probability (simulating the case of $\by = \varnothing$).		
+			\eqpause
+			\item Apply the model twice during inference to get $\bs_{\btheta, t}(\bx_t, \varnothing)$ and $\bs_{\btheta, t}(\bx_t, \by)$.
+		\end{itemize}
+	\end{block}
+	\vspace{-0.3cm}
 	\eqpause
 	\begin{block}{Guided Sampling}
 		\vspace{-0.3cm}
 		\[
-			\bx_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t - \frac{1 - \alpha_t}{\sqrt{\alpha_t (1 - \bar{\alpha}_t)}} \cdot  {\color{olive}\hat{\bepsilon}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
+			\bx_{t-1} = \frac{1}{\sqrt{\alpha_t}} \cdot \bx_t + \frac{\beta_t}{\sqrt{1 - \beta_t}} \cdot  {\color{olive}\bs^{\gamma}_{\btheta, t}(\bx_t, \by)} + \sigma_t \cdot \bepsilon
 		\]
+		\vspace{-0.3cm}
 	\end{block}
 \end{frame}
 %=======
