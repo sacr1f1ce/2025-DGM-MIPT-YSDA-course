@@ -353,7 +353,7 @@
 \end{frame}
 %=======
 \begin{frame}{Variational Autoencoder}
-	\myfootnotewithlink{https://arxiv.org/pdf/2403.18103}{Chan S., Tutorial on Diffusion Models for Imaging and Vision, 2024}
+	\myfootnotewithlink{https://arxiv.org/abs/2403.18103}{Chan S., Tutorial on Diffusion Models for Imaging and Vision, 2024}
 	\begin{itemize}
 		\item The encoder $q_{\bphi}(\bz| \bx) = \text{NN}_e(\bx, \bphi)$ outputs $\bmu_{\bphi}(\bx)$ and $\bsigma_{\bphi}(\bx)$.
 		\item The decoder $\pt(\bx | \bz) = \text{NN}_d(\bz, \btheta)$ outputs parameters of the observed data distribution.
@@ -449,7 +449,7 @@
 \end{frame}
 %=======
 \begin{frame}{Discrete VAE Latents}
-	\myfootnotewithlink{https://arxiv.org/pdf/2403.18103}{Chan S., Tutorial on Diffusion Models for Imaging and Vision, 2024}
+	\myfootnotewithlink{https://arxiv.org/abs/2403.18103}{Chan S., Tutorial on Diffusion Models for Imaging and Vision, 2024}
 	\[
 		\cL_{\bphi, \btheta}(\bx)  = \bbE_{q_{\bphi}(c| \bx)} \log \pt(\bx| c) + \Ent(q_{\bphi}(c| \bx)) - \log K \rightarrow \max_{\bphi, \btheta}.
 	\]
