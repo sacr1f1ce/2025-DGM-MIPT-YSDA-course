@@ -237,18 +237,18 @@
 		\sum_{i=1}^n \log \pt(\bx_i) = \sum_{i=1}^n \log \int \pt(\bx_i| \bz_i) p(\bz_i) d\bz_i \rightarrow \max_{\btheta}.
 	\]
     \eqpause
-	\vspace{-0.7cm}
+	\vspace{-0.6cm}
 	\begin{figure}
 		\includegraphics[width=.65\linewidth]{figs/lvm_diagram}
 	\end{figure}
     \eqpause
 	\vspace{-0.5cm}
-	\begin{block}{Naive Approach}
+	\begin{block}{Naive Monte Carlo Estimation}
 		\vspace{-0.7cm}
 		\[
-			\pt(\bx) = \int \pt(\bx | \bz) p(\bz) d\bz = \bbE_{p(\bz)} \pt(\bx | \bz) \approx \frac{1}{K} \sum_{k=1}^{K} \pt(\bx | \bz_k),
+			\log \pt(\bx) = \log \bbE_{p(\bz)} \pt(\bx | \bz) \geq \bbE_{p(\bz)} \log \pt(\bx | \bz) \approx \frac{1}{K} \sum_{k=1}^{K} \log \pt(\bx | \bz_k),
 		\]
-		\vspace{-0.5cm} \\
+		\vspace{-0.7cm} \\
 		where $\bz_k \sim p(\bz)$. \\
         \eqpause
 		\textbf{Challenge:} As the dimensionality of $\bz$ increases, the number of samples needed to adequately cover the latent space grows exponentially.
@@ -270,7 +270,10 @@
 		\vspace{-0.3cm}
 	\end{block}
     \eqpause
-	Here, $q(\bz)$ is any distribution such that $\int q(\bz) d\bz = 1$.
+	\begin{itemize}
+		\item Here, $q(\bz)$ is any distribution such that $\int q(\bz) d\bz = 1$.
+		\item {\color{gray} We assume that $\text{supp}(q(\bz)) = \text{supp}(\pt(\bz | \bx)) = \bbR^{d}$}.
+	\end{itemize}
     \eqpause
 	\begin{block}{Variational Evidence Lower Bound (ELBO)}
 		\[
@@ -350,7 +353,7 @@
 	\vspace{-0.3cm}
 	\begin{multline*}
 		q^*(\bz) = \argmax_q \cL_{q, \btheta^*}(\bx) = \\
-		= \argmin_q \KL(q(\bz) \| p_{\btheta^*}(\bz | \bx)) = p_{\btheta^*}(\bz| \bx);
+		= \argmin_q \KL(q(\bz) \| p_{\btheta^*}(\bz | \bx)) = p_{\btheta^*}(\bz| \bx).
 	\end{multline*}
 	\vspace{-0.3cm} \\
 	Here we got the intuition about $q(\bz)$ – it estimates the posterior~$p_{\btheta^*}(\bz| \bx)$.
@@ -484,7 +487,7 @@
 	\begin{block}{Naive Monte Carlo Estimation}
 		\vspace{-0.7cm}
 		\[
-			\pt(\bx) = \int \pt(\bx | \bz) p(\bz) d\bz \approx \frac{1}{K} \sum_{k=1}^{K} \pt(\bx | \bz_k), \quad \bz_k \sim p(\bz).
+			\log \pt(\bx) \geq \int \log \pt(\bx | \bz) p(\bz) d\bz \approx \frac{1}{K} \sum_{k=1}^{K} \log \pt(\bx | \bz_k), \quad \bz_k \sim p(\bz).
 		\]
 		\vspace{-0.5cm} 
 	\end{block}
@@ -512,7 +515,7 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{ELBO Gradients: E-Step $(\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx))$}
+\begin{frame}{ELBO Gradients: $\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx)$}
 	\begin{block}{Reparametrization Trick (LOTUS Trick)} 
 		\vspace{-0.7cm}
 		\begin{multline*}
@@ -536,7 +539,7 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{ELBO Gradient: E-Step $(\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx))$}
+\begin{frame}{ELBO Gradient: $\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx)$}
 	\vspace{-0.3cm}
 	\[
 		\nabla_{\bphi} \cL_{\bphi, \btheta}(\bx) = {\color{violet}\nabla_{\bphi} \int q_{\bphi}(\bz| \bx)\log \pt(\bx | \bz) d \bz} - {\color{teal}\nabla_{\bphi} \KL(q_{\bphi}(\bz| \bx) \| p(\bz))}
@@ -554,6 +557,7 @@
 		The generative distribution $\pt(\bx | \bz)$ can be implemented as a neural network. \\
 		We may write $\pt(\bx | \bz) = \text{NN}_{d, \btheta}(\bz)$, called the \textbf{decoder}.
 	\end{block}
+	\eqpause
 	\begin{block}{KL Term}
 		$p(\bz)$ is the prior over latents $\bz$, typically $p(\bz) = \cN (0, \bI)$.
 		\[
@@ -616,7 +620,7 @@
 \begin{frame}{Variational Autoencoder (VAE)}
 	\begin{block}{Training}
 		\begin{itemize}
-			\item Pick a batch of samples \{$\bx_i\}_{i=1^B}$ (here we use Monte Carlo technique).
+			\item Pick a batch of samples \{$\bx_i\}_{i=1}^B$ (here we use Monte Carlo technique).
 			\eqpause
 			\item Compute the objective for each sample (apply the reparametrization trick):
 			\vspace{-0.3cm}
@@ -624,7 +628,7 @@
 				\bepsilon^* \sim p(\bepsilon); \quad \bz^* = \bg_{\bphi}(\bx, \bepsilon^*);
 			\]
 			\[
-				\cL_{\bphi, \btheta}(\bx) \approx  \log \pt(\bx | \bz^*) - \KL(q_{\bphi}(\bz^*| \bx) \| p(\bz^*)).
+				\cL_{\bphi, \btheta}(\bx) \approx  \log \pt(\bx | \bz^*) - \KL(q_{\bphi}(\bz| \bx) \| p(\bz)).
 			\]
 			\eqpause
 			\vspace{-0.5cm}
