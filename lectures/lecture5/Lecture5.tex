@@ -239,7 +239,7 @@
 	\myfootnotewithlink{https://arxiv.org/abs/1406.2661}{Goodfellow I. J. et al. Generative Adversarial Networks, 2014}
 	\begin{itemize}
 		\item The more expressive the discriminator, the closer we get to the optimal $\pt(\bx)$.
-		\item Standard classifiers are trained by minimizing cross-entropy loss.
+		\item Standard classifiers are trained by minimizing cross-entropy loss $-\bbE_{\hat{p}(\bx, y)} \log p(y | \bx)$ with $\hat{p}(\bx, y) = \frac{1}{2} [y=1]\pd(\bx) + \frac{1}{2} [y=0]\pt(\bx)$.
 	\end{itemize}
 	\eqpause
 	\begin{block}{Cross-Entropy for Discriminator}
@@ -303,7 +303,7 @@
 			child {node[level 3] (c11) {Tractable Density}}
 			child {node[level 3] (c12) {Approximate Density}}
 		}
-		child {node[level 2] (c2) {Implicit Density}};
+		child {node[level 2] (c2) {Likelihood-Free}};
 		
 		\begin{scope}[every node/.style={level 4}]
 		\node [below of = c11, yshift=-5pt, xshift=10pt] (c111) {Autoregressive Models};
