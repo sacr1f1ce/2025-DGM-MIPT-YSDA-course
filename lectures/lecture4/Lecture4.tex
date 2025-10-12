@@ -413,6 +413,40 @@
 	\end{block}
 \end{frame}
 %=======
+\begin{frame}{Vector Quantized VAE (VQ-VAE): Final algorithm}
+	\begin{block}{Training}
+		\begin{itemize}
+			\item Vector-quantize (per spatial location if applicable):
+			\vspace{-0.3cm}
+			\[
+				k^* = \argmin_k \|\bz_e - \be_k\|_2, \quad \bz_q = \be_{k^*}, \quad \bz_e = \text{NN}_{e,\bphi}(\bx).
+			\]
+			\vspace{-0.5cm}
+			\item Compute ELBO objective:
+			\vspace{-0.3cm}
+			\[
+				\cL_{\bphi, \btheta}(\bx) = \log \pt(\bx | \bz_q) - \log K.
+			\]
+			\vspace{-0.5cm}
+			\item Compute total loss with codebook and commitment losses (with stop-gradient $\text{sg}[\cdot]$):
+			\vspace{-0.3cm}
+			\[
+				\cL = - \cL_{\bphi, \btheta}(\bx) + \big\|\text{sg}[\bz_e] - \be_{k^*}\big\|_2^2 + \beta \big\|\bz_e - \text{sg}[\be_{k^*}]\big\|_2^2
+			\]
+			\vspace{-0.5cm}
+			\item Use straight-through gradient estimation for encoder.
+		\end{itemize}
+	\end{block}
+	\eqpause
+	\vspace{-0.3cm}
+	\begin{block}{Sampling}
+		\begin{itemize}
+			\item Sample $c \sim p(c) = \text{Uniform}\{1, \dots, K\}$.
+			\item Generate $\bx \sim \pt(\bx | \be_c)$.
+		\end{itemize}
+	\end{block}
+\end{frame}
+%=======
 \section{ELBO Surgery}
 %=======
 \begin{frame}{ELBO Surgery}
