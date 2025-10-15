@@ -11,40 +11,6 @@
 %=======
 \begin{frame}{Recap of Previous Lecture}
 	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
-	\vspace{-0.3cm}
-	\begin{block}{Assumptions}
-		\begin{itemize}
-			\item Let $c \sim \Cat(\bpi)$, where 
-			\vspace{-0.6cm}
-			\[
-				\bpi = (\pi_1, \dots, \pi_K), \quad \pi_k = P(c = k), \quad \sum_{k=1}^K \pi_k = 1.
-			\]
-			\vspace{-0.7cm}
-			\item Suppose the VAE includes a discrete latent variable $c$ with prior $p(c) = \text{Uniform}\{1, \dots, K\}$.
-		\end{itemize}
-	\end{block}
-	\vspace{-0.3cm}
-	\begin{block}{ELBO}
-		\vspace{-0.6cm}
-		\[
-			\cL_{\bphi, \btheta}(\bx)  = \bbE_{q_{\bphi}(c| \bx)} \log \pt(\bx| c) - {\color{olive} \KL(q_{\bphi}(c| \bx) \| p(c))} \rightarrow \max_{\bphi, \btheta}.
-		\]
-	\end{block}
-	\vspace{-1.0cm}
-	\[
-		\KL(q_{\bphi}(c| \bx) \| p(c)) = - \Ent(q_{\bphi}(c| \bx)) + \log K. 
-	\]		
-	\vspace{-0.5cm}
-	\begin{itemize}
-		\item Our encoder must output the discrete distribution $q_{\bphi}(c| \bx)$.
-		\item We'll require an analogue of the reparameterization trick for discrete $q_{\bphi}(c| \bx)$.
-		\item Our decoder $\pt(\bx| c)$ has input the discrete variable $c$.
-	\end{itemize}
-\end{frame}
-%=======
-
-\begin{frame}{Recap of Previous Lecture}
-	\myfootnotewithlink{https://arxiv.org/abs/1711.00937}{Oord A., Vinyals O., Kavukcuoglu K. Neural Discrete Representation Learning, 2017} 
 	\begin{block}{Assumptions}
 		\begin{itemize}
 			\item Let $c \sim \Cat(\bpi)$, where 
@@ -549,7 +515,7 @@
 		\]
 		\vspace{-0.4cm}
 	\end{block}
-	In our setting, $W(\pi \| p) = W_1(\pi, p)$, which is the transport cost using the $\ell_1$ norm.
+	In our setting, $W(\pi \| p) = W_1(\pi, p)$, which is the transport cost formulation.
 \end{frame}
 %=======
 \begin{frame}{Wasserstein Distance vs KL vs JSD}
@@ -738,12 +704,6 @@
 		\item Kantorovich-Rubinstein duality allows us to compute the EM distance using only samples.
 		\vfill
 		\item Wasserstein GAN enforces the Lipschitz condition on the critic through weight clipping---although better alternatives exist.
-	\end{itemize}
-\end{frame}
-%=======
-\begin{frame}{Summary}
-	\begin{itemize}
-		\item
 	\end{itemize}
 \end{frame}
 %=======
