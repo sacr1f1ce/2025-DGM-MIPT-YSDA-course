@@ -21,7 +21,7 @@ The course is accompanied by practical tasks that allow you to understand the pr
 - **telegram:** [@roman_isachenko](https://t.me/roman_isachenko)
 - **e-mail:** roman.isachenko@phystech.edu
 
-## Materials
+## Materials ([all videos available here](https://disk.yandex.ru/d/rhDYfFDfBB4bDg))
 
 | # | Date | Description | Slides |
 |---|---|---|---|
