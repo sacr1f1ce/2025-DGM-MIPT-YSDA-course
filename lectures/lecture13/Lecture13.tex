@@ -177,7 +177,7 @@
 			\item Sample $\bx_1 \sim \pd(\bx)$.
 			\item Sample time $t \sim U[0, 1]$ and $\bx_0 \sim \cN(0, \bI)$.
 			\item Obtain the noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
-			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bff_{\btheta}(\bx, t) \right\|^2 $.
+			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bff_{\btheta}(\bx_t, t) \right\|^2 $.
 		\end{enumerate}
 	\end{block}
 	\vspace{-0.3cm}
@@ -256,7 +256,7 @@
 			\item Sample $(\bx_0, \bx_1) \sim p(\bx_0, \bx_1)$.
 			\item Sample time $t \sim U[0, 1]$.
 			\item Compute the noisy image $\bx_t = t \bx_1 + (1 - t) \bx_0$.
-			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bff_{\btheta}(\bx, t) \right\|^2 $.
+			\item Compute the loss $ \cL = \left\| (\bx_1 - \bx_0) - \bff_{\btheta}(\bx_t, t) \right\|^2 $.
 		\end{enumerate}
 	\end{block}
 	\vspace{-0.3cm}
@@ -271,42 +271,113 @@
 	\end{block}
 \end{frame}
 %=======
-\begin{frame}{Recap of Previous Lecture}
+\begin{frame}{Outline}
+	\tableofcontents
+\end{frame}
+%=======
+\section{Link between Flow Matching and Score-Based Models}
+%=======
+\begin{frame}{Score-Based Generative Models through SDEs}
 	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
-	\[
-		\bbE_{\pd(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
-	\]
 	\vspace{-0.3cm}
+	\begin{block}{Training}
+		\vspace{-0.7cm}
+		\[
+			\bbE_{\pd(\bx(0))} \bbE_{t \sim U[0, 1]} \bbE_{q(\bx(t) | \bx(0))}\bigl\| \bs_{\btheta}(\bx(t), t) - {\color{teal}\nabla_{\bx(t)} \log q(\bx(t) | \bx(0))} \bigr\|^2_2 
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	\begin{block}{Variance Exploding SDE (NCSN)}
+		\vspace{-0.3cm}
+		\[
+			q(\bx(t) | \bx(0)) = \cN\left(\bx(0), \left[\sigma^2(t) - \sigma^2(0)\right] \cdot \bI\right), \quad \sigma(0) =0
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\begin{block}{Variance Preserving SDE (DDPM)}
+		\vspace{-0.5cm}
+		\[
+			q(\bx(t) | \bx(0)) = \cN\left(\bx(0) \alpha(t), \left(1 - \alpha(t)^2\right) \cdot \bI\right); \quad \alpha(t) = e^{-\frac{1}{2} \int_0^t \beta(s) ds}
+		\]
+		\vspace{-0.5cm}
+	\end{block}
+	\eqpause
+	Flow matching uses reverse time direction:
 	\[
-		p_t(\bx_t| \bx_1) = q_{1-t}(\bx_{1-t}| \bx_0=\bx_1)
+		p_t(\bx| \bx_1) = q_{1-t}(\bx| \bx_0=\bx_1)
+	\]
+\end{frame}
+%=======
+\begin{frame}{Score-Based Generative Models through SDEs}
+	\[
+		p_t(\bx| \bx_1) = q_{1-t}(\bx| \bx_0=\bx_1)
+	\]
+	\[
+		\textbf{VE (NCSN): } p_t(\bx | \bx_1) = \cN\left(\bx_1, \sigma^2_{1-t} \cdot \bI\right)
 	\]
 	\vspace{-0.5cm}
-	\begin{block}{Variance Exploding SDE}
-		\vspace{-0.7cm}
+	\[
+		\textbf{VP (DDPM): } p_t(\bx | \bx_1) = \cN\left(\alpha_{1-t} \bx_1, \left(1 - \alpha_{1-t}^2\right) \cdot \bI\right)
+	\]
+	\vspace{-0.5cm}
+	\eqpause
+	\begin{block}{Flow Matching Probability Path}
+		\vspace{-0.3cm}
 		\[
-				p_t(\bx_t | \bx_1) = \cN\left(\bx_1, \sigma^2_{1-t}  \bI\right) \quad \Rightarrow \quad 
+			p_t(\bx | \bx_1) = \cN\left(t \bx_1, (1-t)^2 \bI\right); \quad \bff(\bx_t, \bx_1, t) = \frac{\bx_1  - \bx_t}{1-t}
+		\]
+		\vspace{-0.3cm}
+		\[
+	 		\frac{d\bx_t}{dt} = \bff(\bx_t, \bx_1, t) =  \bmu_t'(\bx_1) + \frac{\bsigma_t'(\bx_1)}{\bsigma_t(\bx_1)} \odot (\bx_t - \bmu_t(\bx_1))
+		\]
+	\end{block}
+	\eqpause
+	Let's derive the conditional vector fields for VE (NCSN) and VP (DDPM).
+\end{frame}
+%=======
+\begin{frame}{Flow Matching vs. Score-Based SDE Models}
+	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
+	\[
+		\frac{d\bx_t}{dt} = \bff(\bx_t, \bx_1, t) =  \bmu_t'(\bx_1) + \frac{\bsigma_t'(\bx_1)}{\bsigma_t(\bx_1)} \odot (\bx_t - \bmu_t(\bx_1))
+	\]
+	\eqpause
+	\begin{block}{Variance Exploding SDE Probability Path}
+		\vspace{-0.5cm}
+		\[
+				p_t(\bx | \bx_1) = \cN\left(\bx_1, \sigma^2_{1-t}  \bI\right) \quad \Rightarrow \quad 
 				\bff(\bx_t, \bx_1, t) = - \frac{\sigma'_{1-t}}{\sigma_{1-t}} (\bx_t - \bx_1)
 		\]
-		\vspace{-0.7cm}
+		\vspace{-0.3cm}
 	\end{block}
-	\begin{block}{Variance Preserving SDE}
-		\vspace{-0.7cm}
+	\eqpause
+	\begin{block}{Variance Preserving SDE Probability Path}
+		\vspace{-0.5cm}
 		{\small
 		\[
-			p_t(\bx_t | \bx_1) = \cN\left(\alpha_{1-t}  \bx_1, (1 - \alpha^2_{1-t})  \bI \right)  \, \Rightarrow \, 
+			p_t(\bx | \bx_1) = \cN\left(\alpha_{1-t}  \bx_1, (1 - \alpha^2_{1-t})  \bI \right)  \, \Rightarrow \, 
 		\bff(\bx_t, \bx_1, t) = \frac{\alpha'_{1-t}}{1 - \alpha^2_{1-t}}\cdot \left(\alpha_{1-t}  \bx_t - \bx_1\right)
 		\]
 		}
 	\end{block}
-	\vspace{-0.5cm}
-	\begin{figure}
-		\centering
-		\includegraphics[width=0.5\linewidth]{figs/trajectories}
-	\end{figure}
+	Thus, VE/VP SDE models correspond to particular choices of the Gaussian probability path within the flow matching framework.
 \end{frame}
 %=======
-\begin{frame}{Outline}
-	\tableofcontents
+\begin{frame}{Flow Matching vs. Score-Based SDE Models}
+	\myfootnotewithlink{https://arxiv.org/abs/2210.02747}{Lipman Y., et al. Flow Matching for Generative Modeling, 2022}
+	\begin{block}{Trajectories}
+		\vspace{-0.3cm}
+		\begin{figure}
+			\centering
+			\includegraphics[width=0.6\linewidth]{figs/trajectories}
+		\end{figure}
+		\vspace{-0.3cm}
+	\end{block}
+	\eqpause
+	\begin{figure}
+		\centering
+		\includegraphics[width=\linewidth]{figs/2d-generation}
+	\end{figure}
 \end{frame}
 %=======
 \section{Discrete Diffusion Models}
@@ -354,6 +425,7 @@
 		\includegraphics[width=\linewidth]{figs/mercury}
 	\end{figure}
 \end{frame}
+%=======
 \subsection{Forward Discrete Process}
 %=======
 \begin{frame}{Forward Discrete Process}
@@ -510,7 +582,7 @@
 				& Random replacement
 				& Gradual masking of tokens \\[4pt]
 			Application
-				& Image / symbol diffusion
+				& Image diffusion
 				& Text diffusion $\approx$ Masked LM \\[4pt]
 			\bottomrule
 		\end{tabular}
@@ -613,226 +685,19 @@
 	\]
 \end{frame}
 %=======
-\subsection{Absorbing Diffusion}
-%=======
-\begin{frame}{Absorbing Diffusion: Forward Process}
-    \myfootnotewithlink{https://arxiv.org/abs/2406.07524}{Sahoo S. et al. Simple and Effective Masked Diffusion Language Models, 2024}
-	Let's restrict to the case of absorbing transition matrix.
-	At each step $t$:
-	\begin{itemize}
-		\item with probability $(1-\beta_t)$ a token is kept;
-		\item with probability $\beta_t$ it is replaced by the mask token $m$.
-	\end{itemize}
-    \vspace{-0.5cm}
-	\begin{align*}
-		\bQ_t &= (1-\beta_t)\bI + \beta_t\, \mathbf{e}_m \mathbf{1}^\top,
-		\qquad
-		\bar\alpha_t = \prod_{s=1}^t (1-\beta_s). \\
-		\bQ_{1:t} &= \bar\alpha_t\,\bI + (1-\bar\alpha_t)\,\mathbf{e}_m \mathbf{1}^\top.
-	\end{align*}
-	Each position is either still clean or already masked:
-    \vspace{-0.3cm}
-	\[
-		q(\bx_t | \bx_0) = 
-		\begin{cases}
-		\bar\alpha_t, &\bx_t = \bx_0\\
-		1 - \bar\alpha_t, &\bx_t = \mathbf{e}_m \\
-		0, &\text{otherwise}.
-		\end{cases}
-	\]
-\end{frame}
-%=======
-\begin{frame}
-	NOT READY
-\end{frame}
-%=======
-\begin{frame}{Absorbing / Masked Diffusion: Sequence View}
-    \myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
-
-    Consider a sequence $\bx_0 = (x_0^1,\dots,x_0^L)$.
-
-    \begin{block}{Independent masking across positions}
-        Because the forward chain factorizes over positions,
-        \[
-            q(\bx_t \mid \bx_0) = \prod_{\ell=1}^L q(x_t^\ell \mid x_0^\ell),
-        \]
-        and for each position $\ell$:
-        \[
-            q(x_t^\ell = x_0^\ell \mid \bx_0) = \bar\alpha_t,
-            \qquad
-            q(x_t^\ell = m \mid \bx_0) = 1 - \bar\alpha_t.
-        \]
-    \end{block}
-
-    \begin{itemize}
-        \item At small $t$, most tokens remain clean; a few are masked.
-        \item As $t \to T$, almost all tokens become $m$ and $q(\bx_T)$ is concentrated on the fully masked sequence.
-        \item This gives a \textbf{multi-step masking schedule}, instead of BERT’s single-step masking.
-    \end{itemize}
-\end{frame}
-%=======
-\begin{frame}{Posterior in Absorbing Diffusion: Unmask vs Stay Masked}
-    \myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
-
-    Recall the general discrete posterior
-    \[
-        q(x_{t-1} \mid x_t, x_0)
-        = \frac{q(x_t \mid x_{t-1})\, q(x_{t-1} \mid x_0)}
-               {q(x_t \mid x_0)}.
-    \]
-    For the absorbing process we can obtain a closed-form expression.
-    \begin{block}{Case 1: $x_t = x_0$ (token not yet masked)}
-        Because the mask is absorbing, we cannot go from mask back to a clean token:
-        \[
-            q(x_{t-1} = x_0 \mid x_t = x_0, x_0) = 1.
-        \]
-        If we observe $x_t = x_0$, we know the token has \textbf{never been masked} up to time $t$.
-    \end{block}
-\end{frame}
-%=======
-\begin{frame}{Posterior in Absorbing Diffusion: Unmask vs Stay Masked}
-    \begin{block}{Case 2: $x_t = m$ (token is masked)}
-        Now $x_{t-1}$ could be:
-        \begin{itemize}
-            \item already masked at $t-1$ and stayed masked, or
-            \item still clean ($x_0$) at $t-1$ and masked only at step $t$.
-        \end{itemize}
-        Using the forward marginals,
-        \[
-            q(x_{t-1} = x_0 \mid x_t = m, x_0)
-            = \frac{\bar\alpha_{t-1}\,\beta_t}{1-\bar\alpha_t},
-        \]
-        \[
-            q(x_{t-1} = m \mid x_t = m, x_0)
-            = \frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t},
-        \]
-        and all other states have probability $0$.
-    \end{block}
-\end{frame}
-%=======
-\begin{frame}{Posterior in Absorbing Diffusion: Interpretation}
-    \begin{block}{Unmask vs stay masked}
-        When $x_t = m$,
-        \[
-            q(x_{t-1} \mid x_t = m, x_0)
-            = \underbrace{\frac{1-\bar\alpha_{t-1}}{1-\bar\alpha_t}}_{\text{already masked}}
-                \delta_{x_{t-1}=m}
-            + \underbrace{\frac{\bar\alpha_{t-1}\beta_t}{1-\bar\alpha_t}}_{\text{just masked}}
-                \delta_{x_{t-1}=x_0}.
-        \]
-    \end{block}
-
-    \begin{itemize}
-        \item The posterior is a simple binary choice:
-        \begin{itemize}
-            \item \textbf{stay masked}: keep $x_{t-1} = m$,
-            \item \textbf{unmask}: revert to the original symbol $x_0$.
-        \end{itemize}
-        \item The reverse model $\pt(x_{t-1} \mid x_t)$ learns, at masked positions,
-        how likely it is to \emph{unmask} vs \emph{stay masked}.
-        \item This is exactly the semantic of \textbf{iterative infilling}:
-        tokens start from mask and are gradually turned into meaningful symbols.
-    \end{itemize}
-\end{frame}
-%=======
-\begin{frame}{ELBO Term for Absorbing Diffusion}
-    \myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
-
-    Recall the per-timestep ELBO term
-    \[
-        \cL_t
-        = \bbE_{q(\bx_t \mid \bx_0)}
-        \KL\bigl(q(\bx_{t-1} \mid \bx_t, \bx_0)
-        \,\|\, \pt(\bx_{t-1} \mid \bx_t)\bigr).
-    \]
-
-    \begin{block}{Categorical KL $\Rightarrow$ cross-entropy}
-        As before,
-        \[
-            \KL\bigl(\Cat(\bq)\,\|\,\Cat(\bp)\bigr)
-            = \Ent(\bq,\bp) - \Ent(\bq),
-        \]
-        and the entropy term $\Ent(\bq)$ does not depend on $\btheta$.
-
-        Therefore minimizing $\cL_t$ is equivalent (w.r.t.~$\btheta$) to
-        \[
-            \bbE_{q(\bx_t \mid \bx_0)}
-            \Ent\Bigl(q(\bx_{t-1} \mid \bx_t, \bx_0),
-                     \pt(\bx_{t-1} \mid \bx_t)\Bigr).
-        \]
-    \end{block}
-
-    \begin{itemize}
-        \item For absorbing diffusion, $q(x_{t-1}^\ell \mid x_t^\ell, x_0^\ell)$
-              is supported only on $\{x_0^\ell, m\}$.
-        \item This makes the target distribution extremely simple, and opens the door
-              to a much simpler training loss.
-    \end{itemize}
-\end{frame}
-%=======
-\begin{frame}{Simplified Training: Predict Clean Token at Masked Positions}
-    \myfootnotewithlink{https://arxiv.org/abs/2107.03006}{Austin J. et al., Structured denoising diffusion models in discrete state-spaces, 2021.}
-    \myfootnotewithlink{https://arxiv.org/pdf/2406.07524.pdf}{See also recent refinements in arXiv:2406.07524.}
-
-    \begin{block}{Key observation}
-        For absorbing diffusion:
-        \begin{itemize}
-            \item If $x_t^\ell \neq m$, then $x_t^\ell = x_0^\ell$ and the posterior
-                  $q(x_{t-1}^\ell \mid x_t^\ell, x_0^\ell)$ is a delta at $x_0^\ell$.
-            \item If $x_t^\ell = m$, the posterior is a binary distribution over $\{m, x_0^\ell\}$.
-        \end{itemize}
-        The informative supervision is concentrated at \textbf{masked positions}.
-    \end{block}
-\end{frame}
-%=======
-\begin{frame}{Simplified Training: Predict Clean Token at Masked Positions}
-    \begin{block}{Practical training objective}
-        In practice we parameterize the model to predict $x_0$ from $(\bx_t, t)$:
-        \[
-            \pt(x_0^\ell \mid \bx_t, t) = \Cat\bigl(\bpi_\theta(\bx_t, t)^\ell\bigr),
-        \]
-        and minimize a time-conditioned cross-entropy:
-        \[
-            \cL_{\text{mask}}(\theta)
-            = \bbE_{t,\,\bx_0,\,\bx_t \sim q(\bx_t \mid \bx_0)}
-              \sum_{\ell=1}^L w_t \,
-              \mathbb{I}\{x_t^\ell = m\}
-              \bigl[-\log \pt(x_0^\ell \mid \bx_t, t)\bigr].
-        \]
-        \begin{itemize}
-            \item $w_t$ – optional weighting over timesteps (e.g., uniform over $t$).
-            \item We apply cross-entropy only at positions where the input token is masked.
-        \end{itemize}
-    \end{block}
-\end{frame}
-%=======
-\begin{frame}{Absorbing Diffusion as Multi-step Masked LM}
-    \begin{itemize}
-        \item Forward process: gradually replace tokens by a mask $m$
-              according to a diffusion schedule $\{\beta_t\}$.
-        \item Reverse process: starting from an all-mask sequence,
-              iteratively \textbf{unmask} positions by predicting clean tokens $x_0$
-              from $(\bx_t, t)$.
-        \item Training: time-conditioned masked language modeling objective
-              on masked positions:
-              \[
-                  (\bx_0, t) \;\mapsto\; \bx_t \sim q(\bx_t \mid \bx_0),
-                  \quad
-                  \text{predict } x_0^\ell \text{ wherever } x_t^\ell = m.
-              \]
-        \item This perspective makes absorbing diffusion feel very close to BERT-style
-              masked LMs, but with:
-              \begin{itemize}
-                  \item a \textbf{multi-step} corruption schedule,
-                  \item explicit modeling of the full reverse Markov chain.
-              \end{itemize}
-    \end{itemize}
-\end{frame}
-%=======
-
 \begin{frame}{Summary}
 	\begin{itemize}
-		\item 
+		\item Diffusion and score-based models are special cases of the flow matching approach, but use curved trajectories.
+		\vfill
+		\item Diffusion approach has several key advantages over autoregressive approach.
+		\vfill
+		\item Forward discrete diffusion process defines Markov chain with discrete states.
+		\vfill
+		\item There are several ways to make it tractable (uniform / absorbing transitions).
+		\vfill
+		\item Reverse discrete diffusion process uses the variational approach to invert forward process.
+		\vfill 
+		\item Discrete-state ELBO for discrete diffusion is a cross-entropy loss. 
 	\end{itemize}
 \end{frame}
 \end{document}
